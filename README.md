@@ -37,7 +37,7 @@ wdi-drug-integration/
 │   ├── identity_resolution/   # PyDI scripts for blocking and similarity measures
 │   └── data_fusion/           # PyDI scripts for conflict resolution
 ├── docs/
-│   ├── abstract/              # The 4-page project abstract (PDF)
+│   ├── outline/              # The 4-page project abstract (PDF)
 │   └── final_report/          # Springer CS LaTeX files and final 12-page report
 ├── .gitignore                 # Excludes large raw datasets
 ├── requirements.txt           # Python dependencies

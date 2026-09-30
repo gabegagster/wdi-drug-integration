@@ -1,0 +1,93 @@
+ % Do not change document class, margins, fonts, etc.
+\documentclass[a4paper,oneside,bibliography=totoc]{scrbook}
+
+% some useful packages (add more as needed)
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{latexsym}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{algorithm} % you can modify the algorithm style to your liking
+\counterwithin{algorithm}{chapter} % so that algorithms have chapter numbers as well
+\usepackage{algorithmic}
+\usepackage{csquotes}
+\renewcommand{\algorithmiccomment}[1]{\hfill\textit{// #1}}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage[colorlinks,citecolor=Green]{hyperref} % you may change/remove the colors
+\usepackage{lipsum} % you do not need this
+
+% chicago citation style
+\usepackage{natbib}
+\bibliographystyle{chicagoa}
+\setcitestyle{authoryear,round,semicolon,aysep={},yysep={,}} \let\cite\citep
+
+% example enviroments (add more as needed)
+\newtheorem{definition}{Definition} \newtheorem{proposition}{Proposition}
+
+\begin{document}
+
+% Quick fix to remove the 0 in front of sections.
+\makeatletter
+\renewcommand\thesection{\arabic{section}}
+\renewcommand\thesubsection{\arabic{section}.\arabic{subsection}}
+\renewcommand\thesubsubsection{\arabic{section}.\arabic{subsection}.\arabic{subsubsection}}
+\makeatother
+
+\subject{
+  Web Data Integration
+  \\ Project Outline} 
+\title{Pharmaceutical Drug Data}
+\author{
+  Gabriel Himmelein (1649181)\\
+  Özlem Ölçer\\
+  Anatole Lobenko (2187322)\\
+  Hai\\
+  Trang
+} \date{October 6, 2026}
+\publishers{{\small Submitted to}\\
+  Data and Web Science Group\\
+  Dr. Ralph Peters\\
+  Prof. Dr. Christian Bizer\\
+  University of Mannheim\\}
+\maketitle
+
+\section{Brief description of use case}
+
+\section{How the datasets fulfill the requirements}
+
+\subsection{Schema and basic profile of each dataset}
+\begin{table}[ht]
+\centering
+\caption{Datasets}
+\label{tab:datasets}
+\begin{tabular}{|l|c|c|l|}
+\hline
+\textbf{Dataset} & \textbf{Entities} & \textbf{Attributes} & \textbf{Data Format} \\ \hline
+Drugs@FDA        & [Count]          & [Count]             & CSV                  \\ \hline
+EMA Medicines    & [Count]          & [Count]             & Excel                \\ \hline
+Wikidata         & [Count]          & [Count]             & JSON/XML             \\ \hline
+\end{tabular}
+\end{table}
+
+\subsection{Integrated schema and overlap with input schemata}
+\begin{table}[ht]
+\centering
+\caption{Attribute Intersection with Integrated Schema}
+\label{tab:intersection}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Integrated Attribute} & \textbf{Drugs@FDA} & \textbf{EMA Medicines} & \textbf{Wikidata} \\ \hline
+Active Substance Name         & X                  & X                      & X                 \\ \hline
+[Attribute 2]                 & [X]                & [X]                    & [X]               \\ \hline
+[Attribute 3]                 & [X]                & [X]                    & [X]               \\ \hline
+[Attribute 4]                 & [X]                & [X]                    & [X]               \\ \hline
+[Attribute 5 (Must share!)]   & [X]                & [X]                    & [X]               \\ \hline
+[List Attribute (e.g. Brands)]& [X]                & [X]                    & [X]               \\ \hline
+\end{tabular}
+\end{table}
+
+\subsection{Why enough entities are likely contained in multiple datasets}
+
+\end{document}
