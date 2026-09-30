@@ -216,3 +216,13 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Project Data Limits
+data/1_raw/*
+data/2_translated/*
+data/3_fused/*
+
+# Keep the directories themselves
+!data/1_raw/.gitkeep
+!data/2_translated/.gitkeep
+!data/3_fused/.gitkeep
