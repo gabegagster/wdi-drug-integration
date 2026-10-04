@@ -54,7 +54,7 @@
 \title{Pharmaceutical Drug Integration: Linking US and EU Approval Data}
 \author{
   Gabriel Himmelein (1649181)\\
-  Özlem Ölçer\\
+  Özlem Ölçer (2265825)\\
   Anatole Lobenko (2187322)\\
   Hai\\
   Thu Huyen Trang Trinh (2111810)
@@ -70,8 +70,21 @@
 \section{Brief description of use case}
 % ============================================================
 
-% TODO: describe the use case (goal, target users, questions the
-% integrated dataset should answer).
+This project aims to build a unified view of approved pharmaceutical drugs in the United
+States and the European Union, enabling researchers and analysts to query regulatory
+status, approval history, and product attributes across both markets from a single integrated data set. To achieve this, we combine data from three complementary sources.
+Drugs@FDA is the FDA's official database of US-approved drugs. EMA Medicines is
+the European Medicines Agency's register of EU-authorised medicines. The openFDA
+NDC Directory is a supplementary US drug listing with broader product coverage. The
+central entity is the active substance, the pharmacologically active ingredient in a drug
+product. Active substances serve as a natural integration key because they persist across
+different brand names, manufacturers, regulatory jurisdictions, and formulations. The
+same substance can even carry different names across regions, as with paracetamol in
+the EU and acetaminophen in the US. Beyond regional synonyms, biosimilars carry
+manufacturer-specific suffixes that further complicate direct matching. Resolving these
+naming variations through identity resolution is therefore a central task of the project,
+ultimately producing one clean record per active substance with consolidated attributes
+from all three sources.
 
 % ============================================================
 \section{How the datasets fulfill the requirements}
@@ -498,13 +511,29 @@ Not authorised & -- & Refused, withdrawn application & -- \\
 \subsection{Why enough entities are likely contained in multiple datasets}
 % ============================================================
 
+The three datasets collectively cover a large and overlapping portion of the global
+pharmaceutical market. Both Drugs@FDA and EMA Medicines focus on formally approved
+drugs, meaning that any substance that has received regulatory clearance in both the US and
+EU will appear in both sources by definition. The openFDA NDC Directory adds further
+breadth as a comprehensive US product listing that includes both approved and marketed
+drugs.
+
 Exact normalized \texttt{name + active substance} matching currently
 identifies \textbf{428 shared FDA--EMA entities}, while normalized-name
-overlap reaches \textbf{752}. The required
-\textbf{$\geq 1,000$ shared entities} has therefore not yet been
-demonstrated. The third dataset should consequently provide substantial
-overlap with FDA or EMA and preferably contain active-substance
-information together with additional shared regulatory attributes.
+overlap reaches \textbf{752}. Therefore, the required
+\textbf{$\geq 1,000$ shared entities} have not yet been demonstrated. The third
+data set should, consequently, provide substantial overlap with the FDA or EMA
+and preferably contain active-substance information together with additional shared
+regulatory attributes.
+
+As the larger of the two US sources, the openFDA NDC Directory is well positioned
+to fill the remaining gap. Since both FDA sources describe US-marketed products,
+their overlap is structurally guaranteed. Even a conservative 30\% hit rate against
+Drugs@FDA entries would yield over 1,000 confirmed matches between the two US
+sources alone. Additionally, similarity-based matching will recover pairs that exact
+normalization misses, such as salt-form variants and biosimilar suffixes. Combining
+exact and approximate matching across all three sources, reaching 1,000 overlapping
+entities is a well-grounded expectation.
 
 % ============================================================
 % SOURCES
