@@ -51,7 +51,7 @@
 \subject{
   Web Data Integration
   \\ Project Outline} 
-\title{Pharmaceutical Drug Data}
+\title{Pharmaceutical Drug Integration: Linking US and EU Approval Data}
 \author{
   Gabriel Himmelein (1649181)\\
   Özlem Ölçer\\
@@ -438,26 +438,59 @@ category-specific, or populated only when a particular regulatory event
 occurs.
 }
 
-% ============================================================
 \subsection{Integrated schema and overlap with input schemata}
-% ============================================================
 
-\begin{table}[ht]
+Because the entity is the active ingredient, the integrated schema aggregates product-level information from all three sources into one record per ingredient. It comprises ten attributes (Table~\ref{tab:schema}). Eight appear in at least two input schemata, and four appear in all three.
+
+\texttt{activeIngredientName} is the primary matching key, mapped from ActiveIngredient (Drugs@FDA), Active substance (EMA Medicines) and active ingredients (openFDA NDC). Names vary in spelling, salt form and order within combination products, so entities are identified by the name together with \texttt{brandNames}. \texttt{brandNames} and \texttt{manufacturers} occur in all three datasets and are modelled as lists, since one ingredient is sold under many trade names by many companies. Both are candidates for fusion by voting. \texttt{marketingStatus} assigns each ingredient to one of five classes (Table~\ref{tab:status}), derived from MarketingStatus (Drugs@FDA), Medicine status (EMA Medicines) and presence in openFDA NDC, which lists only currently marketed products. Because the sources cover different markets, this attribute is fused by precedence (Active $>$ Suspended $>$ Pending $>$ Discontinued $>$ Not authorised) rather than by voting. \texttt{dosageForms}, \texttt{routes} and \texttt{strengths} are shared by Drugs@FDA and openFDA NDC. \texttt{applicationNumbers} links the two FDA sources and serves only as a gold standard for evaluating identity resolution.
+
+\texttt{usApprovalDate} and \texttt{euAuthorisationDate} describe distinct regulatory events and stay separate. The NDC marketing start date is not mapped, as it does not indicate approval.
+
+Required transformations include splitting the Drugs@FDA Form field and the NDC active ingredients field (Table~\ref{tab:schema}), breaking down combination products and normalising NDC application numbers.
+
+\begin{table}[htbp]
 \centering
 \caption{Attribute intersection with the integrated schema}
-\label{tab:intersection}
-\small
-\begin{tabular}{lccc}
-\toprule
-\textbf{Integrated Attribute} & \textbf{Drugs@FDA} & \textbf{EMA Medicines} & \textbf{openFDA NDC} \\
-\midrule
-Active Substance Name          & X   & X   & X   \\
-{[Attribute 2]}                & [X] & [X] & [X] \\
-{[Attribute 3]}                & [X] & [X] & [X] \\
-{[Attribute 4]}                & [X] & [X] & [X] \\
-{[Attribute 5 (Must share!)]}  & [X] & [X] & [X] \\
-{[List Attribute (e.g. Brands)]} & [X] & [X] & [X] \\
-\bottomrule
+\label{tab:schema}
+\scriptsize
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+\textbf{Integrated attribute} & \textbf{Type} & \textbf{Drugs@FDA} & \textbf{EMA Medicines} & \textbf{openFDA NDC} \\
+\hline
+\texttt{activeIngredientName} & string & ActiveIngredient & Active substance / INN & active ingredients (name)\textsuperscript{b} \\
+\texttt{brandNames} & list (string) & DrugName & Name of medicine & brand name \\
+\texttt{manufacturers} & list (string) & SponsorName & MA holder & manufacturer \\
+\texttt{marketingStatus} & string (categorical) & MarketingStatus & Medicine status & listing presence \\
+\texttt{dosageForms} & list (string) & Form (part 1)\textsuperscript{a} & -- & dosage form \\
+\texttt{routes} & list (string) & Form (part 2)\textsuperscript{a} & -- & route \\
+\texttt{strengths} & list (string) & Strength & -- & active ingredients (strength)\textsuperscript{b} \\
+\texttt{applicationNumbers} & list (string) & ApplNo & -- & application number \\
+\texttt{usApprovalDate} & date & SubmissionStatusDate & -- & -- \\
+\texttt{euAuthorisationDate} & date & -- & Marketing authorisation date & -- \\
+\hline
+\end{tabular}
+
+\smallskip
+\parbox{\linewidth}{\scriptsize
+\textsuperscript{a} Drugs@FDA stores dosage form and route in one field, separated by a semicolon (e.g., ``TABLET;ORAL''); part 1 maps to \texttt{dosageForms}, part 2 to \texttt{routes}. Multiple routes after the semicolon are split on commas.\\
+\textsuperscript{b} openFDA NDC stores each active ingredient as a name--strength pair; the name maps to \texttt{activeIngredientName}, the strength to \texttt{strengths}.}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{Mapping of source values to \texttt{marketingStatus} classes}
+\label{tab:status}
+\scriptsize
+\begin{tabular}{|l|l|l|l|}
+\hline
+\textbf{Class} & \textbf{Drugs@FDA} & \textbf{EMA Medicines} & \textbf{openFDA NDC} \\
+\hline
+Active & Prescription, Over-the-counter & Authorised & listed product \\
+Suspended & -- & Suspended & -- \\
+Pending & None (Tentative Approval) & Opinion adopted, EC decision pending & -- \\
+Discontinued & Discontinued & Withdrawn, expired, revoked, lapsed & -- \\
+Not authorised & -- & Refused, withdrawn application & -- \\
+\hline
 \end{tabular}
 \end{table}
 
