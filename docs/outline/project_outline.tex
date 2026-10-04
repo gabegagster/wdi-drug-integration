@@ -14,8 +14,21 @@
 \usepackage{algorithmic}
 \usepackage{csquotes}
 \renewcommand{\algorithmiccomment}[1]{\hfill\textit{// #1}}
-\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage[usenames,dvipsnames,table]{xcolor}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{xurl}
 \usepackage[colorlinks,citecolor=Green]{hyperref} % you may change/remove the colors
+
+% dataset overview table helpers
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash\hspace{0pt}}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\definecolor{TableHeader}{RGB}{0,51,102}
+\definecolor{LightTable}{RGB}{235,241,248}
+\definecolor{Missing}{RGB}{192,0,0}
+\newcommand{\tablegroup}[1]{\textbf{#1}\ }
+\setlength{\emergencystretch}{3em}
+\newcommand{\miss}[1]{#1\textsuperscript{\textcolor{Missing}{**}}}
 \usepackage{lipsum} % you do not need this
 
 % chicago citation style
@@ -44,7 +57,7 @@
   Özlem Ölçer\\
   Anatole Lobenko (2187322)\\
   Hai\\
-  Trang
+  Thu Huyen Trang Trinh (2111810)
 } \date{October 6, 2026}
 \publishers{{\small Submitted to}\\
   Data and Web Science Group\\
@@ -53,41 +66,432 @@
   University of Mannheim\\}
 \maketitle
 
+% ============================================================
 \section{Brief description of use case}
+% ============================================================
 
+% TODO: describe the use case (goal, target users, questions the
+% integrated dataset should answer).
+
+% ============================================================
 \section{How the datasets fulfill the requirements}
+% ============================================================
 
 \subsection{Schema and basic profile of each dataset}
+
+Table~\ref{tab:datasets} summarises the three input datasets.
+Table~\ref{tab:overview} lists the full attribute sets of Drugs@FDA and
+EMA Medicines.
+
 \begin{table}[ht]
 \centering
-\caption{Datasets}
+\caption{Overview of the input datasets}
 \label{tab:datasets}
-\begin{tabular}{|l|c|c|l|}
-\hline
-\textbf{Dataset} & \textbf{Entities} & \textbf{Attributes} & \textbf{Data Format} \\ \hline
-Drugs@FDA        & [Count]          & [Count]             & CSV                  \\ \hline
-EMA Medicines    & [Count]          & [Count]             & Excel                \\ \hline
-Wikidata         & [Count]          & [Count]             & JSON/XML             \\ \hline
+\begin{tabular}{lrrl}
+\toprule
+\textbf{Dataset} & \textbf{Entities} & \textbf{Attributes} & \textbf{Data Format} \\
+\midrule
+Drugs@FDA        & 51,864 products  & 37                  & TXT/TSV (12 tables)  \\
+EMA Medicines    & 2,746 medicines  & 39                  & XLSX                 \\
+openFDA NDC      & 138,209 products & 10 (selected)       & JSON $\rightarrow$ CSV \\
+\bottomrule
 \end{tabular}
 \end{table}
 
+% ------------------------------------------------------------
+\subsubsection{Drugs@FDA}
+% ------------------------------------------------------------
+
+Drugs@FDA contains \textbf{51,864 product records} across
+\textbf{29,377 applications}. The product table contains only
+\textbf{8,388 distinct drug names} and \textbf{3,355 distinct
+active-ingredient strings}, showing substantial reuse across products.
+Consequently, \textbf{DrugName + ActiveIngredient} provides a more
+appropriate starting point for entity linkage than DrugName alone.
+
+The dataset is strongly imbalanced. Among applications,
+\textbf{78.3\% are ANDAs}, \textbf{20.1\% NDAs}, and
+\textbf{1.7\% BLAs}. Among 194,004 submission records,
+\textbf{85.6\% are supplemental}, while \textbf{99.4\%} have submission
+status AP.
+
+\begin{sloppypar}
+Three attributes exceed 30\% missingness:
+\texttt{ApplPublicNotes} (\textbf{99.99\%}),
+\texttt{SubmissionsPublicNotes} (\textbf{99.83\%}), and
+\texttt{ReviewPriority} (\textbf{41.73\%}). The first two are optional
+regulatory note fields and are therefore populated only in exceptional
+cases. Missing \texttt{ReviewPriority} values cannot be explained by
+submission type alone: missingness remains high for both original
+submissions (\textbf{49.5\%}) and supplements (\textbf{40.4\%}).
+Overall, ReviewPriority consists of \textbf{49.3\% Standard},
+\textbf{5.8\% Priority}, \textbf{3.2\% other codes}, and
+\textbf{41.7\% missing values}.
+\end{sloppypar}
+
+% ------------------------------------------------------------
+\subsubsection{EMA Medicines}
+% ------------------------------------------------------------
+
+The EMA dataset contains \textbf{2,746 medicine records} and
+\textbf{39 attributes}, with no duplicate rows. It is predominantly
+composed of human medicines (\textbf{85.6\%}). Medicine status is also
+imbalanced: \textbf{68.5\% are currently authorised},
+\textbf{15.4\% withdrawn}, and \textbf{10.4\% represent withdrawn
+applications}. Fifty medicine names occur more than once, again showing
+that names alone do not uniquely identify entities.
+
+Twelve EMA attributes exceed 30\% missingness. Most of this is
+\textbf{structural rather than erroneous}. Veterinary attributes are
+inapplicable to human medicines, while refusal, withdrawal, suspension,
+and rolling-review dates exist only if the respective regulatory event
+occurred. Two more broadly applicable attributes require closer
+inspection: \texttt{Opinion adopted date} is \textbf{46.2\% missing},
+and \texttt{Revision number} is \textbf{30.2\% missing}.
+
+% ------------------------------------------------------------
+\subsubsection{openFDA NDC Directory}
+% ------------------------------------------------------------
+
+The openFDA National Drug Code (NDC) Directory contains product
+listing information submitted to the FDA by drug labelers.
+The dataset was downloaded in JSON format and converted to CSV.
+It contains 138,209 product records and 7,682 distinct active
+ingredient entries. The listing includes both FDA-approved and
+unapproved products. Inclusion in the directory does not imply
+FDA approval.
+
+Attributes: product NDC, brand and generic names, active ingredients,
+manufacturer, dosage form, route, marketing start date, marketing
+category, and application number. Marketing start date is not
+necessarily the approval date.
+
+Across the 10 selected columns, 113,976 of 1,382,090 values are
+missing, which is approximately 8.25\%, assuming the remaining
+columns have no missing values. The missing values by column:
+
+\begin{itemize}
+    \item \texttt{brand\_name}: 21,716 (15.71\%)
+    \item \texttt{generic\_name}: 3 (less than 0.01\%)
+    \item \texttt{active\_ingredients}: 2,521 (1.82\%)
+    \item \texttt{manufacturer}: 28,052 (20.30\%)
+    \item \texttt{route}: 23,596 (17.07\%)
+    \item \texttt{application\_number}: 38,088 (27.56\%)
+\end{itemize}
+
+% ------------------------------------------------------------
+\subsubsection{Attribute overview}
+% ------------------------------------------------------------
+
+Attributes marked with
+\textsuperscript{\textcolor{Missing}{**}}
+have more than 30\% missing values.
+
+\begingroup
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.18}
+\setlength{\LTleft}{0pt}
+\setlength{\LTright}{0pt}
+\let\oldunderscore\_
+\renewcommand{\_}{\oldunderscore\allowbreak}
+
+\begin{longtable}{
+    L{0.16\dimexpr\textwidth-12\tabcolsep}
+    L{0.16\dimexpr\textwidth-12\tabcolsep}
+    L{0.12\dimexpr\textwidth-12\tabcolsep}
+    C{0.12\dimexpr\textwidth-12\tabcolsep}
+    C{0.11\dimexpr\textwidth-12\tabcolsep}
+    L{0.33\dimexpr\textwidth-12\tabcolsep}
+}
+
+\caption{Attributes of Drugs@FDA and EMA Medicines}
+\label{tab:overview}\\
+\toprule
+\rowcolor{TableHeader}
+\textcolor{white}{\textbf{Dataset}} &
+\textcolor{white}{\textbf{Source (*)}} &
+\textcolor{white}{\textbf{Format}} &
+\textcolor{white}{\textbf{\# Entities}} &
+\textcolor{white}{\textbf{\# Attributes}} &
+\textcolor{white}{\textbf{List of attributes (**)}}
+\\
+\midrule
+\endfirsthead
+
+\toprule
+\rowcolor{TableHeader}
+\textcolor{white}{\textbf{Dataset}} &
+\textcolor{white}{\textbf{Source (*)}} &
+\textcolor{white}{\textbf{Format}} &
+\textcolor{white}{\textbf{\# Entities}} &
+\textcolor{white}{\textbf{\# Attributes}} &
+\textcolor{white}{\textbf{List of attributes (**)}}
+\\
+\midrule
+\endhead
+
+% ------------------------------------------------------------
+% FDA
+% ------------------------------------------------------------
+
+\rowcolor{LightTable}
+\textbf{Drugs@FDA}
+&
+Official U.S. FDA Drugs@FDA Data Files. Downloaded and extracted into
+12 relational text tables.
+&
+TXT/TSV
+
+12 relational tables
+&
+51,864 products
+
+29,377 applications
+&
+56 table-columns
+
+37 unique names
+&
+\tablegroup{ActionTypes\_Lookup:}
+ActionTypes\_LookupID,
+ActionTypes\_LookupDescription,
+SupplCategoryLevel1Code,
+SupplCategoryLevel2Code.
+\\
+\rowcolor{LightTable}
+& & & & &
+\tablegroup{ApplicationDocs:}
+ApplicationDocsID,
+ApplicationDocsTypeID,
+ApplNo,
+SubmissionType,
+SubmissionNo,
+ApplicationDocsTitle,
+ApplicationDocsURL,
+ApplicationDocsDate.
+\\
+\rowcolor{LightTable}
+& & & & &
+\tablegroup{Applications:}
+ApplNo,
+ApplType,
+\miss{ApplPublicNotes},
+SponsorName.
+\\
+\rowcolor{LightTable}
+& & & & &
+\tablegroup{ApplicationsDocsType\_Lookup:}
+ApplicationDocsType\_Lookup\_ID,
+ApplicationDocsType\_Lookup\_Description.
+\\
+\rowcolor{LightTable}
+& & & & &
+\tablegroup{Join\_Submission\_ActionTypes\_Lookup:}
+SubmissionType,
+j\_submissionActionTypeID,
+ApplNo,
+SubmissionNo,
+ActionTypes\_LookupID.
+\\
+\rowcolor{LightTable}
+& & & & &
+\tablegroup{MarketingStatus:}
+MarketingStatusID,
+ApplNo,
+ProductNo.
+\\
+\rowcolor{LightTable}
+& & & & &
+\tablegroup{MarketingStatus\_Lookup:}
+MarketingStatusID,
+MarketingStatusDescription.
+\\
+\rowcolor{LightTable}
+& & & & &
+\tablegroup{Products:}
+ApplNo,
+ProductNo,
+Form,
+Strength,
+ReferenceDrug,
+DrugName,
+ActiveIngredient,
+ReferenceStandard.
+\\
+\rowcolor{LightTable}
+& & & & &
+\tablegroup{SubmissionClass\_Lookup:}
+SubmissionClassCodeID,
+SubmissionClassCode,
+SubmissionClassCodeDescription.
+\\
+\rowcolor{LightTable}
+& & & & &
+\tablegroup{SubmissionPropertyType:}
+ApplNo,
+SubmissionType,
+SubmissionNo,
+SubmissionPropertyTypeCode,
+SubmissionPropertyTypeID.
+\\
+\rowcolor{LightTable}
+& & & & &
+\tablegroup{Submissions:}
+ApplNo,
+SubmissionClassCodeID,
+SubmissionType,
+SubmissionNo,
+SubmissionStatus,
+SubmissionStatusDate,
+\miss{SubmissionsPublicNotes},
+\miss{ReviewPriority}.
+\\
+\rowcolor{LightTable}
+& & & & &
+\tablegroup{TE:}
+ApplNo,
+ProductNo,
+MarketingStatusID,
+TECode.
+\\
+
+\midrule
+
+% ------------------------------------------------------------
+% EMA
+% ------------------------------------------------------------
+
+\textbf{EMA Medicines}
+&
+Official European Medicines Agency ``Download medicine data'' dataset.
+Imported from the official XLSX file.
+&
+XLSX
+&
+2,746 medicines
+&
+39
+&
+Category;
+Name of medicine;
+EMA product number;
+Medicine status;
+\miss{Opinion status};
+Latest procedure affecting product information;
+International non-proprietary name (INN) / common name;
+Active substance;
+Therapeutic area (MeSH);
+\miss{Species (veterinary)};
+Patient safety;
+ATC code (human);
+\miss{ATCvet code (veterinary)};
+Pharmacotherapeutic group (human);
+\miss{Pharmacotherapeutic group (veterinary)};
+Therapeutic indication;
+Accelerated assessment;
+Additional monitoring;
+Advanced therapy;
+Biosimilar;
+Conditional approval;
+Exceptional circumstances;
+Generic;
+Orphan medicine;
+PRIME: priority medicine;
+Marketing authorisation developer / applicant / holder;
+European Commission decision date;
+\miss{Start of rolling review date};
+\miss{Start of evaluation date};
+\miss{Opinion adopted date};
+\miss{Withdrawal of application date};
+Marketing authorisation date;
+\miss{Refusal of marketing authorisation date};
+\miss{Withdrawal / expiry / revocation / lapse of marketing authorisation date};
+\miss{Suspension of marketing authorisation date};
+\miss{Revision number};
+First published date;
+Last updated date;
+Medicine URL.
+\\
+
+\bottomrule
+\end{longtable}
+\endgroup
+
+\medskip
+
+{\small
+\textbf{(*) Source.}
+Drugs@FDA was obtained from the official FDA Drugs@FDA Data Files
+download and extracted into its 12 relational tables. EMA medicine data
+was obtained from the official EMA downloadable medicine-data
+spreadsheet.
+
+\medskip
+
+\textbf{(**) Missingness.}
+Attributes marked with
+\textsuperscript{\textcolor{Missing}{**}}
+contain more than 30\% missing values. High missingness does not
+necessarily indicate poor data quality: some attributes are optional,
+category-specific, or populated only when a particular regulatory event
+occurs.
+}
+
+% ============================================================
 \subsection{Integrated schema and overlap with input schemata}
+% ============================================================
+
 \begin{table}[ht]
 \centering
-\caption{Attribute Intersection with Integrated Schema}
+\caption{Attribute intersection with the integrated schema}
 \label{tab:intersection}
-\begin{tabular}{|l|c|c|c|}
-\hline
-\textbf{Integrated Attribute} & \textbf{Drugs@FDA} & \textbf{EMA Medicines} & \textbf{Wikidata} \\ \hline
-Active Substance Name         & X                  & X                      & X                 \\ \hline
-[Attribute 2]                 & [X]                & [X]                    & [X]               \\ \hline
-[Attribute 3]                 & [X]                & [X]                    & [X]               \\ \hline
-[Attribute 4]                 & [X]                & [X]                    & [X]               \\ \hline
-[Attribute 5 (Must share!)]   & [X]                & [X]                    & [X]               \\ \hline
-[List Attribute (e.g. Brands)]& [X]                & [X]                    & [X]               \\ \hline
+\small
+\begin{tabular}{lccc}
+\toprule
+\textbf{Integrated Attribute} & \textbf{Drugs@FDA} & \textbf{EMA Medicines} & \textbf{openFDA NDC} \\
+\midrule
+Active Substance Name          & X   & X   & X   \\
+{[Attribute 2]}                & [X] & [X] & [X] \\
+{[Attribute 3]}                & [X] & [X] & [X] \\
+{[Attribute 4]}                & [X] & [X] & [X] \\
+{[Attribute 5 (Must share!)]}  & [X] & [X] & [X] \\
+{[List Attribute (e.g. Brands)]} & [X] & [X] & [X] \\
+\bottomrule
 \end{tabular}
 \end{table}
 
+% ============================================================
 \subsection{Why enough entities are likely contained in multiple datasets}
+% ============================================================
+
+Exact normalized \texttt{name + active substance} matching currently
+identifies \textbf{428 shared FDA--EMA entities}, while normalized-name
+overlap reaches \textbf{752}. The required
+\textbf{$\geq 1,000$ shared entities} has therefore not yet been
+demonstrated. The third dataset should consequently provide substantial
+overlap with FDA or EMA and preferably contain active-substance
+information together with additional shared regulatory attributes.
+
+% ============================================================
+% SOURCES
+% ============================================================
+
+\section*{Sources}
+\addcontentsline{toc}{section}{Sources}
+
+\begin{itemize}
+    \item U.S. Food and Drug Administration,
+    \emph{Drugs@FDA Data Files}.\\
+    \url{https://www.fda.gov/drugs/drug-approvals-and-databases/drugsfda-data-files}
+
+    \item European Medicines Agency,
+    \emph{Download medicine data}.\\
+    \url{https://www.ema.europa.eu/en/medicines/download-medicine-data}
+
+    \item U.S. Food and Drug Administration,
+    \emph{openFDA NDC Directory}.\\
+    \url{https://open.fda.gov/data/ndc/}
+\end{itemize}
 
 \end{document}
