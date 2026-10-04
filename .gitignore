@@ -226,3 +226,18 @@ data/3_fused/*
 !data/1_raw/.gitkeep
 !data/2_translated/.gitkeep
 !data/3_fused/.gitkeep
+
+# macOS
+.DS_Store
+
+# LaTeX build files
+*.aux
+*.fdb_latexmk
+*.fls
+*.out
+*.synctex.gz
+*.toc
+*.lof
+*.lot
+*.bbl
+*.blg
