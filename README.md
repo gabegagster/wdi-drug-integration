@@ -5,7 +5,7 @@ This repository contains the codebase and documentation for our Web Data Integra
 ## Datasets
 1. **Drugs@FDA:** US approved drugs (CSV)
 2. **EMA Medicines:** EU approved drugs (Excel)
-3. **Wikidata:** Drug data extracted via SPARQL
+3. **OpenFDA - NDC:** Larger US drug datasource (JSON)
 
 ## Project Phases
 * **Phase I: Data Selection and Translation:** Profiling raw data, handling missing values, and mapping all three sources to a single integrated JSON/XML schema.
