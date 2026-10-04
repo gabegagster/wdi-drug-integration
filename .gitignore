@@ -219,6 +219,9 @@ __marimo__/
 
 # Project Data
 # Raw and translated data are versioned for this project.
+# The compressed archives are versioned instead of these extracted sources.
+data/1_raw/US Drug/
+data/1_raw/EU Drug.csv
 data/3_fused/*
 
 # Keep the ignored fused-data directory itself.
