@@ -36,7 +36,7 @@
 \makeatother
 
 \subject{Web Data Integration \\ Project Outline} 
-\title{Pharmaceutical Drug Integration: Linking US and EU Approval Data}
+\title{Pharmaceutical Drug Integration: Linking US, EU and Canadian Approval Data}
 \author{
   Gabriel Himmelein (1649181)\\
   Özlem Ölçer (2265825)\\
@@ -56,16 +56,16 @@
 % ============================================================
 
 This project aims to build a unified view of approved pharmaceutical drugs in the United
-States and the European Union, enabling researchers and analysts to query regulatory
-status, approval history, and product attributes across both markets from a single integrated data set. To achieve this, we combine data from three complementary sources.
+States, the European Union and Canada, enabling researchers and analysts to query regulatory
+status, approval history, and product attributes across these markets from a single integrated data set. To achieve this, we combine data from three complementary sources.
 Drugs@FDA is the FDA's official database of US-approved drugs. EMA Medicines is
-the European Medicines Agency's register of EU-authorised medicines. The openFDA
-NDC Directory is a supplementary US drug listing with broader product coverage. The
+the European Medicines Agency's register of EU-authorised medicines. The Health
+Canada Drug Product Database (DPD) lists all drug products authorised in Canada. The
 central entity is the active substance, the pharmacologically active ingredient in a drug
 product. Active substances serve as a natural integration key because they persist across
 different brand names, manufacturers, regulatory jurisdictions, and formulations. The
 same substance can even carry different names across regions, as with paracetamol in
-the EU and acetaminophen in the US. Beyond regional synonyms, biosimilars carry
+the EU and acetaminophen in the US and Canada. Beyond regional synonyms, biosimilars carry
 manufacturer-specific suffixes that further complicate direct matching. Resolving these
 naming variations through identity resolution is therefore a central task of the project,
 ultimately producing one clean record per active substance with consolidated attributes
@@ -90,7 +90,7 @@ Drugs@FDA & U.S. FDA & TXT/TSV & 51,864 & 56 & ApplNo, ProductNo, Form, Strength
 \hline
 EMA Medicines & EMA & XLSX & 2,746 & 39 & Name of medicine, EMA product number, Medicine status, \miss{Opinion status}, Active substance, \miss{Species (vet.)}, ATC code, Biosimilar, Generic, Orphan medicine, \miss{Opinion adopted date}, \miss{Revision number}, \dots \\
 \hline
-openFDA NDC & U.S. FDA & JSON$\rightarrow$CSV & 138,209 & 10 & product NDC, brand name, generic name, active ingredients, manufacturer, dosage form, route, marketing start date, marketing category, application number \\
+DPD & Health Canada & TXT/CSV & 42,042 & 87 & DIN, brand name, ingredient, strength, \miss{dosage unit}, company name, class, ATC code, schedule, status, status date, form, route, \miss{descriptor}, \dots \\
 \hline
 \end{tabularx}
 \smallskip
@@ -114,13 +114,13 @@ Drugs@FDA contains 51,864 product records across 29,377 applications. The produc
 The EMA dataset contains 2,746 medicine records and 1,870 distinct active ingredient, with no duplicate rows. It is predominantly composed of human medicines (85.6\%). Medicine status is also imbalanced: 68.5\% are currently authorised, 15.4\% withdrawn, and 10.4\% represent withdrawn applications. Fifty medicine names occur more than once, again showing that names alone do not uniquely identify entities. Twelve EMA attributes exceed 30\% missingness, mostly due to structural reasons (e.g., veterinary attributes being inapplicable to human medicines). 
 
 % ------------------------------------------------------------
-\subsubsection*{openFDA NDC Directory}
+\subsubsection*{Health Canada Drug Product Database (DPD)}
 % ------------------------------------------------------------
-The openFDA National Drug Code (NDC) Directory contains product listing information submitted to the FDA by drug labelers. It contains 138,209 product records and 7,682 distinct active ingredient entries. The listing includes both FDA-approved and unapproved products. Across the 10 selected columns, 113,976 of 1,382,090 values are missing (approx. 8.25\%). Notable missingness includes \texttt{application\_number} (27.56\%), \texttt{manufacturer} (20.30\%), and \texttt{route} (17.07\%).
+The Health Canada Drug Product Database lists all drug products authorised in Canada in 12 tables linked by \texttt{DRUG\_CODE}. Its 58,137 products (DINs) form 42,042 medicines (brand name + active substances) with 5,763 distinct active ingredients. 87.7\% are human products; 66.5\% are cancelled and 23.0\% marketed. Ingredients follow a \enquote{base (salt)} pattern, e.g.\ \texttt{ESOMEPRAZOLE (ESOMEPRAZOLE MAGNESIUM TRIHYDRATE)}. Notable missingness: ATC code (21.47\%) and first marketed date (11.67\%).
 
 \subsection{Integrated schema and overlap with input schemata}
 
-Because the entity is the active ingredient, the integrated schema aggregates product-level information from all three sources into one record per ingredient. Required transformations include splitting the Drugs@FDA Form field and the NDC active ingredients field, breaking down combination products, and normalising NDC application numbers. The integrated schema comprises 10 attributes (Table~\ref{tab:schema}).
+Because the entity is the active ingredient, the integrated schema aggregates product-level information from all three sources into one record per ingredient. Required transformations include splitting the Drugs@FDA Form field, separating the DPD \enquote{base (salt)} ingredient names, and breaking down combination products. The integrated schema comprises 15 attributes (Table~\ref{tab:schema}).
 
 \begin{table}[H]
 \centering
@@ -131,28 +131,32 @@ Because the entity is the active ingredient, the integrated schema aggregates pr
 \hline
 \textbf{Attribute name} & \textbf{Attribute type} & \textbf{Datasets in which the attribute is found} \\
 \hline
-\texttt{activeIngredientName} & string & Drugs@FDA, EMA Medicines, openFDA NDC \\
-\texttt{brandNames} & list (string) & Drugs@FDA, EMA Medicines, openFDA NDC \\
-\texttt{manufacturers} & list (string) & Drugs@FDA, EMA Medicines, openFDA NDC \\
-\texttt{marketingStatus} & string (categorical) & Drugs@FDA, EMA Medicines, openFDA NDC \\
-\texttt{dosageForms} & list (string) & Drugs@FDA, openFDA NDC \\
-\texttt{routes} & list (string) & Drugs@FDA, openFDA NDC \\
-\texttt{strengths} & list (string) & Drugs@FDA, openFDA NDC \\
-\texttt{applicationNumbers} & list (string) & Drugs@FDA, openFDA NDC \\
+\texttt{activeIngredientName} & string & Drugs@FDA, EMA Medicines, DPD \\
+\texttt{brandNames} & list (string) & Drugs@FDA, EMA Medicines, DPD \\
+\texttt{manufacturers} & list (string) & Drugs@FDA, EMA Medicines, DPD \\
+\texttt{marketingStatus} & string (categorical) & Drugs@FDA, EMA Medicines, DPD \\
+\texttt{productClass} & string (categorical) & Drugs@FDA (derived), EMA Medicines, DPD \\
+\texttt{atcCode} & string & EMA Medicines, DPD \\
+\texttt{biosimilar} & boolean & EMA Medicines, DPD \\
+\texttt{generic} & boolean & Drugs@FDA (derived), EMA Medicines \\
+\texttt{dosageForms} & list (string) & Drugs@FDA, DPD \\
+\texttt{routes} & list (string) & Drugs@FDA, DPD \\
+\texttt{strengths} & list (string) & Drugs@FDA, DPD \\
 \texttt{usApprovalDate} & date & Drugs@FDA \\
 \texttt{euAuthorisationDate} & date & EMA Medicines \\
+\texttt{caApprovalDate} & date & DPD \\
 \hline
 \end{tabular}
 \end{table}
 
-\texttt{activeIngredientName} is the primary matching key. \texttt{brandNames} and \texttt{manufacturers} occur in all three datasets and are modelled as lists (fusion by voting). \texttt{marketingStatus} assigns each ingredient to one of five classes, derived from source-specific status flags (fused by precedence: Active $>$ Suspended $>$ Pending $>$ Discontinued $>$ Not authorised). \texttt{usApprovalDate} and \texttt{euAuthorisationDate} describe distinct regulatory events and stay separate.
+\texttt{activeIngredientName} is the primary matching key. \texttt{brandNames} and \texttt{manufacturers} occur in all three datasets and are modelled as lists (fusion by voting). \texttt{marketingStatus} assigns each ingredient to one of five classes, derived from source-specific status flags (fused by precedence: Active $>$ Suspended $>$ Pending $>$ Discontinued $>$ Not authorised). \texttt{usApprovalDate}, \texttt{euAuthorisationDate} and \texttt{caApprovalDate} describe distinct regulatory events and stay separate. \texttt{productClass} is Human for all Drugs@FDA records and serves as a blocking key; \texttt{generic} is derived from the Drugs@FDA application type (ANDA). \texttt{atcCode} is language-independent and helps match synonyms such as paracetamol and acetaminophen (both \texttt{N02BE01}).
 
 % ============================================================
 \subsection{Entity Count Requirement}
 % ============================================================
 
-The three datasets collectively cover a broad and overlapping part of the pharmaceutical market. Drugs@FDA and EMA Medicines focus on formally approved drugs, so substances approved in both the US and EU are represented in both sources. The openFDA NDC Directory adds coverage of US product listings, including approved and marketed products. Matching normalized \texttt{name + active substance} identifies 428 entities shared by the FDA and EMA, while matching normalized names alone identifies 752; neither result demonstrates the required minimum of 1,000 shared entities.
+The three datasets cover overlapping parts of the pharmaceutical market: each registers the medicines approved by its own regulator, so many medicines are marketed in two or all three regions. Modelling the medicine as brand name + active substance(s), we build a key \texttt{medicine\_id} per medicine (upper case, strengths removed from the brand name, salt words removed from the substances, e.g.\ \texttt{NEXIUM|ESOMEPRAZOLE}). Matching this key exactly, 1,880 medicines appear in at least two datasets and 408 in all three. Pairwise, Drugs@FDA and the DPD share 1,470 medicines, EMA and the DPD 701, and Drugs@FDA and EMA 525.
 
-The openFDA NDC Directory, the larger US source, could help close this gap. Since both FDA datasets cover US products, substantial overlap between them is expected: a 30\% match rate against Drugs@FDA entries would yield more than 1,000 matches between the US sources alone. Similarity-based matching may also recover pairs missed by exact normalization, including salt-form variants and biosimilar suffixes. 
+Exact matching still misses harder cases. Drugs@FDA lists \texttt{NEXIUM} with \texttt{ESOMEPRAZOLE MAGNESIUM}, the DPD lists \texttt{NEXIUM - 20MG} with \texttt{ESOMEPRAZOLE (ESOMEPRAZOLE MAGNESIUM TRIHYDRATE)}, and EMA lists the over-the-counter \texttt{Nexium Control} (esomeprazole) from a different licence holder.
 
 \end{document}
