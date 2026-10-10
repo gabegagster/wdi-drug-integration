@@ -5,7 +5,7 @@ This repository contains the codebase and documentation for our Web Data Integra
 ## Datasets
 1. **Drugs@FDA:** US approved drugs (CSV)
 2. **EMA Medicines:** EU approved drugs (Excel)
-3. **OpenFDA - NDC:** Larger US drug datasource (JSON)
+3. **Health Canada DPD:** Canadian Drug Product Database (CSV extract, 12 related tables)
 
 ## Project Phases
 * **Phase I: Data Selection and Translation:** Profiling raw data, handling missing values, and mapping all three sources to a single integrated JSON/XML schema.

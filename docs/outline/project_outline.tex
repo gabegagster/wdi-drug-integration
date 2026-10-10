@@ -120,7 +120,7 @@ The Health Canada Drug Product Database lists all drug products authorised in Ca
 
 \subsection{Integrated schema and overlap with input schemata}
 
-The integrated entity is the \textbf{Medicine}, defined as one record per brand name and active substance combination. The integrated schema aggregates product-level information from all three sources into one record per medicine. Required transformations include splitting the Drugs@FDA Form field, separating the DPD \enquote{base (salt)} ingredient names, and breaking down combination products. The integrated schema comprises 15 attributes (Table~\ref{tab:schema}).
+Because the entity is the active ingredient, the integrated schema aggregates product-level information from all three sources into one record per ingredient. Required transformations include splitting the Drugs@FDA Form field, separating the DPD \enquote{base (salt)} ingredient names, and breaking down combination products. The integrated schema comprises 15 attributes (Table~\ref{tab:schema}).
 
 \begin{table}[H]
 \centering
@@ -149,7 +149,7 @@ The integrated entity is the \textbf{Medicine}, defined as one record per brand 
 \end{tabular}
 \end{table}
 
-A Medicine is identified by the combination of \texttt{activeIngredientName} and \texttt{brandNames}: neither alone is sufficient, since the same brand name can cover multiple formulations and the same active ingredient appears in hundreds of generics. \texttt{brandNames}, \texttt{manufacturers}, \texttt{dosageForms}, \texttt{routes} and \texttt{strengths} are list-valued attributes (fusion by union); all others are single-valued. \texttt{marketingStatus} assigns each medicine to one of five classes derived from source-specific status flags (fused by precedence: Active $>$ Suspended $>$ Pending $>$ Discontinued $>$ Not authorised). \texttt{usApprovalDate}, \texttt{euAuthorisationDate} and \texttt{caApprovalDate} describe distinct regulatory events and stay separate. \texttt{atcCode} is language-independent and helps match synonyms such as paracetamol and acetaminophen (both \texttt{N02BE01}).
+\texttt{activeIngredientName} is the primary matching key. \texttt{brandNames} and \texttt{manufacturers} occur in all three datasets and are modelled as lists (fusion by voting). \texttt{marketingStatus} assigns each ingredient to one of five classes, derived from source-specific status flags (fused by precedence: Active $>$ Suspended $>$ Pending $>$ Discontinued $>$ Not authorised). \texttt{usApprovalDate}, \texttt{euAuthorisationDate} and \texttt{caApprovalDate} describe distinct regulatory events and stay separate. \texttt{productClass} is Human for all Drugs@FDA records and serves as a blocking key; \texttt{generic} is derived from the Drugs@FDA application type (ANDA). \texttt{atcCode} is language-independent and helps match synonyms such as paracetamol and acetaminophen (both \texttt{N02BE01}).
 
 % ============================================================
 \subsection{Entity Count Requirement}
