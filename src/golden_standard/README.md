@@ -3,7 +3,7 @@
 The script creates medicine pairs from the three XML files in
 `data/4_translated_mapforce`, prepares them for manual labeling, and selects
 a gold-standard set from the reviewed labels. Outputs go to
-`data/golden_standard_pair`.
+`data/5_golden_standard_pair`.
 
 ## Quick start
 
@@ -16,14 +16,14 @@ You can replace `python` with `.venv\Scripts\python.exe`.
   python src/golden_standard/gold_standard.py get-pairs --dataset1 dpd --dataset2 ema --n 500 --seed 42
   ```
 
-  Open `data/golden_standard_pair/gs_dpd_ema_raw.csv`. Fill `match` with `1`
+  Open `data/5_golden_standard_pair/gs_dpd_ema_raw.csv`. Fill `match` with `1`
   for the same medicine or `0` for different medicines. Finish labeling before
   merging and preserve the other columns.
 
 - **Add another batch:**
 
   ```powershell
-  python src/golden_standard/gold_standard.py get-pairs --dataset1 dpd --dataset2 ema --n 500 --seed 99 --exclude data/golden_standard_pair/gs_dpd_ema_raw.csv --output-dir data/golden_standard_pair/round2
+  python src/golden_standard/gold_standard.py get-pairs --dataset1 dpd --dataset2 ema --n 500 --seed 99 --exclude data/5_golden_standard_pair/gs_dpd_ema_raw.csv --output-dir data/5_golden_standard_pair/round2
   ```
 
   Supply all earlier review files through `--exclude` and choose a new seed
@@ -32,19 +32,19 @@ You can replace `python` with `.venv\Scripts\python.exe`.
 - **Merge labeled batches:**
 
   ```powershell
-  python src/golden_standard/gold_standard.py merge --inputs data/golden_standard_pair/gs_dpd_ema_raw.csv data/golden_standard_pair/round2/gs_dpd_ema_raw.csv
+  python src/golden_standard/gold_standard.py merge --inputs data/5_golden_standard_pair/gs_dpd_ema_raw.csv data/5_golden_standard_pair/round2/gs_dpd_ema_raw.csv
   ```
 
 - **Check counts and percentages:**
 
   ```powershell
-  python src/golden_standard/gold_standard.py stats --input data/golden_standard_pair/gs_dpd_ema_unified.csv
+  python src/golden_standard/gold_standard.py stats --input data/5_golden_standard_pair/gs_dpd_ema_unified.csv
   ```
 
 - **Select the final labeled pairs:**
 
   ```powershell
-  python src/golden_standard/gold_standard.py select --input data/golden_standard_pair/gs_dpd_ema_unified.csv --size 500 --seed 42
+  python src/golden_standard/gold_standard.py select --input data/5_golden_standard_pair/gs_dpd_ema_unified.csv --size 500 --seed 42
   ```
 
 Dataset names are `dpd`, `ema`, and `fda`. File names use the order DPD, EMA,

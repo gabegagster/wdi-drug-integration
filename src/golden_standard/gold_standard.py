@@ -16,7 +16,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 XML_DIR = REPO_ROOT / "data" / "4_translated_mapforce"
-OUTPUT_DIR = REPO_ROOT / "data" / "golden_standard_pair"
+OUTPUT_DIR = REPO_ROOT / "data" / "5_golden_standard_pair"
 DATASETS = ("dpd", "ema", "fda")
 FIELDS = (
     "id", "source", "brandName", "activeSubstances", "activeSubstanceCount",
