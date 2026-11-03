@@ -285,9 +285,10 @@ def refactor_main(path, definitions, low_level, source_name):
         return g.user_function(definitions[name], args, x=x, y=y)
 
     jurisdiction = g.constant(source_name, x=500, y=-70)
-    separator = g.constant(";" if source_name == "EMA" else "; ", x=500, y=150)
+    separator = g.constant("; ", x=500, y=150)
     if source_name == "EMA":
-        rows, key, primary, fallback = 100, 103, 105, 113
+        empty = g.constant("", x=500, y=240)
+        rows, key, primary, fallback = 100, 103, 105, empty
         medicine, wrapper, substance, count = 200, 204, 205, 206
         id_target, source_target = 201, 202
     else:
@@ -316,7 +317,8 @@ def refactor_main(path, definitions, low_level, source_name):
         status = call("standardizeRegulatoryStatus", {"raw": 104}, 430)["result"]
         g.connect(status, 208)
         g.connect(call("standardizeProductClass", {"raw": 101}, 530)["result"], 209)
-        g.connect(call("standardizeAtcCodes", {"codes": 106, "additionalCodes": 107}, 630)["result"], 210)
+        atc = g.user_function(low_level["stdAtcCode"], {"raw": 106}, x=650, y=630)["result"]
+        g.connect(atc, 210)
         for i, (field, destination) in enumerate(((109, 211), (108, 212), (110, 213))):
             g.connect(call("yesNoToBoolean", {"value": field}, 740 + i * 100)["result"], destination)
         g.connect(call("parseAuthorisationDate", {"value": 112}, 1040)["result"], 214)

@@ -14,7 +14,7 @@ All paths in this document beginning with `src/` or `data/` are relative to the 
 | Mapping | Input (repository-relative) | Output (repository-relative) | Verified records |
 | :--- | :--- | :--- | ---: |
 | DPD | `data/2_processed/dpd_entities.csv` | `data/4_translated_mapforce/dpd_medicines.xml` | 41,636 |
-| EMA | `data/1_raw/02_eu_ema_medicines/ema_medicines.csv` | `data/4_translated_mapforce/ema_medicines.xml` | 2,689 |
+| EMA | `data/2_processed/ema_entities.csv` | `data/4_translated_mapforce/ema_medicines.xml` | 2,648 |
 
 If functions appear missing, check that both helper files exist and their relative imports resolve before attempting to rewire anything.
 
@@ -161,26 +161,17 @@ Specification only: `fda_mapping.mfd` has not been added to this repository yet.
   * `caStatusDate`: `status_date` (latest status date among contributing products with the best regulatory status, not the earliest `approval_date`).
 
 ### C. EMA Medicines Mapper (`ema_mapping.mfd`)
-* **Source Table:** `data/1_raw/02_eu_ema_medicines/ema_medicines.csv`
+
+* **Source Table:** `data/2_processed/ema_entities.csv`, with one row per normalized brand name and sorted ingredient set, following the DPD pre-consolidated-input pattern.
 * **Output:** `data/4_translated_mapforce/ema_medicines.xml`.
-* **Count and Boolean Flags:** `activeSubstanceCount` is wired with the source `Rows` node as the count's parent context and tokenized active substances as its items. `generic`, `biosimilar`, and `orphanMedicine` use `yesNoToBoolean`, which compares the input with `"Yes"`. The `activeSubstances` wrapper is created once per source row, containing all of that row's substance tokens.
-* **Substance Fallback:** Expose CSV column G (`International non-proprietary name (INN) / common name`) alongside column H (`Active substance`). Apply `normalize-space` and remove empty strings from both values, then use `substitute-missing` to prefer `Active substance` and otherwise use INN/common name. Tokenize the selected value on semicolons for both the substance list and its count. Commas and the word "and" are not separators, so biological preparation descriptions stay intact. This is a general rule, with no medicine-specific overrides or changes to the raw CSV.
-* **Missing Both Fields:** A row filter excludes medicines for which neither field provides a value. For the current 2,746 source rows, 28 are recovered through INN and 57 are excluded, giving 2,689 output medicine records before entity consolidation. The original raw records and IDs remain available for exclusion/fallback review; no extra provenance fields are added to the shared target schema.
-* **Verification (2026-10-29):** Boundary tests checked primary-value precedence, fallback, whitespace-only values, exclusion when both fields are blank, multi-substance counts, and preservation of a comma-containing biological description. The final manual full export, saved as `ema_medicines.xml`, passed XSD validation with exactly the expected 2,689 unique IDs and no unexpected IDs. All 28 fallback records were recovered and 57 blank-substance rows excluded. Every emitted substance list, substance count, and generic/biosimilar/orphan flag matched its source record under the mapping's XML whitespace-normalization rules.
-* **Field Connections:**
-  * `id`: `makeMedicineId("EMA", EMA product number)`
-  * `source`: Constant `"EMA"`
-  * `brandName`: `Name of medicine`
-  * `activeSubstances`: `getActiveSubstances(Active substance, INN / common name, ";")`; internally normalizes whitespace, prefers the nonblank primary value, and tokenizes the selected value.
-  * `activeSubstanceCount`: `count(activeSubstances)`
-  * `licenceHolder`: `Marketing authorisation developer / applicant / holder`
-  * `regulatoryStatus`: `standardizeRegulatoryStatus(Medicine status)`
-  * `productClass`: `standardizeProductClass(Category)`
-  * `atcCode`: `standardizeAtcCodes(ATC code (human), ATCvet code (veterinary))`
-  * `generic`: `yesNoToBoolean(Generic)`
-  * `biosimilar`: `yesNoToBoolean(Biosimilar)`
-  * `orphanMedicine`: `yesNoToBoolean(Orphan medicine)`
-  * `euAuthorisationDate`: `parseAuthorisationDate(Marketing authorisation date)` converts DD/MM/YYYY to ISO YYYY-MM-DD.
+* **Entity IDs:** `makeMedicineId("EMA", medicine_id)` produces `EMA_<normalized brand>|<normalized substances>`, using the same normalization as `entity_count.py` and DPD consolidation.
+* **Prepared Input:** The 2,746 original rows contain 2,689 rows with usable ingredients after recovering 28 through INN fallback and excluding 57 with neither substance field. Consolidating 41 additional records produces 2,648 medicine rows. Original EMA product numbers are retained in `ema_product_numbers`; `source_record_count` and `inn_fallback_count` record their contributions.
+* **Aggregation:** Regulatory status follows the shared precedence hierarchy. Brand and licence holder use plurality voting, with ties resolved by best status, latest update, latest authorisation date, and original EMA ID. Approval dates use the earliest contributing date. Product class uses Human precedence. ATC codes are combined and deduplicated. Generic uses unanimity, with mixed or unknown values omitted; biosimilar and orphan flags use any-positive aggregation.
+* **Ingredient Lists:** Primary ingredients take precedence over INN during preparation. Lists are split on semicolons, deduplicated by their normalized ingredient names, and ordered consistently while retaining an original spelling for each ingredient. Comma-containing biological descriptions remain intact.
+* **Mapping Connections:** The mapping reads the medicine key and consolidated fields, counts substance tokens in the source-row context, and maps Yes/No flags through `yesNoToBoolean`. Combined ATC values pass through `stdAtcCode`; dates pass through `parseAuthorisationDate`. The target XML schema and output destination are preserved.
+* **Verification (2026-11-03):** The manual MapForce export passed XSD validation with 2,648 records and 2,648 unique IDs, all with source `EMA`. Every ID matched the prepared medicine key, with no missing or unexpected IDs, repeated brand-and-substance combinations, ingredient-count errors, or empty value elements. ATC codes were present in 2,214 records. The prepared input retains all 2,689 contributing EMA IDs.
+* **Run:** Reload `ema_mapping.mfd` from disk, select **Output**, and save the XML. Expect 2,648 unique IDs prefixed with `EMA_` and built from brand and substances. Existing gold-standard samples using the earlier EMA IDs should be regenerated after the new export.
+
 
 ---
 

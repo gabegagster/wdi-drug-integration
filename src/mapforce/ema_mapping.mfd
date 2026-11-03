@@ -25,66 +25,38 @@
 							<entry name="FileInstance" ns="1" expanded="1">
 								<entry name="document" ns="1" expanded="1">
 									<entry name="Rows" outkey="100" expanded="1">
-										<entry name="Category" outkey="101" />
-										<entry name="Name of medicine" outkey="102" />
-										<entry name="EMA product number" outkey="103" />
-										<entry name="Medicine status" outkey="104" />
-										<entry name="International non-proprietary name (INN) _ common name" outkey="113" />
-										<entry name="Active substance" outkey="105" />
-										<entry name="ATC code (human)" outkey="106" />
-										<entry name="ATCvet code (veterinary)" outkey="107" />
-										<entry name="Biosimilar" outkey="108" />
-										<entry name="Generic" outkey="109" />
-										<entry name="Orphan medicine" outkey="110" />
-										<entry name="Marketing authorisation developer _ applicant _ holder" outkey="111" />
-										<entry name="Marketing authorisation date" outkey="112" />
+										<entry name="medicine_id" outkey="103" />
+										<entry name="brand_name" outkey="102" />
+										<entry name="active_substances" outkey="105" />
+										<entry name="licence_holder" outkey="111" />
+										<entry name="regulatory_status" outkey="104" />
+										<entry name="product_class" outkey="101" />
+										<entry name="atc_codes" outkey="106" />
+										<entry name="generic" outkey="109" />
+										<entry name="biosimilar" outkey="108" />
+										<entry name="orphan_medicine" outkey="110" />
+										<entry name="authorisation_date" outkey="112" />
 									</entry>
 								</entry>
 							</entry>
 						</root>
-						<text type="csv" encoding="1000" byteorder="1" byteordermark="0" inputinstance="..\..\data\1_raw\02_eu_ema_medicines\ema_medicines.csv">
+						<text type="csv" encoding="1000" byteorder="1" byteordermark="0" inputinstance="..\..\data\2_processed\ema_entities.csv">
 							<settings separator="," quote="&quot;" firstrownames="true" removeempty="true">
 								<names root="ema_entities" block="Rows">
-									<field0 name="Category" type="string" />
-									<field1 name="Name of medicine" type="string" />
-									<field2 name="EMA product number" type="string" />
-									<field3 name="Medicine status" type="string" />
-									<field4 name="Opinion status" type="string" />
-									<field5 name="Latest procedure affecting product information" type="string" />
-									<field6 name="International non-proprietary name (INN) _ common name" realname="International non-proprietary name (INN) / common name" type="string" />
-									<field7 name="Active substance" type="string" />
-									<field8 name="Column 40" type="string" />
-									<field9 name="Therapeutic area (MeSH)" type="string" />
-									<field10 name="Species(veterinary)" realname="Species (veterinary)" type="string" />
-									<field11 name="Patient safety" type="string" />
-									<field12 name="ATC code (human)" type="string" />
-									<field13 name="ATCvet code (veterinary)" type="string" />
-									<field14 name="Pharmacotherapeutic group(human)" realname="Pharmacotherapeutic group (human)" type="string" />
-									<field15 name="Pharmacotherapeutic group(veterinary)" realname="Pharmacotherapeutic group (veterinary)" type="string" />
-									<field16 name="Therapeutic indication" type="string" />
-									<field17 name="Accelerated assessment" type="string" />
-									<field18 name="Additional monitoring" type="string" />
-									<field19 name="Advanced therapy" type="string" />
-									<field20 name="Biosimilar" type="string" />
-									<field21 name="Conditional approval" type="string" />
-									<field22 name="Exceptional circumstances" type="string" />
-									<field23 name="Generic" type="string" />
-									<field24 name="Orphan medicine" type="string" />
-									<field25 name="PRIME_ priority medicine" realname="PRIME: priority medicine" type="string" />
-									<field26 name="Marketing authorisation developer _ applicant _ holder" realname="Marketing authorisation developer / applicant / holder" type="string" />
-									<field27 name="European Commission decision date" type="string" />
-									<field28 name="Start of rolling review date" type="string" />
-									<field29 name="Start of evaluation date" type="string" />
-									<field30 name="Opinion adopted date" type="string" />
-									<field31 name="Withdrawal of application date" type="string" />
-									<field32 name="Marketing authorisation date" type="string" />
-									<field33 name="Refusal of marketing authorisation date" type="string" />
-									<field34 name="Withdrawal _ expiry _ revocation _ lapse of marketing authorisation date" realname="Withdrawal / expiry / revocation / lapse of marketing authorisation date" type="string" />
-									<field35 name="Suspension of marketing authorisation date" type="string" />
-									<field36 name="Revision number" type="string" />
-									<field37 name="First published date" type="string" />
-									<field38 name="Last updated date" type="string" />
-									<field39 name="Medicine URL" type="string" />
+									<field0 name="medicine_id" type="string" />
+									<field1 name="brand_name" type="string" />
+									<field2 name="active_substances" type="string" />
+									<field3 name="licence_holder" type="string" />
+									<field4 name="regulatory_status" type="string" />
+									<field5 name="product_class" type="string" />
+									<field6 name="atc_codes" type="string" />
+									<field7 name="generic" type="string" />
+									<field8 name="biosimilar" type="string" />
+									<field9 name="orphan_medicine" type="string" />
+									<field10 name="authorisation_date" type="string" />
+									<field11 name="ema_product_numbers" type="string" />
+									<field12 name="source_record_count" type="string" />
+									<field13 name="inn_fallback_count" type="string" />
 								</names>
 							</settings>
 						</text>
@@ -143,10 +115,19 @@
 						<datapoint pos="0" key="302" />
 					</targets>
 					<data>
-						<constant value=";" datatype="string" />
+						<constant value="; " datatype="string" />
 					</data>
 				</component>
-				<component name="makeMedicineId" library="user" uid="3003" kind="19" visible="0">
+				<component name="constant" library="core" uid="3003" kind="2">
+					<view ltx="500" lty="240" rbx="650" rby="310" />
+					<targets>
+						<datapoint pos="0" key="303" />
+					</targets>
+					<data>
+						<constant value="" datatype="string" />
+					</data>
+				</component>
+				<component name="makeMedicineId" library="user" uid="3004" kind="19" visible="0">
 					<view ltx="650" lty="0" rbx="800" rby="70" />
 					<data>
 						<root>
@@ -155,8 +136,8 @@
 									<namespace />
 								</namespaces>
 							</header>
-							<entry name="source" componentid="120001" inpkey="303" />
-							<entry name="key" componentid="120002" inpkey="304" />
+							<entry name="source" componentid="120001" inpkey="304" />
+							<entry name="key" componentid="120002" inpkey="305" />
 						</root>
 						<root>
 							<header>
@@ -164,11 +145,11 @@
 									<namespace />
 								</namespaces>
 							</header>
-							<entry name="result" componentid="120005" outkey="305" />
+							<entry name="result" componentid="120005" outkey="306" />
 						</root>
 					</data>
 				</component>
-				<component name="getActiveSubstances" library="user" uid="3004" kind="19" visible="0">
+				<component name="getActiveSubstances" library="user" uid="3005" kind="19" visible="0">
 					<view ltx="650" lty="120" rbx="802" rby="190" />
 					<data>
 						<root>
@@ -177,9 +158,9 @@
 									<namespace />
 								</namespaces>
 							</header>
-							<entry name="primary" componentid="121001" inpkey="306" />
-							<entry name="fallback" componentid="121002" inpkey="307" />
-							<entry name="separator" componentid="121003" inpkey="308" />
+							<entry name="primary" componentid="121001" inpkey="307" />
+							<entry name="fallback" componentid="121002" inpkey="308" />
+							<entry name="separator" componentid="121003" inpkey="309" />
 						</root>
 						<root>
 							<header>
@@ -187,41 +168,41 @@
 									<namespace />
 								</namespaces>
 							</header>
-							<entry name="result" componentid="121013" outkey="309" />
+							<entry name="result" componentid="121013" outkey="310" />
 						</root>
 					</data>
 				</component>
-				<component name="count" library="core" uid="3005" kind="5">
+				<component name="count" library="core" uid="3006" kind="5">
 					<view ltx="900" lty="160" rbx="1050" rby="230" />
 					<sources>
-						<datapoint pos="0" key="310" />
-						<datapoint pos="1" key="311" />
+						<datapoint pos="0" key="311" />
+						<datapoint pos="1" key="312" />
 					</sources>
 					<targets>
-						<datapoint pos="0" key="312" />
+						<datapoint pos="0" key="313" />
 					</targets>
 				</component>
-				<component name="exists" library="core" uid="3006" kind="5">
+				<component name="exists" library="core" uid="3007" kind="5">
 					<view ltx="900" lty="260" rbx="1050" rby="330" />
 					<sources>
-						<datapoint pos="0" key="313" />
+						<datapoint pos="0" key="314" />
 					</sources>
 					<targets>
-						<datapoint pos="0" key="314" />
+						<datapoint pos="0" key="315" />
 					</targets>
 				</component>
-				<component name="filter" library="core" uid="3007" kind="3">
+				<component name="filter" library="core" uid="3008" kind="3">
 					<view ltx="900" lty="350" rbx="1050" rby="420" />
 					<sources>
-						<datapoint pos="0" key="315" />
-						<datapoint pos="1" key="316" />
+						<datapoint pos="0" key="316" />
+						<datapoint pos="1" key="317" />
 					</sources>
 					<targets>
-						<datapoint pos="0" key="317" />
+						<datapoint pos="0" key="318" />
 						<datapoint />
 					</targets>
 				</component>
-				<component name="standardizeRegulatoryStatus" library="user" uid="3008" kind="19" visible="0">
+				<component name="standardizeRegulatoryStatus" library="user" uid="3009" kind="19" visible="0">
 					<view ltx="650" lty="430" rbx="866" rby="500" />
 					<data>
 						<root>
@@ -230,7 +211,7 @@
 									<namespace />
 								</namespaces>
 							</header>
-							<entry name="raw" componentid="125001" inpkey="318" />
+							<entry name="raw" componentid="125001" inpkey="319" />
 						</root>
 						<root>
 							<header>
@@ -238,11 +219,11 @@
 									<namespace />
 								</namespaces>
 							</header>
-							<entry name="result" componentid="125003" outkey="319" />
+							<entry name="result" componentid="125003" outkey="320" />
 						</root>
 					</data>
 				</component>
-				<component name="standardizeProductClass" library="user" uid="3009" kind="19" visible="0">
+				<component name="standardizeProductClass" library="user" uid="3010" kind="19" visible="0">
 					<view ltx="650" lty="530" rbx="834" rby="600" />
 					<data>
 						<root>
@@ -251,7 +232,7 @@
 									<namespace />
 								</namespaces>
 							</header>
-							<entry name="raw" componentid="126001" inpkey="320" />
+							<entry name="raw" componentid="126001" inpkey="321" />
 						</root>
 						<root>
 							<header>
@@ -259,12 +240,12 @@
 									<namespace />
 								</namespaces>
 							</header>
-							<entry name="result" componentid="126003" outkey="321" />
+							<entry name="result" componentid="126003" outkey="322" />
 						</root>
 					</data>
 				</component>
-				<component name="standardizeAtcCodes" library="user" uid="3010" kind="19" visible="0">
-					<view ltx="650" lty="630" rbx="802" rby="700" />
+				<component name="stdAtcCode" library="user" uid="3011" kind="19" visible="0">
+					<view ltx="650" lty="630" rbx="800" rby="700" />
 					<data>
 						<root>
 							<header>
@@ -272,8 +253,7 @@
 									<namespace />
 								</namespaces>
 							</header>
-							<entry name="codes" componentid="127001" inpkey="322" />
-							<entry name="additionalCodes" componentid="127002" inpkey="323" />
+							<entry name="raw" componentid="112001" inpkey="323" />
 						</root>
 						<root>
 							<header>
@@ -281,11 +261,11 @@
 									<namespace />
 								</namespaces>
 							</header>
-							<entry name="result" componentid="127006" outkey="324" />
+							<entry name="result" componentid="112028" outkey="324" />
 						</root>
 					</data>
 				</component>
-				<component name="yesNoToBoolean" library="user" uid="3011" kind="19" visible="0">
+				<component name="yesNoToBoolean" library="user" uid="3012" kind="19" visible="0">
 					<view ltx="650" lty="740" rbx="800" rby="810" />
 					<data>
 						<root>
@@ -306,7 +286,7 @@
 						</root>
 					</data>
 				</component>
-				<component name="yesNoToBoolean" library="user" uid="3012" kind="19" visible="0">
+				<component name="yesNoToBoolean" library="user" uid="3013" kind="19" visible="0">
 					<view ltx="650" lty="840" rbx="800" rby="910" />
 					<data>
 						<root>
@@ -327,7 +307,7 @@
 						</root>
 					</data>
 				</component>
-				<component name="yesNoToBoolean" library="user" uid="3013" kind="19" visible="0">
+				<component name="yesNoToBoolean" library="user" uid="3014" kind="19" visible="0">
 					<view ltx="650" lty="940" rbx="800" rby="1010" />
 					<data>
 						<root>
@@ -348,7 +328,7 @@
 						</root>
 					</data>
 				</component>
-				<component name="parseAuthorisationDate" library="user" uid="3014" kind="19" visible="0">
+				<component name="parseAuthorisationDate" library="user" uid="3015" kind="19" visible="0">
 					<view ltx="650" lty="1040" rbx="826" rby="1110" />
 					<data>
 						<root>
@@ -372,30 +352,29 @@
 			</children>
 		</structure>
 		<connections>
-			<edge from="301" to="303" />
-			<edge from="103" to="304" />
-			<edge from="305" to="201" />
+			<edge from="301" to="304" />
+			<edge from="103" to="305" />
+			<edge from="306" to="201" />
 			<edge from="301" to="202" />
-			<edge from="105" to="306" />
-			<edge from="113" to="307" />
-			<edge from="302" to="308" />
-			<edge from="309" to="205" />
-			<edge from="100" to="310" />
-			<edge from="309" to="311" />
-			<edge from="312" to="206" />
-			<edge from="309" to="313" />
-			<edge from="100" to="315" />
-			<edge from="314" to="316" />
-			<edge from="317" to="204" />
-			<edge from="317" to="200" />
+			<edge from="105" to="307" />
+			<edge from="303" to="308" />
+			<edge from="302" to="309" />
+			<edge from="310" to="205" />
+			<edge from="100" to="311" />
+			<edge from="310" to="312" />
+			<edge from="313" to="206" />
+			<edge from="310" to="314" />
+			<edge from="100" to="316" />
+			<edge from="315" to="317" />
+			<edge from="318" to="204" />
+			<edge from="318" to="200" />
 			<edge from="102" to="203" />
 			<edge from="111" to="207" />
-			<edge from="104" to="318" />
-			<edge from="319" to="208" />
-			<edge from="101" to="320" />
-			<edge from="321" to="209" />
-			<edge from="106" to="322" />
-			<edge from="107" to="323" />
+			<edge from="104" to="319" />
+			<edge from="320" to="208" />
+			<edge from="101" to="321" />
+			<edge from="322" to="209" />
+			<edge from="106" to="323" />
 			<edge from="324" to="210" />
 			<edge from="109" to="325" />
 			<edge from="326" to="211" />
