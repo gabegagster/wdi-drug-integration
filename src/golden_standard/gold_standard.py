@@ -25,7 +25,7 @@ FIELDS = (
     "usApprovalDate", "euAuthorisationDate", "caStatusDate",
 )
 REVIEW_COLUMNS = ["pair_id"] + [
-    f"{field}{side}" for side in (1, 2) for field in FIELDS
+    f"{field}{side}" for field in FIELDS for side in (1, 2)
 ] + ["hard", "match"]
 
 
@@ -193,6 +193,15 @@ def save_csv(frame, path):
     print(f"Saved {len(frame):,} pairs: {path}")
 
 
+def review_export(frame, source1, source2):
+    """Return review rows with adjacent attributes named for the two datasets."""
+    columns = [column for column in REVIEW_COLUMNS if column in frame.columns]
+    columns += [column for column in frame.columns if column not in columns]
+    names = {f"{field}{side}": f"{field}_{source}"
+             for field in FIELDS for side, source in ((1, source1), (2, source2))}
+    return frame[columns].rename(columns=names)
+
+
 def get_pairs(dataset1, dataset2, n, seed, output_dir, exclude):
     """Sample review pairs from two XML sources; write attributes and blank match labels."""
     if dataset1 == dataset2 or n < 1:
@@ -299,7 +308,7 @@ def get_pairs(dataset1, dataset2, n, seed, output_dir, exclude):
             record.update({f"{field}{side}": medicine[field] for field in FIELDS})
         record.update(hard=hard, match="")
         rows.append(record)
-    save_csv(pd.DataFrame(rows, columns=REVIEW_COLUMNS), output)
+    save_csv(review_export(pd.DataFrame(rows), source1, source2), output)
     print(f"Review groups: hard={hard_count}, likely ordinary matches={easy_match_count}, random={random_count}")
 
 
@@ -308,6 +317,19 @@ def read_reviews(inputs):
     frames = []
     for filename in inputs:
         frame = pd.read_csv(filename, dtype=str, keep_default_na=False, encoding="utf-8-sig")
+        # Read Dataset Suffixes
+        sources = [source for source in DATASETS if f"source_{source}" in frame.columns]
+        if sources:
+            if len(sources) != 2:
+                raise ValueError(f"Expected two dataset suffixes in {filename}: {sources}")
+            names = {f"{field}_{source}": f"{field}{side}"
+                     for field in FIELDS for side, source in enumerate(sources, 1)}
+            if set(names.values()) & set(frame.columns):
+                raise ValueError(f"Mixed dataset and numeric suffixes in {filename}")
+            frame = frame.rename(columns=names)
+            for side, source in enumerate(sources, 1):
+                if not frame[f"source{side}"].str.lower().eq(source).all():
+                    raise ValueError(f"Source values disagree with column suffix in {filename}: {source}")
         required = {"pair_id", "id1", "id2", "source1", "source2", "hard", "match"}
         if missing := required - set(frame.columns):
             raise ValueError(f"Missing columns in {filename}: {sorted(missing)}")
@@ -362,7 +384,7 @@ def merge_samples(inputs, output_dir):
         record = group.iloc[0].to_dict()
         record["hard"] = str(group["hard"].astype(int).max())
         merged.append(record)
-    save_csv(pd.DataFrame(merged, columns=rows.columns), output)
+    save_csv(review_export(pd.DataFrame(merged, columns=rows.columns), source1, source2), output)
     print(f"Removed {len(rows) - len(merged):,} duplicate rows")
 
 
@@ -430,7 +452,7 @@ def select_pairs(input_file, size, seed, output_dir):
                           for group, count in zip(groups, counts)], ignore_index=True)
     selected = selected.sample(frac=1, random_state=seed).reset_index(drop=True)
     pydi = selected[["id1", "id2", "match"]].rename(columns={"match": "label"})
-    save_csv(selected, output)
+    save_csv(review_export(selected, source1, source2), output)
     save_csv(pydi, pydi_output)
     print("Selected: " + ", ".join(f"{name}={count}" for name, count in zip(names, counts)))
 

@@ -142,13 +142,22 @@ MILER  -> mil, ile, ler
 | Columns | Meaning |
 | --- | --- |
 | `pair_id` | Readable combination of the two record IDs |
-| `*1`, such as `brandName1` | Original attributes of the first record |
-| `*2`, such as `brandName2` | Original attributes of the second record |
+| `*_<dataset1>`, such as `brandName_dpd` | Original attributes of the first dataset |
+| `*_<dataset2>`, such as `brandName_ema` | Original attributes of the second dataset |
 | `hard` | Automatic pool flag: 1 = S1-S4, 0 = ordinary pool |
 | `match` | Manual label: 1 = same medicine, 0 = different medicines |
 
 The script assigns the hard flag during sampling and uses similarity scores
 to rank candidates, then reviewers fill the match label for every exported pair.
+
+Each attribute's two columns sit next to each other in raw, unified, and selected
+review files. For DPD and EMA, the order begins:
+
+```text
+pair_id, id_dpd, id_ema, source_dpd, source_ema,
+brandName_dpd, brandName_ema, activeSubstances_dpd, activeSubstances_ema, ...,
+hard, match
+```
 
 ## Merging and checking
 
@@ -159,8 +168,9 @@ to rank candidates, then reviewers fill the match label for every exported pair.
   the affected pair IDs so reviewers can correct the source files and retry.
 - A successful merge writes `gs_<dataset1>_<dataset2>_unified.csv` and keeps
   each pair once. A pair selected through both pools retains `hard=1`.
-- Existing review files are read using `id1` and `id2`; their pair IDs are
-  rebuilt in the readable format when imported.
+- Review files use dataset suffixes for attributes and IDs. Pair IDs are
+  rebuilt from the record IDs when imported. Earlier files with numeric suffixes
+  can also be read.
 
 Example error:
 
