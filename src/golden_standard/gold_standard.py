@@ -24,18 +24,9 @@ FIELDS = (
     "biosimilar", "orphanMedicine", "dosageForm", "route", "strengths",
     "usApprovalDate", "euAuthorisationDate", "caStatusDate",
 )
-# Review order: the fields compared most often come first, then the rest.
-REVIEW_FIELDS = ("brandName", "activeSubstances", "licenceHolder") + tuple(
-    field for field in FIELDS
-    if field not in ("brandName", "activeSubstances", "licenceHolder", "id", "source")
-) + ("id", "source")
-
-
-def review_columns(source1, source2):
-    """Place both datasets' values side by side, e.g. dpd_brandName, ema_brandName."""
-    return ["pair_id"] + [
-        f"{source}_{field}" for field in REVIEW_FIELDS for source in (source1, source2)
-    ] + ["hard", "match"]
+REVIEW_COLUMNS = ["pair_id"] + [
+    f"{field}{side}" for field in FIELDS for side in (1, 2)
+] + ["hard", "match"]
 
 
 def normalize_text(value):
@@ -202,6 +193,15 @@ def save_csv(frame, path):
     print(f"Saved {len(frame):,} pairs: {path}")
 
 
+def review_export(frame, source1, source2):
+    """Return review rows with adjacent attributes named for the two datasets."""
+    columns = [column for column in REVIEW_COLUMNS if column in frame.columns]
+    columns += [column for column in frame.columns if column not in columns]
+    names = {f"{field}{side}": f"{field}_{source}"
+             for field in FIELDS for side, source in ((1, source1), (2, source2))}
+    return frame[columns].rename(columns=names)
+
+
 def get_pairs(dataset1, dataset2, n, seed, output_dir, exclude):
     """Sample review pairs from two XML sources; write attributes and blank match labels."""
     if dataset1 == dataset2 or n < 1:
@@ -219,13 +219,12 @@ def get_pairs(dataset1, dataset2, n, seed, output_dir, exclude):
     left_positions = {row["id"]: i for i, row in enumerate(left)}
     right_positions = {row["id"]: j for j, row in enumerate(right)}
     for filename in exclude:
-        previous, prev1, prev2 = read_reviews([filename])
-        if (prev1, prev2) != (source1, source2):
-            continue
-        for id1, id2 in zip(previous[f"{source1}_id"], previous[f"{source2}_id"]):
-            if id1 not in left_positions or id2 not in right_positions:
-                raise ValueError(f"Excluded sample contains IDs absent from current XML: {filename}")
-            excluded.add((left_positions[id1], right_positions[id2]))
+        previous = read_reviews([filename])
+        for row in previous.to_dict("records"):
+            if row["source1"].lower() == source1 and row["source2"].lower() == source2:
+                if row["id1"] not in left_positions or row["id2"] not in right_positions:
+                    raise ValueError(f"Excluded sample contains IDs absent from current XML: {filename}")
+                excluded.add((left_positions[row["id1"]], right_positions[row["id2"]]))
     if n > len(left) * len(right) - len(excluded):
         raise ValueError("Sample size exceeds the number of available unique pairs")
 
@@ -305,80 +304,60 @@ def get_pairs(dataset1, dataset2, n, seed, output_dir, exclude):
     rows = []
     for i, j, hard in sample:
         record = {"pair_id": pair_id(left[i]["id"], right[j]["id"])}
-        for source, medicine in ((source1, left[i]), (source2, right[j])):
-            record.update({f"{source}_{field}": medicine[field] for field in FIELDS})
+        for side, medicine in ((1, left[i]), (2, right[j])):
+            record.update({f"{field}{side}": medicine[field] for field in FIELDS})
         record.update(hard=hard, match="")
         rows.append(record)
-    save_csv(pd.DataFrame(rows, columns=review_columns(source1, source2)), output)
+    save_csv(review_export(pd.DataFrame(rows), source1, source2), output)
     print(f"Review groups: hard={hard_count}, likely ordinary matches={easy_match_count}, random={random_count}")
 
 
-def review_sources(frame, filename):
-    """Find the two datasets of a review file from its `<dataset>_id` columns."""
-    sources = tuple(source for source in DATASETS if f"{source}_id" in frame.columns)
-    if len(sources) != 2:
-        raise ValueError(f"Expected exactly two <dataset>_id columns in {filename}, "
-                         f"found {[f'{source}_id' for source in sources]}")
-    return sources
-
-
-def upgrade_legacy_columns(frame, filename):
-    """Rename earlier `brandName1`/`brandName2` columns to `dpd_brandName`/`ema_brandName`."""
-    if "id1" not in frame.columns:
-        return frame
-    sources = []
-    for side in (1, 2):
-        if f"source{side}" not in frame.columns:
-            raise ValueError(f"Missing column source{side} in {filename}")
-        values = set(frame[f"source{side}"].str.lower())
-        if len(values) != 1:
-            raise ValueError(f"Expected one dataset in source{side} of {filename}: {sorted(values)}")
-        sources.append(values.pop())
-    renames = {f"{field}{side}": f"{source}_{field}"
-               for side, source in zip((1, 2), sources) for field in FIELDS}
-    frame = frame.rename(columns=renames)
-    order = [column for column in review_columns(*sources) if column in frame.columns]
-    return frame[order + [column for column in frame.columns if column not in order]]
-
-
 def read_reviews(inputs):
-    """Read review CSVs for one dataset pair; validate IDs and sampling groups.
-
-    Returns the combined rows and the two dataset names in DPD, EMA, FDA order.
-    """
+    """Read review CSVs as strings and validate pair identities and sampling groups."""
     frames = []
-    combination = None
     for filename in inputs:
         frame = pd.read_csv(filename, dtype=str, keep_default_na=False, encoding="utf-8-sig")
-        frame = upgrade_legacy_columns(frame, filename)
-        source1, source2 = review_sources(frame, filename)
-        if combination not in (None, (source1, source2)):
-            raise ValueError("Use review files for exactly one dataset combination at a time")
-        combination = (source1, source2)
-        id1, id2 = f"{source1}_id", f"{source2}_id"
-        required = {"pair_id", id1, id2, "hard", "match"}
+        # Read Dataset Suffixes
+        sources = [source for source in DATASETS if f"source_{source}" in frame.columns]
+        if sources:
+            if len(sources) != 2:
+                raise ValueError(f"Expected two dataset suffixes in {filename}: {sources}")
+            names = {f"{field}_{source}": f"{field}{side}"
+                     for field in FIELDS for side, source in enumerate(sources, 1)}
+            if set(names.values()) & set(frame.columns):
+                raise ValueError(f"Mixed dataset and numeric suffixes in {filename}")
+            frame = frame.rename(columns=names)
+            for side, source in enumerate(sources, 1):
+                if not frame[f"source{side}"].str.lower().eq(source).all():
+                    raise ValueError(f"Source values disagree with column suffix in {filename}: {source}")
+        required = {"pair_id", "id1", "id2", "source1", "source2", "hard", "match"}
         if missing := required - set(frame.columns):
             raise ValueError(f"Missing columns in {filename}: {sorted(missing)}")
         frame["match"] = frame["match"].str.strip()
         frame["hard"] = frame["hard"].str.strip()
-        for source in combination:
-            column = f"{source}_source"
-            if column in frame.columns and not frame[column].str.lower().eq(source).all():
-                raise ValueError(f"Unexpected values in {column} of {filename}")
         for index, row in zip(frame.index, frame.to_dict("records")):
-            if not row[id1] or not row[id2]:
+            sources = (row["source1"].lower(), row["source2"].lower())
+            if (any(source not in DATASETS for source in sources)
+                    or sources[0] == sources[1]
+                    or DATASETS.index(sources[0]) > DATASETS.index(sources[1])):
+                raise ValueError(f"Invalid source order in {filename}: {sources}")
+            expected = pair_id(row["id1"], row["id2"])
+            if not row["id1"] or not row["id2"]:
                 raise ValueError(f"Invalid pair identity in {filename}: {row['pair_id']}")
             # Rebuild from record IDs so earlier review files remain usable.
-            frame.at[index, "pair_id"] = pair_id(row[id1], row[id2])
+            frame.at[index, "pair_id"] = expected
             if row["hard"] not in ("0", "1"):
                 raise ValueError(f"Invalid hard value in {filename}: {row['hard']!r}")
         frames.append(frame)
-    return pd.concat(frames, ignore_index=True), *combination
+    return pd.concat(frames, ignore_index=True)
 
 
 def merge_samples(inputs, output_dir):
     """Merge one source pair's fully labeled files; reject missing or conflicting labels."""
-    rows, source1, source2 = read_reviews(inputs)
+    rows = read_reviews(inputs)
+    combinations = rows[["source1", "source2"]].apply(lambda col: col.str.lower()).drop_duplicates()
+    if len(combinations) != 1:
+        raise ValueError("Merge files for exactly one source combination at a time")
     # Check Labels Before Writing
     errors = []
     for key, group in rows.groupby("pair_id", sort=False):
@@ -394,6 +373,7 @@ def merge_samples(inputs, output_dir):
         raise ValueError("Merging cannot be completed because of these label errors:\n"
                          + "\n".join(errors)
                          + "\nCorrect the listed pairs in the input files and merge again.")
+    source1, source2 = combinations.iloc[0]
     output = Path(output_dir) / f"gs_{source1}_{source2}_unified.csv"
     if output.exists():
         raise FileExistsError("Unified file already exists; use a new --output-dir")
@@ -404,13 +384,13 @@ def merge_samples(inputs, output_dir):
         record = group.iloc[0].to_dict()
         record["hard"] = str(group["hard"].astype(int).max())
         merged.append(record)
-    save_csv(pd.DataFrame(merged, columns=rows.columns), output)
+    save_csv(review_export(pd.DataFrame(merged, columns=rows.columns), source1, source2), output)
     print(f"Removed {len(rows) - len(merged):,} duplicate rows")
 
 
 def check_labels(input_file):
     """Print match/group counts, percentages, missing labels, and duplicate conflicts."""
-    rows, source1, source2 = read_reviews([input_file])
+    rows = read_reviews([input_file])
     valid = rows[rows["match"].isin(["0", "1"])]
     duplicates = len(rows) - rows["pair_id"].nunique()
     conflict_ids = valid.groupby("pair_id")["match"].nunique().loc[lambda values: values > 1].index
@@ -423,26 +403,32 @@ def check_labels(input_file):
     print("Percentages use unique pairs with a valid, non-conflicting 0/1 match label.")
     unique = rows.drop_duplicates("pair_id").copy()
     unique["hard"] = unique["pair_id"].map(max_hard)
-    print(f"\n{source1.upper()} / {source2.upper()}: {len(unique):,} pairs, {len(reviewed):,} reviewed")
-    for hard, name in (("0", "Ordinary pool"), ("1", "Hard pool")):
-        count = unique["hard"].eq(hard).sum()
-        print(f"{name:23} {count:7,} {100 * count / len(unique):6.2f}% of all pairs")
-    for hard, label, name in (("0", "1", "Ordinary match"), ("0", "0", "Ordinary non-match"),
-                              ("1", "1", "Hard-pool match"), ("1", "0", "Hard-pool non-match")):
-        count = ((reviewed["hard"] == hard) & (reviewed["match"] == label)).sum()
-        percentage = 100 * count / len(reviewed) if len(reviewed) else 0.0
-        print(f"{name:23} {count:7,} {percentage:6.2f}% of reviewed pairs")
+    for sources, all_pairs in unique.groupby(["source1", "source2"], sort=True):
+        group = reviewed[(reviewed["source1"] == sources[0]) & (reviewed["source2"] == sources[1])]
+        print(f"\n{sources[0]} / {sources[1]}: {len(all_pairs):,} pairs, {len(group):,} reviewed")
+        for hard, name in (("0", "Ordinary pool"), ("1", "Hard pool")):
+            count = all_pairs["hard"].eq(hard).sum()
+            print(f"{name:23} {count:7,} {100 * count / len(all_pairs):6.2f}% of all pairs")
+        for hard, label, name in (("0", "1", "Ordinary match"), ("0", "0", "Ordinary non-match"),
+                                  ("1", "1", "Hard-pool match"), ("1", "0", "Hard-pool non-match")):
+            count = ((group["hard"] == hard) & (group["match"] == label)).sum()
+            percentage = 100 * count / len(group) if len(group) else 0.0
+            print(f"{name:23} {count:7,} {percentage:6.2f}% of reviewed pairs")
 
 
 def select_pairs(input_file, size, seed, output_dir):
     """Select fixed 20/50/30 groups from resolved labels and export PyDI pairs."""
     if size < 1:
         raise ValueError("Selection size must be positive")
-    rows, source1, source2 = read_reviews([input_file])
+    rows = read_reviews([input_file])
     if rows["pair_id"].duplicated().any():
         raise ValueError("Merge duplicate pairs and resolve conflicts before selection")
     if not rows["match"].isin(["", "0", "1"]).all():
         raise ValueError("Invalid match labels; use blank, 0, or 1")
+    combinations = rows[["source1", "source2"]].apply(lambda col: col.str.lower()).drop_duplicates()
+    if len(combinations) != 1:
+        raise ValueError("Select from exactly one source combination at a time")
+    source1, source2 = combinations.iloc[0]
     output = Path(output_dir) / f"gs_{source1}_{source2}_selected.csv"
     pydi_output = Path(output_dir) / f"gs_{source1}_{source2}_pydi.csv"
     if output.exists() or pydi_output.exists():
@@ -465,9 +451,8 @@ def select_pairs(input_file, size, seed, output_dir):
     selected = pd.concat([group.sample(n=count, random_state=seed)
                           for group, count in zip(groups, counts)], ignore_index=True)
     selected = selected.sample(frac=1, random_state=seed).reset_index(drop=True)
-    pydi = selected[[f"{source1}_id", f"{source2}_id", "match"]].set_axis(
-        ["id1", "id2", "label"], axis=1)
-    save_csv(selected, output)
+    pydi = selected[["id1", "id2", "match"]].rename(columns={"match": "label"})
+    save_csv(review_export(selected, source1, source2), output)
     save_csv(pydi, pydi_output)
     print("Selected: " + ", ".join(f"{name}={count}" for name, count in zip(names, counts)))
 

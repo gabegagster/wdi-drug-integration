@@ -142,22 +142,22 @@ MILER  -> mil, ile, ler
 | Columns | Meaning |
 | --- | --- |
 | `pair_id` | Readable combination of the two record IDs |
-| `<dataset>_<field>`, such as `dpd_brandName`, `ema_brandName` | Original attributes of each record, placed side by side |
+| `*_<dataset1>`, such as `brandName_dpd` | Original attributes of the first dataset |
+| `*_<dataset2>`, such as `brandName_ema` | Original attributes of the second dataset |
 | `hard` | Automatic pool flag: 1 = S1-S4, 0 = ordinary pool |
 | `match` | Manual label: 1 = same medicine, 0 = different medicines |
 
-Each field appears as a pair of adjacent columns, one per dataset, so values
-can be compared without scrolling. Brand names come first, then active
-substances and licence holders, then the remaining attributes, with record IDs
-and sources last:
-
-```text
-pair_id, dpd_brandName, ema_brandName, dpd_activeSubstances, ema_activeSubstances,
-dpd_licenceHolder, ema_licenceHolder, ..., dpd_id, ema_id, dpd_source, ema_source, hard, match
-```
-
 The script assigns the hard flag during sampling and uses similarity scores
 to rank candidates, then reviewers fill the match label for every exported pair.
+
+Each attribute's two columns sit next to each other in raw, unified, and selected
+review files. For DPD and EMA, the order begins:
+
+```text
+pair_id, id_dpd, id_ema, source_dpd, source_ema,
+brandName_dpd, brandName_ema, activeSubstances_dpd, activeSubstances_ema, ...,
+hard, match
+```
 
 ## Merging and checking
 
@@ -168,10 +168,9 @@ to rank candidates, then reviewers fill the match label for every exported pair.
   the affected pair IDs so reviewers can correct the source files and retry.
 - A successful merge writes `gs_<dataset1>_<dataset2>_unified.csv` and keeps
   each pair once. A pair selected through both pools retains `hard=1`.
-- Review files are read using the `<dataset>_id` columns, such as `dpd_id`
-  and `ema_id`; their pair IDs are rebuilt in the readable format when imported.
-- Earlier files with `brandName1`/`brandName2`-style columns are still
-  accepted and renamed to the side-by-side layout on import.
+- Review files use dataset suffixes for attributes and IDs. Pair IDs are
+  rebuilt from the record IDs when imported. Earlier files with numeric suffixes
+  can also be read.
 
 Example error:
 
@@ -206,5 +205,5 @@ Label percentages use unique pairs with valid, consistent labels.
 Outputs:
 
 - `gs_<dataset1>_<dataset2>_selected.csv`: selected review rows.
-- `gs_<dataset1>_<dataset2>_pydi.csv`: `id1,id2,label` for PyDI, taken from
-  `<dataset1>_id`, `<dataset2>_id`, and the manual `match` labels.
+- `gs_<dataset1>_<dataset2>_pydi.csv`: `id1,id2,label` for PyDI, with the manual
+  match labels exported as `label`.
