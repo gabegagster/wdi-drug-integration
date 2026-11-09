@@ -86,13 +86,13 @@ This project builds a unified view of approved pharmaceutical drugs across the U
 \textbf{Dataset} & \textbf{Source} & \textbf{Format} & \textbf{Rows} & \textbf{Entities} & \textbf{Attr.} \\
 \hline
 Drugs@FDA  & U.S. FDA    & TXT/TSV  & 51,839 &  8,175 & 56 \\
-EMA Med.   & EMA         & XLSX/CSV &  2,746 &  2,620 & 39 \\
+EMA Med.   & EMA         & XLSX/CSV &  2,746 &  2,648 & 39 \\
 DPD        & Health Can. & TXT/CSV  & 42,042 & 41,636 & 87 \\
 \hline
 \end{tabular}
 \end{table}
 
-Table~\ref{tab:datasets} summarises the three input datasets. Drugs@FDA contains 51,839 product rows forming 8,175 entities across 29,377 applications (78.3\% ANDAs). EMA Medicines contains 2,746 rows forming 2,620 entities, predominantly human medicines (85.6\%). The Health Canada DPD contains 58,137 product records consolidated into 41,636 entities. High missingness in all three datasets is largely structural: optional fields, category-specific attributes, or regulatory-event dates that apply only to specific statuses.
+Table~\ref{tab:datasets} summarises the three input datasets. Drugs@FDA contains 51,839 product rows forming 8,175 entities across 29,377 applications (78.3\% ANDAs). EMA Medicines contains 2,746 rows consolidated into 2,648 entities (including 28 records recovered via INN fallback), predominantly human medicines (85.6\%). The Health Canada DPD contains 58,137 product records consolidated into 41,636 entities. High missingness in all three datasets is largely structural: optional fields, category-specific attributes, or regulatory-event dates that apply only to specific statuses.
 
 \subsection{Integrated schema and overlap with input schemata}
 
@@ -245,12 +245,13 @@ sources.
 \subsection{EMA Medicines Mapper}
 % ------------------------------------------------------------
 
-The EMA dataset is a single flat CSV table of 2,746 rows, with no
-pre-joining or consolidation required. Each row maps directly to one
-output \texttt{<medicine>} element. Because EMA does not publish strength
-or dosage form data, \texttt{dosageForm}, \texttt{route}, and
-\texttt{strengths} are structurally absent from EMA output.
-Table~\ref{tab:ema_mapping} lists all field correspondences.
+The EMA dataset originates from a flat table of 2,746 rows consolidated
+into 2,648 unique medicine entities (\texttt{ema\_entities.csv}). Each
+consolidated entity row maps to one output \texttt{<medicine>} element.
+Because EMA does not publish strength or dosage form data in the register
+export, \texttt{dosageForm}, \texttt{route}, and \texttt{strengths} are
+structurally absent from EMA output. Table~\ref{tab:ema_mapping} lists all
+field correspondences.
 
 \begin{table}[htbp]
 \centering
@@ -261,7 +262,7 @@ Table~\ref{tab:ema_mapping} lists all field correspondences.
 \hline
 \textbf{Target field} & \textbf{Source column} & \textbf{Transformation} \\
 \hline
-\texttt{id}                   & EMA product number           & \texttt{makeMedicineId("EMA", number)} \\
+\texttt{id}                   & medicine\_id                 & \texttt{makeMedicineId("EMA", id)} \\
 \texttt{brandName}            & Name of medicine             & Direct copy \\
 \texttt{activeSubstances}     & Active substance / INN       & \texttt{getActiveSubstances}; INN fallback \\
 \texttt{activeSubstanceCount} & (derived)                    & \texttt{count(activeSubstances)} \\
@@ -282,8 +283,9 @@ mandatory in the target schema, these rows are excluded via a row filter.
 A further 28 rows have a blank primary field but a populated INN column:
 the mapper applies an INN fallback, normalizing whitespace and selecting
 the non-empty value. Commas and the word ``and'' are not treated as
-separators, preserving multi-word biological descriptions. The result is
-\textbf{2,689 output records}.
+separators, preserving multi-word biological descriptions. Consolidating
+the 2,689 usable rows by normalized brand name and active substance set
+yields \textbf{2,648 unique medicine entities} (\texttt{ema\_entities.csv}).
 
 EMA maintains separate human and veterinary ATC code columns.
 \texttt{standardizeAtcCodes} concatenates both, strips asterisks used
@@ -294,15 +296,63 @@ conversion (\texttt{parseAuthorisationDate}) reorders DD/MM/YYYY to
 YYYY-MM-DD. The three boolean flags are stored as Yes/No strings;
 \texttt{yesNoToBoolean} converts them and omits the element when false,
 consistent with the \texttt{minOccurs="0"} schema convention. The full
-export passed XSD validation with 2,689 unique \texttt{EMA\_} IDs and no
-errors.
+export passed XSD validation with \textbf{2,648 unique \texttt{EMA\_} IDs}
+and zero duplicate or schema errors.
 
 % ------------------------------------------------------------
 \subsection{Drugs@FDA Mapper}
 % ------------------------------------------------------------
 
-The Drugs@FDA mapper specification is defined in the project repository;
-implementation is pending.
+The Drugs@FDA source consists of relational TSV tables in which multiple
+product rows across applications (\texttt{ApplNo}) correspond to the same
+medicine entity. Product records from \texttt{Products.txt} are joined to
+\texttt{Applications.txt} on \texttt{ApplNo}, linked to marketing status
+lookup values, and consolidated by normalized \texttt{brandName} (\texttt{DrugName})
+and sorted \texttt{activeSubstances} (\texttt{ActiveIngredient}) into
+\textbf{8,175 unique medicine entities}. Eleven orphan product rows lacking
+a matching application and records with empty active ingredients (such as
+\texttt{ApplNo=221337}, \texttt{MEDICAL AIR, USP}) are excluded during
+preparation. Table~\ref{tab:fda_mapping} summarises the field mappings.
+
+\begin{table}[htbp]
+\centering
+\caption{Drugs@FDA field mapping}
+\label{tab:fda_mapping}
+\scriptsize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{|l|l|>{\raggedright\arraybackslash}p{5.5cm}|}
+\hline
+\textbf{Target field} & \textbf{Source column} & \textbf{Transformation} \\
+\hline
+\texttt{id}                   & medicine\_id                     & \texttt{makeMedicineId("FDA", id)} \\
+\texttt{brandName}            & DrugName (plurality)             & Direct copy \\
+\texttt{activeSubstances}     & ActiveIngredient                 & \texttt{getActiveSubstances}; separator \texttt{"; "} \\
+\texttt{activeSubstanceCount} & (derived)                        & \texttt{count(activeSubstances)} \\
+\texttt{licenceHolder}        & SponsorName (plurality)          & Direct copy \\
+\texttt{regulatoryStatus}     & MarketingStatusID                & \texttt{standardizeRegulatoryStatus} \\
+\texttt{productClass}         & (constant)                       & \texttt{"Human"} \\
+\texttt{generic}              & ApplType (\texttt{ANDA}/\texttt{NDA}/\texttt{BLA}) & \texttt{true} if all \texttt{ANDA}; \texttt{false} if all \texttt{NDA}/\texttt{BLA}; omit if mixed \\
+\texttt{dosageForm}           & Form (form component)            & \texttt{fdaFormPart} $\rightarrow$ \texttt{dosageFormList} \\
+\texttt{route}                & Form (route component)           & \texttt{fdaRoutePart} $\rightarrow$ \texttt{routeList} \\
+\texttt{strengths}            & Strength                         & Pre-split combination tokens $\rightarrow$ \texttt{splitStrengths} \\
+\texttt{usApprovalDate}       & SubmissionStatusDate (\texttt{AP}) & Earliest non-empty approval date (ISO~8601) \\
+\hline
+\end{tabular}
+\end{table}
+
+Drugs@FDA stores dosage form and administration route jointly in
+\texttt{Products.Form} (e.g.\ \texttt{"TABLET;ORAL"}); the helper functions
+\texttt{fdaFormPart} and \texttt{fdaRoutePart} split this composite field
+before lookup standardization. Combination strength strings such as
+\texttt{600MG/90MG} are pre-split into individual mass tokens prior to
+numeric value/unit extraction. Because Drugs@FDA covers only human drugs,
+\texttt{productClass} maps to \textit{Human}. The \texttt{generic} flag is
+derived from application types: \texttt{true} when all contributing
+applications are \texttt{ANDA}, \texttt{false} when all are innovator
+applications (\texttt{NDA} or \texttt{BLA}), and omitted for the
+approximately 375 mixed entities. The resulting XML export
+(\texttt{fda\_medicines.xml}) passed XSD and duplicate validation with
+\textbf{8,175 unique \texttt{FDA\_} IDs}.
 
 % ------------------------------------------------------------
 \subsection{Health Canada DPD Mapper}
@@ -360,12 +410,321 @@ $\text{Authorised} > \text{Suspended} > \cdots > \text{Refused}$.
 The full export passed XSD validation with \textbf{41,636 records},
 100,094 strength pairs across 41,574 medicines, and no schema errors.
 
+% ------------------------------------------------------------
+\subsection{Integrated XML Validation Summary}
+% ------------------------------------------------------------
 
+All three translated XML files in \texttt{data/4\_translated\_mapforce/}
+were validated against \texttt{medicines.xsd} and checked for duplicate
+IDs, duplicate attribute content, and duplicate normalized entity keys
+using \texttt{check\_schema.py} (Table~\ref{tab:xml_validation}). Together,
+the three sources provide \textbf{52,459 validated medicine entities} for
+Phase~II identity resolution.
+
+\begin{table}[htbp]
+\centering
+\caption{Validation summary of translated XML datasets}
+\label{tab:xml_validation}
+\scriptsize
+\begin{tabular}{|l|r|r|r|}
+\hline
+\textbf{Validation check} & \textbf{\texttt{dpd\_medicines.xml}} & \textbf{\texttt{ema\_medicines.xml}} & \textbf{\texttt{fda\_medicines.xml}} \\
+\hline
+Records                       & 41,636 & 2,648 & 8,175 \\
+Unique IDs                    & 41,636 & 2,648 & 8,175 \\
+XSD Schema valid              & True   & True  & True  \\
+Duplicate IDs                 & 0      & 0     & 0     \\
+Duplicate content (excl.\ ID) & 0      & 0     & 0     \\
+Duplicate normalized entities & 0      & 0     & 0     \\
+\hline
+\end{tabular}
+\end{table}
 
 
 % ============================================================
 \section{Phase II: Identity Resolution}
 % ============================================================
+
+Phase~II resolves cross-jurisdictional medicine correspondences across
+Health Canada DPD ($41{,}636$ entities), EMA Medicines ($2{,}648$ entities),
+and Drugs@FDA ($8{,}175$ entities). Evaluating the full Cartesian product
+across the three dataset pairs would require
+$41{,}636 \times 2{,}648 + 41{,}636 \times 8{,}175 + 2{,}648 \times 8{,}175 = 472{,}272{,}776$
+pairwise comparisons, motivating blocking, supervised and zero-shot matchers,
+and transitive connected-components clustering.
+
+% ------------------------------------------------------------
+\subsection{Gold-Standard Dataset Construction and Stratified Split}
+% ------------------------------------------------------------
+
+To construct a representative benchmark that tests both standard matches
+and adversarial pharmaceutical corner cases, candidate pairs for manual
+annotation were sampled in two balanced pools using
+\texttt{gold\_standard\_pair\_gen.py}:
+\begin{itemize}
+  \item \textbf{Ordinary Pool (\texttt{hard=0}):} Contains candidate pairs
+  with exact or high-similarity normalized brand and active substance keys
+  alongside random negative pairs.
+  \item \textbf{Hard Pool (\texttt{hard=1}):} Targets domain-specific
+  corner cases where string similarity is misleading: (i)~identical brand
+  names with different active substances or combination vs.\ single-agent
+  formulas, (ii)~identical active substances marketed by competing generic
+  manufacturers, and (iii)~same medicine entities with regional INN salt
+  variations or device/formulation suffixes.
+\end{itemize}
+
+Three team annotators manually reviewed all candidate batches across
+\texttt{DPD/EMA} ($1{,}000$ pairs), \texttt{DPD/FDA} ($769$ pairs), and
+\texttt{EMA/FDA} ($1{,}729$ pairs), yielding \textbf{3,498 unique reviewed
+pairs} with zero duplicate rows, zero conflicting labels, and zero unlabeled
+records. Two records were labeled as a match ($\texttt{match}=1$) if and only
+if they share the same pharmacological active substance set (accounting for
+salt forms, hydration states, and regional INN spellings) and represent the
+same commercial medicine entity (including regional subsidiaries of the same
+corporate group, while excluding unrelated competing generic manufacturers).
+
+Using \texttt{gold\_standard\_combine\_split.py}, the 3,498 unified pairs
+were partitioned into an 85\% development split (\texttt{gs\_pair\_train\_val.csv},
+\textbf{2,973 pairs}) and a 15\% held-out test split (\texttt{gs\_pair\_test.csv},
+\textbf{525 pairs}) stratified jointly by $(\texttt{source\_pair}, \texttt{hard}, \texttt{match})$
+with fixed seed 42 (Table~\ref{tab:gs_split}).
+
+\begin{table}[htbp]
+\centering
+\caption{Stratified gold-standard dataset distribution across source pairs, difficulty pools, and partitions}
+\label{tab:gs_split}
+\scriptsize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{|l|l|l|r|r|r|}
+\hline
+\textbf{Source Pair} & \textbf{Difficulty Pool} & \textbf{Label} & \textbf{Whole} & \textbf{Train/Val (85\%)} & \textbf{Test (15\%)} \\
+\hline
+DPD / EMA & Ordinary (\texttt{hard=0}) & Match (1)     &   198 &   168 &  30 \\
+DPD / EMA & Ordinary (\texttt{hard=0}) & Non-match (0) &   302 &   257 &  45 \\
+DPD / EMA & Hard (\texttt{hard=1})     & Match (1)     &   217 &   184 &  33 \\
+DPD / EMA & Hard (\texttt{hard=1})     & Non-match (0) &   283 &   241 &  42 \\
+\hline
+DPD / FDA & Ordinary (\texttt{hard=0}) & Match (1)     &   122 &   104 &  18 \\
+DPD / FDA & Ordinary (\texttt{hard=0}) & Non-match (0) &   364 &   309 &  55 \\
+DPD / FDA & Hard (\texttt{hard=1})     & Match (1)     &   126 &   107 &  19 \\
+DPD / FDA & Hard (\texttt{hard=1})     & Non-match (0) &   157 &   133 &  24 \\
+\hline
+EMA / FDA & Ordinary (\texttt{hard=0}) & Match (1)     &   282 &   240 &  42 \\
+EMA / FDA & Ordinary (\texttt{hard=0}) & Non-match (0) &   670 &   570 & 100 \\
+EMA / FDA & Hard (\texttt{hard=1})     & Match (1)     &   292 &   248 &  44 \\
+EMA / FDA & Hard (\texttt{hard=1})     & Non-match (0) &   485 &   412 &  73 \\
+\hline
+\textbf{Total} & \textbf{All Pools} & \textbf{All Labels} & \textbf{3,498} & \textbf{2,973} & \textbf{525} \\
+\hline
+\end{tabular}
+\end{table}
+
+% ------------------------------------------------------------
+\subsection{Blocking and Candidate Generation}
+% ------------------------------------------------------------
+
+% TODO (Anatole): Insert StandardBlocker and TokenBlocker configuration,
+% Reduction Ratio (RR), Pairs Completeness (PC), and candidate counts table.
+
+% ------------------------------------------------------------
+\subsection{Rule-Based, Machine Learning, and Fine-Tuned PLM Matchers}
+% ------------------------------------------------------------
+
+% TODO (Hai, Trang, Özlem): Insert comparator definitions, Rule-Based
+% matcher tuning, supervised ML classifiers (Decision Tree, Random Forest,
+% SVM, Logistic Regression), and fine-tuned PLM evaluation results.
+
+% ------------------------------------------------------------
+\subsection{Zero-Shot LLM Matcher Benchmark}
+% ------------------------------------------------------------
+
+To evaluate whether a pretrained Large Language Model can resolve
+cross-jurisdictional pharmaceutical entities without task-specific training
+examples, we implemented a strictly blind Zero-Shot LLM matcher
+(\texttt{src/identity\_resolution/llm\_zero\_shot\_matcher.py}) using
+Google's \texttt{gemini-3.8-flash} model via the official \texttt{google-genai}
+SDK ($\texttt{temperature}=0.0$, structured JSON schema output enforcing
+integer $\texttt{match} \in \{0, 1\}$ and clinical rationale string
+\texttt{reason}).
+
+\paragraph{Decontaminated Zero-Shot Prompt Architecture.}
+Each test pair in \texttt{gs\_pair\_test.csv} ($n = 525$) is formatted
+with four record attributes per jurisdiction: \texttt{brandName},
+\texttt{activeSubstances}, \texttt{licenceHolder}, and \texttt{dosageForm}
+(with missing values formatted as \texttt{"Not specified"}). The system
+instruction encodes three general domain rules without exposing any
+test-set drug names or few-shot examples:
+\begin{enumerate}
+  \item \textbf{Active Substances:} Ingredients must represent the same
+  pharmacological moiety; salt forms (e.g.\ hydrochloride, sodium, maleate,
+  besylate), hydration states, and INN vs.\ USAN spellings (e.g.\
+  ciclosporin vs.\ cyclosporine) are treated as equivalent, whereas
+  single-substance vs.\ multi-substance combination products are non-matches.
+  \item \textbf{Brand Name and Licence Holder:} Identical brands or minor
+  formulation suffixes from regional subsidiaries of the same corporate
+  group are matches, whereas generic products from unrelated competing
+  manufacturers are non-matches.
+  \item \textbf{Dosage Form Variations:} Minor dosage form differences do
+  not invalidate a match when brand name, active substance set, and
+  corporate lineage agree.
+\end{enumerate}
+
+\paragraph{Comparison Against the Naive Exact-Match Baseline.}
+We benchmark the Zero-Shot LLM matcher against a deterministic
+\textbf{Naive Exact-Match Baseline} that predicts $\texttt{match}=1$ if
+and only if normalized \texttt{brandName1} equals \texttt{brandName2} and
+their normalized sets of semicolon-delimited \texttt{activeSubstances}
+are identical. Table~\ref{tab:llm_vs_baseline} reports overall test-set
+performance across all 525 held-out pairs.
+
+\begin{table}[htbp]
+\centering
+\caption{Held-out test set evaluation ($n = 525$ pairs): Naive Exact-Match Baseline vs.\ Zero-Shot LLM (\texttt{gemini-3.8-flash})}
+\label{tab:llm_vs_baseline}
+\scriptsize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{|l|r|r|r|}
+\hline
+\textbf{Metric} & \textbf{Exact-Match Baseline} & \textbf{Zero-Shot LLM (\texttt{gemini-3.8-flash})} & \textbf{Improvement ($\Delta$)} \\
+\hline
+\textbf{Macro F1 Score}       & 0.7307 (73.07\%) & \textbf{0.9485 (94.85\%)} & \textbf{+21.78 pp} \\
+\textbf{Match Class F1 (1)}   & 0.6122 (61.22\%) & \textbf{0.9344 (93.44\%)} & \textbf{+32.21 pp} \\
+\textbf{Non-Match Class F1 (0)} & 0.8492 (84.92\%) & \textbf{0.9626 (96.26\%)} & \textbf{+11.34 pp} \\
+\textbf{Overall Accuracy}     & 0.7829 (78.29\%) & \textbf{0.9524 (95.24\%)} & \textbf{+16.95 pp} \\
+Macro Precision               & 0.8016 (80.16\%) & 0.9443 (94.43\%)          & +14.27 pp \\
+Macro Recall                  & 0.7154 (71.54\%) & 0.9534 (95.34\%)          & +23.80 pp \\
+Match Precision (Class 1)     & 0.8333 (83.33\%) & 0.9128 (91.28\%)          & +7.95 pp \\
+Match Recall (Class 1)        & 0.4839 (48.39\%) & 0.9570 (95.70\%)          & +47.31 pp \\
+\hline
+True Positives (TP)           & 90               & \textbf{178}              & +88 matches found \\
+False Negatives (FN)          & 96               & \textbf{8}                & $-88$ missed matches \\
+False Positives (FP)          & 18               & \textbf{17}               & $-1$ false alarm \\
+True Negatives (TN)           & 321              & \textbf{322}              & +1 \\
+\hline
+\end{tabular}
+\end{table}
+
+The Naive Exact-Match Baseline achieves a Macro F1 of $73.07\%$ and misses
+more than half of all true matches ($\text{Recall}_1 = 48.39\%$, $\text{FN} = 96$)
+because regional salt modifiers and brand suffixes break exact string
+equality. By contrast, \texttt{gemini-3.8-flash} achieves \textbf{94.85\%
+Macro F1} ($95.24\%$ accuracy), recovering 88 additional true matches and
+reducing false negatives by $91.7\%$ (from 96 to 8).
+
+\paragraph{Performance by Difficulty Pool and Source Jurisdiction Pair.}
+Table~\ref{tab:llm_breakdowns} disaggregates test-set performance across
+difficulty pools and regulatory pair combinations. On the adversarial
+\textbf{Hard Pool} ($\texttt{hard}=1$, $235$ pairs), the Exact-Match
+Baseline fails completely on positive matches ($\text{Match F1} = 0.0000$,
+$\text{Macro F1} = 0.3717$), whereas the Zero-Shot LLM maintains
+\textbf{0.9296 Macro F1} ($0.9167$ Match F1, $93.19\%$ accuracy). Across
+source pairs, the LLM achieves $0.9864$ Macro F1 on \texttt{DPD/EMA},
+$0.9704$ on \texttt{DPD/FDA}, and $0.9144$ on \texttt{EMA/FDA}.
+
+\begin{table}[htbp]
+\centering
+\caption{Zero-Shot LLM vs.\ Naive Baseline breakdown by difficulty pool and source jurisdiction pair}
+\label{tab:llm_breakdowns}
+\scriptsize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{|l|r|r|r|r|r|r|}
+\hline
+\textbf{Subgroup} & \textbf{Pairs} & \textbf{Base.\ Macro F1} & \textbf{Base.\ Match F1} & \textbf{LLM Acc.} & \textbf{LLM Macro F1} & \textbf{LLM Match F1} \\
+\hline
+\multicolumn{7}{|l|}{\textit{Breakdown by Difficulty Pool}} \\
+\hline
+Ordinary Pool (\texttt{hard=0}) & 290 & 0.9310 & 0.9091 & 96.90\% & \textbf{0.9647} & 0.9524 \\
+Hard Pool (\texttt{hard=1})     & 235 & 0.3717 & 0.0000 & 93.19\% & \textbf{0.9296} & 0.9167 \\
+\hline
+\multicolumn{7}{|l|}{\textit{Breakdown by Source Jurisdiction Pair}} \\
+\hline
+DPD / EMA (Canada $\leftrightarrow$ EU) & 150 & 0.7366 & 0.6383 & 98.67\% & \textbf{0.9864} & 0.9844 \\
+DPD / FDA (Canada $\leftrightarrow$ US) & 116 & 0.6979 & 0.5625 & 97.41\% & \textbf{0.9704} & 0.9600 \\
+EMA / FDA (EU $\leftrightarrow$ US)     & 259 & 0.7408 & 0.6176 & 92.28\% & \textbf{0.9144} & 0.8876 \\
+\hline
+\end{tabular}
+\end{table}
+
+\paragraph{Qualitative Clinical Error Analysis.}
+Inspecting all 25 test-set discrepancies ($17$ False Positives and $8$
+False Negatives) reveals four domain patterns:
+\begin{enumerate}
+  \item \textbf{Cross-Border Licensing and Corporate Acquisitions (14 FP):}
+  In 14 pairs with identical brand names and active substances (e.g.\
+  \textit{Xolair} marketed by Novartis in the EU and Genentech in the US;
+  \textit{Doptelet} by SOBI vs.\ wholly owned subsidiary AkaRx; \textit{Tekturna}
+  by Novartis vs.\ acquirer LXO; \textit{Nevanac} by Novartis vs.\ Harrow Eye;
+  \textit{Adasuve} by Ferrer vs.\ Nova Pneuma; \textit{Zurampic} by
+  Gr\"{u}nenthal vs.\ Ironwood), the LLM leveraged pretrained domain
+  knowledge of licensing partnerships to predict $\texttt{match}=1$, whereas
+  annotators labeled them $0$ due to differing surface manufacturer names
+  (plus \textit{Tevimbra} by BeOne Medicines Germany vs.\ Ireland, which is
+  a gold-standard annotation error).
+  \item \textbf{Formulation Suffix Variants (3 FP, 1 FN):}
+  Modified delivery formulations from the same innovator (\textit{Natpar}
+  vs.\ \textit{Natpara}, \textit{Alphagan} vs.\ \textit{Alphagan P}, and
+  \textit{Afinitor Disperz} vs.\ \textit{Afinitor} predicted $1$ vs.\ GS $0$;
+  \textit{Tobi Podhaler} dry powder inhaler vs.\ \textit{TOBI} nebulizer
+  solution predicted $0$ vs.\ GS $1$).
+  \item \textbf{Regional Co-Brands, Prodrugs, and Co-Formulations (3 FN):}
+  \textit{Copalia HCT} vs.\ \textit{Exforge HCT} (distinct EU co-marketing
+  brand names from Novartis), \textit{Ivemend} (\texttt{fosaprepitant}
+  intravenous prodrug) vs.\ \textit{Emend} (\texttt{aprepitant} oral parent
+  drug), and \textit{Herceptin} (\texttt{trastuzumab}) vs.\ \textit{Herceptin
+  Hylecta} (\texttt{trastuzumab and hyaluronidase}).
+  \item \textbf{Gold-Standard Label Noise Corrected by the LLM (4 FN):}
+  Four pairs labeled $1$ in the manual gold standard are genuine
+  non-matches where the LLM's $0$ prediction is clinically correct:
+  \texttt{AURO-LAMIVUDINE/ZIDOVUDINE} (dual therapy) vs.\
+  \texttt{EFAVIRENZ; LAMIVUDINE; ZIDOVUDINE} (triple therapy), and three
+  competing generic pairs (\textit{Repaglinide Accord} vs.\ Aurobindo,
+  \textit{Pemetrexed Krka} vs.\ Shilpa, and \textit{Tadalafil Lilly} vs.\
+  Rising).
+\end{enumerate}
+
+% ------------------------------------------------------------
+\subsection{Tri-Dataset Connected-Components Clustering}
+% ------------------------------------------------------------
+
+Pairwise entity resolution produces binary correspondence sets across
+$\texttt{DPD}\leftrightarrow\texttt{EMA}$, $\texttt{DPD}\leftrightarrow\texttt{FDA}$,
+and $\texttt{EMA}\leftrightarrow\texttt{FDA}$. To consolidate these pairwise
+links into unified multi-source medicine entities for Phase~III fusion, we
+implemented graph-based transitive closure in
+\texttt{src/identity\_resolution/clustering.py} using NetworkX connected
+components. Let $G = (V, E)$ be an undirected graph where vertices $V$ are
+source-prefixed entity IDs ($\texttt{DPD\_*}$, $\texttt{EMA\_*}$, $\texttt{FDA\_*}$)
+and edges $E$ are positive pairwise match correspondences. Each connected
+component $C_k \subseteq V$ forms a unified medicine cluster assigned a
+deterministic identifier (\texttt{CLUSTER\_00001}, \dots).
+
+Executing \texttt{clustering.py} on the exact normalized baseline
+correspondences across the three validated XML datasets produces
+\textbf{1,372 cross-dataset medicine clusters} spanning at least two
+jurisdictions, including \textbf{283 three-way clusters} present in
+Canada, the EU, and the US simultaneously (Table~\ref{tab:clustering_overlap}).
+This confirms that the integrated dataset exceeds the course threshold of
+$1{,}000$ overlapping entities even before incorporating fuzzy and learned
+matcher correspondences.
+
+\begin{table}[htbp]
+\centering
+\caption{Cross-jurisdictional medicine clusters formed via connected-components transitive closure (baseline exact correspondences)}
+\label{tab:clustering_overlap}
+\scriptsize
+\begin{tabular}{|l|r|r|}
+\hline
+\textbf{Jurisdiction Combination} & \textbf{Medicine Clusters} & \textbf{Share of Multi-Source Clusters} \\
+\hline
+All 3 Sources (\texttt{DPD + EMA + FDA})      &   283 &  20.63\% \\
+Canada \& US Only (\texttt{DPD + FDA})        &   629 &  45.85\% \\
+Canada \& EU Only (\texttt{DPD + EMA})        &   311 &  22.67\% \\
+EU \& US Only (\texttt{EMA + FDA})            &   149 &  10.86\% \\
+\hline
+\textbf{Total Overlapping Entities ($\ge 2$ Sources)} & \textbf{1,372} & \textbf{100.00\%} \\
+\hline
+\end{tabular}
+\end{table}
 
 
 
