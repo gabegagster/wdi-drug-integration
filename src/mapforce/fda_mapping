@@ -3,7 +3,7 @@
 <mapping xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="35">
 	<settings>
 		<libraries>
-			<import path="wdi_helpers.mfd" saverelative="1"/>
+			<import path="helpers\wdi_helpers.mfd" saverelative="1"/>
 		</libraries>
 	</settings>
 	<resources/>
@@ -249,7 +249,7 @@
 								</entry>
 							</entry>
 						</root>
-						<text type="csv" encoding="1000" byteorder="1" byteordermark="0" inputinstance="fda_entities.csv">
+						<text type="csv" encoding="1000" byteorder="1" byteordermark="0" inputinstance="..\..\data\2_processed\fda_entities.csv">
 							<settings separator="," quote="&quot;" firstrownames="true" removeempty="true">
 								<names root="fda_entities" block="Rows">
 									<field0 name="medicine_id" type="string"/>
@@ -313,7 +313,7 @@
 								</entry>
 							</entry>
 						</root>
-						<document schema="medicines.xsd" instanceroot="{}medicines" outputinstance="medicines.xml"/>
+						<document schema="schema\medicines.xsd" instanceroot="{}medicines" outputinstance="..\..\data\4_translated_mapforce\fda_medicines.xml"/>
 					</data>
 				</component>
 				<component name="normalize-space" library="core" uid="109021" kind="5">

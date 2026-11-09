@@ -10,11 +10,11 @@ integrated attributes.
 Keep the repository folder structure and use the MapForce **Built-in** engine.
 The mappings were tested in MapForce 2027; older versions have not been verified.
 
-- **Export DPD or EMA:**
+- **Export DPD, EMA, or FDA:**
 
-  Open `dpd_mapping.mfd` or `ema_mapping.mfd`, select **Output**, and save to the
-  destination below. Both mappings import `helpers/wdi_helpers.mfd` and
-  `helpers/wdi_mapping_functions.mfd`. Keep those files beside the mappings so
+  Open `dpd_mapping.mfd`, `ema_mapping.mfd`, or `fda_mapping.mfd`, select **Output**, and save to the
+  destination below. All mappings import `helpers/wdi_helpers.mfd` (and DPD/EMA also import
+  `helpers/wdi_mapping_functions.mfd`). Keep those files beside the mappings so
   their relative imports resolve. If functions are missing, check the imports
   and files in the Libraries pane.
 
@@ -24,7 +24,7 @@ The mappings were tested in MapForce 2027; older versions have not been verified
 | EMA | `data/2_processed/ema_entities.csv` | `data/4_translated_mapforce/ema_medicines.xml` | 2,648 |
 | FDA | Drugs@FDA tables; see preparation below | `data/4_translated_mapforce/fda_medicines.xml` | 8,175 |
 
-  `fda_mapping.mfd` is currently absent from this repository. The FDA XML export
+  `fda_mapping.mfd` defines the mapping from prepared FDA entities to the integrated schema. The FDA XML export
   is available for validation and downstream processing.
 
 - **Validate all integrated XML files:**
@@ -65,7 +65,7 @@ and `jsonschema`. Jupyter is optional when mapping existing CSVs.
 
 | Location | Purpose |
 | --- | --- |
-| `dpd_mapping.mfd`, `ema_mapping.mfd` | Source-to-schema mappings |
+| `dpd_mapping.mfd`, `ema_mapping.mfd`, `fda_mapping.mfd` | Source-to-schema mappings |
 | `schema/medicines.xsd`, `schema/medicines.schema.json` | Integrated XML and JSON schemas |
 | `schema/sample_medicines.xml`, `schema/sample_medicines.json` | Equivalent sample records |
 | `schema/check_schema.py` | Schema validation and duplicate-check console logs |
