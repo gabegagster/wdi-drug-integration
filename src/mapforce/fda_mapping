@@ -1,0 +1,416 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Edited with Altova MapForce 2026r2 -->
+<mapping xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="35">
+	<settings>
+		<libraries>
+			<import path="wdi_helpers.mfd" saverelative="1"/>
+		</libraries>
+	</settings>
+	<resources/>
+	<component name="defaultmap" uid="1">
+		<properties SelectedLanguage="builtin"/>
+		<structure>
+			<children>
+				<component name="routeList" library="user" uid="109016" kind="19" visible="0">
+					<view ltx="338" lty="473" rbx="428" rby="489"/>
+					<data>
+						<root>
+							<header>
+								<namespaces>
+									<namespace/>
+								</namespaces>
+							</header>
+							<entry name="raw" inpkey="19" componentid="109001"/>
+						</root>
+						<root>
+							<header>
+								<namespaces>
+									<namespace/>
+								</namespaces>
+							</header>
+							<entry name="result" outkey="20" componentid="109014"/>
+						</root>
+					</data>
+				</component>
+				<component name="constant" library="core" uid="109019" kind="2">
+					<targets>
+						<datapoint pos="0" key="34"/>
+					</targets>
+					<view ltx="528" lty="354" rbx="570" rby="371"/>
+					<data>
+						<constant value=";" datatype="string"/>
+					</data>
+				</component>
+				<component name="dosageFormList" library="user" uid="107016" kind="19" visible="0">
+					<view ltx="338" lty="509" rbx="428" rby="525"/>
+					<data>
+						<root>
+							<header>
+								<namespaces>
+									<namespace/>
+								</namespaces>
+							</header>
+							<entry name="raw" inpkey="17" componentid="107001"/>
+						</root>
+						<root>
+							<header>
+								<namespaces>
+									<namespace/>
+								</namespaces>
+							</header>
+							<entry name="result" outkey="18" componentid="107014"/>
+						</root>
+					</data>
+				</component>
+				<component name="lowercase" library="lang" uid="8" kind="5">
+					<sources>
+						<datapoint pos="0" key="5"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="6"/>
+					</targets>
+					<view ltx="441" lty="403" rbx="515" rby="440"/>
+				</component>
+				<component name="normalize-space" library="core" uid="13" kind="5">
+					<sources>
+						<datapoint pos="0" key="8"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="9"/>
+					</targets>
+					<view ltx="473" lty="24" rbx="578" rby="61"/>
+				</component>
+				<component name="count" library="core" uid="15" kind="5">
+					<sources>
+						<datapoint/>
+						<datapoint pos="1" key="13"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="14"/>
+					</targets>
+					<view ltx="461" lty="63" rbx="575" rby="117"/>
+				</component>
+				<component name="tokenize" library="core" uid="10" kind="5">
+					<sources>
+						<datapoint pos="0" key="10"/>
+						<datapoint pos="1" key="11"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="12"/>
+					</targets>
+					<view ltx="316" lty="49" rbx="401" rby="103"/>
+				</component>
+				<component name="constant" library="core" uid="11" kind="2">
+					<targets>
+						<datapoint pos="0" key="7"/>
+					</targets>
+					<view ltx="269" lty="96" rbx="311" rby="113"/>
+					<data>
+						<constant value=";" datatype="string"/>
+					</data>
+				</component>
+				<component name="concat" library="core" uid="5" kind="5" growable="1" growablebasename="value">
+					<sources>
+						<datapoint pos="0" key="2"/>
+						<datapoint pos="1" key="3"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="4"/>
+					</targets>
+					<view ltx="387" lty="239" rbx="461" rby="294"/>
+				</component>
+				<component name="constant" library="core" uid="6" kind="2">
+					<targets>
+						<datapoint pos="0" key="1"/>
+					</targets>
+					<view ltx="305" lty="257" rbx="368" rby="274"/>
+					<data>
+						<constant value="FDA_" datatype="string"/>
+					</data>
+				</component>
+				<component name="tokenize" library="core" uid="109018" kind="5">
+					<sources>
+						<datapoint pos="0" key="35"/>
+						<datapoint pos="1" key="36"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="37"/>
+					</targets>
+					<view ltx="577" lty="316" rbx="662" rby="370"/>
+				</component>
+				<component name="Rows" library="core" uid="109034" kind="3">
+					<sources>
+						<datapoint pos="0" key="73"/>
+						<datapoint pos="1" key="74"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="75"/>
+						<datapoint/>
+					</targets>
+					<view ltx="1285" lty="535" rbx="1388" rby="589"/>
+				</component>
+				<component name="constant" library="core" uid="109033" kind="2">
+					<targets>
+						<datapoint pos="0" key="69"/>
+					</targets>
+					<view ltx="1130" lty="629" rbx="1167" rby="646"/>
+					<data>
+						<constant value="0" datatype="decimal"/>
+					</data>
+				</component>
+				<component name="greater" library="core" uid="109032" kind="5">
+					<sources>
+						<datapoint pos="0" key="70"/>
+						<datapoint pos="1" key="71"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="72"/>
+					</targets>
+					<view ltx="1205" lty="592" rbx="1266" rby="646"/>
+				</component>
+				<component name="count" library="core" uid="109030" kind="5">
+					<sources>
+						<datapoint pos="0" key="66"/>
+						<datapoint pos="1" key="67"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="68"/>
+					</targets>
+					<view ltx="1234" lty="431" rbx="1348" rby="485"/>
+				</component>
+				<component name="filter" library="core" uid="109026" kind="3">
+					<sources>
+						<datapoint pos="0" key="60"/>
+						<datapoint pos="1" key="61"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="62"/>
+						<datapoint/>
+					</targets>
+					<view ltx="1047" lty="171" rbx="1150" rby="225"/>
+				</component>
+				<component name="bestRegulatoryStatus" library="user" uid="104010" kind="19" visible="0">
+					<view ltx="338" lty="436" rbx="428" rby="452"/>
+					<data>
+						<root>
+							<header>
+								<namespaces>
+									<namespace/>
+								</namespaces>
+							</header>
+							<entry name="raw" inpkey="15" componentid="104001"/>
+						</root>
+						<root>
+							<header>
+								<namespaces>
+									<namespace/>
+								</namespaces>
+							</header>
+							<entry name="result" outkey="16" componentid="104008"/>
+						</root>
+					</data>
+				</component>
+				<component name="exists" library="core" uid="109028" kind="5">
+					<sources>
+						<datapoint pos="0" key="63"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="64"/>
+					</targets>
+					<view ltx="997" lty="402" rbx="1065" rby="439"/>
+				</component>
+				<component name="fda entities" library="text" uid="2" kind="16">
+					<properties/>
+					<view rbx="196" rby="410"/>
+					<data>
+						<root>
+							<header>
+								<namespaces>
+									<namespace/>
+									<namespace uid="http://www.altova.com/mapforce"/>
+								</namespaces>
+							</header>
+							<entry name="FileInstance" ns="1" expanded="1">
+								<entry name="document" ns="1" expanded="1">
+									<entry name="Rows" outkey="21" expanded="1">
+										<entry name="medicine_id" outkey="22"/>
+										<entry name="brand_name" outkey="23"/>
+										<entry name="active_substances" outkey="24"/>
+										<entry name="source" outkey="25"/>
+										<entry name="product_class" outkey="26"/>
+										<entry name="licence_holder" outkey="27"/>
+										<entry name="generic" outkey="28"/>
+										<entry name="current_status" outkey="29"/>
+										<entry name="dosage_forms" outkey="30"/>
+										<entry name="routes" outkey="31"/>
+										<entry name="strengths" outkey="32"/>
+										<entry name="us_approval_date" outkey="33"/>
+									</entry>
+								</entry>
+							</entry>
+						</root>
+						<text type="csv" encoding="1000" byteorder="1" byteordermark="0" inputinstance="fda_entities.csv">
+							<settings separator="," quote="&quot;" firstrownames="true" removeempty="true">
+								<names root="fda_entities" block="Rows">
+									<field0 name="medicine_id" type="string"/>
+									<field1 name="brand_name" type="string"/>
+									<field2 name="active_substances" type="string"/>
+									<field3 name="product_count" type="string"/>
+									<field4 name="application_types" type="string"/>
+									<field5 name="licence_holders_all" type="string"/>
+									<field6 name="source" type="string"/>
+									<field7 name="product_class" type="string"/>
+									<field8 name="licence_holder" type="string"/>
+									<field9 name="licence_holder_coverage" type="string"/>
+									<field10 name="generic" type="string"/>
+									<field11 name="current_status" type="string"/>
+									<field12 name="dosage_forms" type="string"/>
+									<field13 name="routes" type="string"/>
+									<field14 name="strengths" type="string"/>
+									<field15 name="us_approval_date" type="string"/>
+								</names>
+							</settings>
+						</text>
+					</data>
+				</component>
+				<component name="medicines" library="xml" uid="3" kind="14">
+					<properties XSLTTargetEncoding="UTF-8" XSLTDefaultOutput="1"/>
+					<view ltx="1422" lty="-59" rbx="2155" rby="400"/>
+					<data>
+						<root>
+							<header>
+								<namespaces>
+									<namespace/>
+									<namespace uid="http://www.altova.com/mapforce"/>
+								</namespaces>
+							</header>
+							<entry name="FileInstance" ns="1" expanded="1">
+								<entry name="document" ns="1" expanded="1" casttotargettypemode="cast-in-subtree">
+									<entry name="medicines" expanded="1">
+										<entry name="medicine" inpkey="38" expanded="1">
+											<entry name="id" inpkey="39"/>
+											<entry name="source" inpkey="40"/>
+											<entry name="brandName" inpkey="41"/>
+											<entry name="activeSubstances" expanded="1">
+												<entry name="activeSubstance" inpkey="42"/>
+											</entry>
+											<entry name="activeSubstanceCount" inpkey="43"/>
+											<entry name="licenceHolder" inpkey="44"/>
+											<entry name="regulatoryStatus" inpkey="45"/>
+											<entry name="productClass" inpkey="46"/>
+											<entry name="generic" inpkey="47"/>
+											<entry name="dosageForm" inpkey="48"/>
+											<entry name="route" inpkey="49"/>
+											<entry name="strengths" inpkey="65" expanded="1">
+												<entry name="strength" inpkey="50" expanded="1">
+													<entry name="value" inpkey="51"/>
+													<entry name="unit" inpkey="79"/>
+												</entry>
+											</entry>
+											<entry name="usApprovalDate" inpkey="53"/>
+										</entry>
+									</entry>
+								</entry>
+							</entry>
+						</root>
+						<document schema="medicines.xsd" instanceroot="{}medicines" outputinstance="medicines.xml"/>
+					</data>
+				</component>
+				<component name="normalize-space" library="core" uid="109021" kind="5">
+					<sources>
+						<datapoint pos="0" key="58"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="59"/>
+					</targets>
+					<view ltx="691" lty="333" rbx="796" rby="370"/>
+				</component>
+				<component name="strengthUnit" library="user" uid="109025" kind="19" visible="0">
+					<view ltx="826" lty="509" rbx="916" rby="525"/>
+					<data>
+						<root>
+							<header>
+								<namespaces>
+									<namespace/>
+								</namespaces>
+							</header>
+							<entry name="raw" inpkey="56" componentid="102001"/>
+						</root>
+						<root>
+							<header>
+								<namespaces>
+									<namespace/>
+								</namespaces>
+							</header>
+							<entry name="result" outkey="57" componentid="102071"/>
+						</root>
+					</data>
+				</component>
+				<component name="strengthValue" library="user" uid="109023" kind="19" visible="0">
+					<view ltx="837" lty="456" rbx="927" rby="472"/>
+					<data>
+						<root>
+							<header>
+								<namespaces>
+									<namespace/>
+								</namespaces>
+							</header>
+							<entry name="raw" inpkey="80" componentid="101001"/>
+						</root>
+						<root>
+							<header>
+								<namespaces>
+									<namespace/>
+								</namespaces>
+							</header>
+							<entry name="result" outkey="81" componentid="101034"/>
+						</root>
+					</data>
+				</component>
+			</children>
+		</structure>
+		<connections>
+			<edge from="1" to="2"/>
+			<edge from="22" to="3"/>
+			<edge from="28" to="5"/>
+			<edge from="12" to="8"/>
+			<edge from="24" to="10"/>
+			<edge from="7" to="11"/>
+			<edge from="12" to="13"/>
+			<edge from="29" to="15"/>
+			<edge from="30" to="17"/>
+			<edge from="31" to="19"/>
+			<edge from="32" to="35"/>
+			<edge from="34" to="36"/>
+			<edge from="21" to="38"/>
+			<edge from="4" to="39"/>
+			<edge from="25" to="40"/>
+			<edge from="23" to="41"/>
+			<edge from="9" to="42"/>
+			<edge from="14" to="43"/>
+			<edge from="27" to="44"/>
+			<edge from="16" to="45"/>
+			<edge from="26" to="46"/>
+			<edge from="6" to="47"/>
+			<edge from="18" to="48"/>
+			<edge from="20" to="49"/>
+			<edge from="62" to="50"/>
+			<edge from="81" to="51"/>
+			<edge from="33" to="53"/>
+			<edge from="59" to="56"/>
+			<edge from="37" to="58"/>
+			<edge from="59" to="60"/>
+			<edge from="64" to="61"/>
+			<edge from="81" to="63"/>
+			<edge from="75" to="65"/>
+			<edge from="21" to="66"/>
+			<edge from="62" to="67"/>
+			<edge from="68" to="70"/>
+			<edge from="69" to="71"/>
+			<edge from="21" to="73"/>
+			<edge from="72" to="74"/>
+			<edge from="57" to="79"/>
+			<edge from="59" to="80"/>
+		</connections>
+	</component>
+</mapping>
