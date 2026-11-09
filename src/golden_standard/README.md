@@ -16,7 +16,7 @@ You can replace `python` with `.venv\Scripts\python.exe`.
   python src/golden_standard/gold_standard.py get-pairs --dataset1 dpd --dataset2 ema --n 500 --seed 42
   ```
 
-  Open `data/5_golden_standard_pair/gs_dpd_ema_raw.csv`. Fill `match` with `1`
+  Open `../../data/5_golden_standard_pair/gs_dpd_ema_raw_2.csv`. Fill `match` with `1`
   for the same medicine or `0` for different medicines. Finish labeling before
   merging and preserve the other columns.
 
@@ -168,6 +168,8 @@ hard, match
   the affected pair IDs so reviewers can correct the source files and retry.
 - A successful merge writes `gs_<dataset1>_<dataset2>_unified.csv` and keeps
   each pair once. A pair selected through both pools retains `hard=1`.
+- Add `--export-pydi` to also write `gs_<dataset1>_<dataset2>_unified_pydi.csv`
+  with every merged pair as `id1,id2,label`. This export applies no selection.
 - Review files use dataset suffixes for attributes and IDs. Pair IDs are
   rebuilt from the record IDs when imported. Earlier files with numeric suffixes
   can also be read.
@@ -205,5 +207,5 @@ Label percentages use unique pairs with valid, consistent labels.
 Outputs:
 
 - `gs_<dataset1>_<dataset2>_selected.csv`: selected review rows.
-- `gs_<dataset1>_<dataset2>_pydi.csv`: `id1,id2,label` for PyDI, with the manual
+- `gs_<dataset1>_<dataset2>_select_pydi.csv`: `id1,id2,label` for PyDI, with the manual
   match labels exported as `label`.

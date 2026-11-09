@@ -352,8 +352,8 @@ def read_reviews(inputs):
     return pd.concat(frames, ignore_index=True)
 
 
-def merge_samples(inputs, output_dir):
-    """Merge one source pair's fully labeled files; reject missing or conflicting labels."""
+def merge_samples(inputs, output_dir, export_pydi=False):
+    """Merge fully labeled files for one source pair and optionally export all PyDI pairs."""
     rows = read_reviews(inputs)
     combinations = rows[["source1", "source2"]].apply(lambda col: col.str.lower()).drop_duplicates()
     if len(combinations) != 1:
@@ -375,8 +375,9 @@ def merge_samples(inputs, output_dir):
                          + "\nCorrect the listed pairs in the input files and merge again.")
     source1, source2 = combinations.iloc[0]
     output = Path(output_dir) / f"gs_{source1}_{source2}_unified.csv"
-    if output.exists():
-        raise FileExistsError("Unified file already exists; use a new --output-dir")
+    pydi_output = Path(output_dir) / f"gs_{source1}_{source2}_unified_pydi.csv"
+    if output.exists() or (export_pydi and pydi_output.exists()):
+        raise FileExistsError("Unified or PyDI file already exists; use a new --output-dir")
 
     # Merge Duplicate Labels
     merged = []
@@ -384,7 +385,11 @@ def merge_samples(inputs, output_dir):
         record = group.iloc[0].to_dict()
         record["hard"] = str(group["hard"].astype(int).max())
         merged.append(record)
-    save_csv(review_export(pd.DataFrame(merged, columns=rows.columns), source1, source2), output)
+    merged = pd.DataFrame(merged, columns=rows.columns)
+    save_csv(review_export(merged, source1, source2), output)
+    if export_pydi:
+        pydi = merged[["id1", "id2", "match"]].rename(columns={"match": "label"})
+        save_csv(pydi, pydi_output)
     print(f"Removed {len(rows) - len(merged):,} duplicate rows")
 
 
@@ -430,7 +435,7 @@ def select_pairs(input_file, size, seed, output_dir):
         raise ValueError("Select from exactly one source combination at a time")
     source1, source2 = combinations.iloc[0]
     output = Path(output_dir) / f"gs_{source1}_{source2}_selected.csv"
-    pydi_output = Path(output_dir) / f"gs_{source1}_{source2}_pydi.csv"
+    pydi_output = Path(output_dir) / f"gs_{source1}_{source2}_select_pydi.csv"
     if output.exists() or pydi_output.exists():
         raise FileExistsError("Selected or PyDI file already exists; use a new --output-dir")
 
@@ -470,6 +475,7 @@ def main():
     merge = commands.add_parser("merge", help="Unify manually reviewed files for one source pair")
     merge.add_argument("--inputs", nargs="+", required=True)
     merge.add_argument("--output-dir", type=Path, default=OUTPUT_DIR)
+    merge.add_argument("--export-pydi", action="store_true", help="Export all merged pairs as id1,id2,label")
     stats = commands.add_parser("stats", help="Count reviewed labels and sampling groups")
     stats.add_argument("--input", required=True)
     select = commands.add_parser("select", help="Select fixed 20/50/30 proportions and export PyDI labels")
@@ -482,7 +488,7 @@ def main():
         if args.command == "get-pairs":
             get_pairs(args.dataset1, args.dataset2, args.n, args.seed, args.output_dir, args.exclude)
         elif args.command == "merge":
-            merge_samples(args.inputs, args.output_dir)
+            merge_samples(args.inputs, args.output_dir, args.export_pydi)
         elif args.command == "stats":
             check_labels(args.input)
         elif args.command == "select":
