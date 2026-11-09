@@ -151,6 +151,7 @@ activemq-data/
 .env
 .envrc
 .venv
+.venv-py315-backup/
 env/
 venv/
 ENV/
@@ -223,7 +224,6 @@ __marimo__/
 data/1_raw/US Drug/
 data/1_raw/EU Drug.csv
 data/3_fused/*
-data/5_golden_standard_pair/
 
 # Keep the ignored fused-data directory itself.
 !data/3_fused/.gitkeep

@@ -1,108 +1,174 @@
-"""Validate the target schema samples and keep the XML / JSON samples in sync.
+"""Validate integrated medicine XML/JSON files and report duplicate records."""
 
-Usage (from the repo root):
-    python src/mapforce/schema/check_schema.py              # validate both samples
-    python src/mapforce/schema/check_schema.py --regen-json  # rebuild sample JSON from sample XML
-    python src/mapforce/schema/check_schema.py path/to/fda_medicines.xml   # validate any MapForce output
-
-The XML -> JSON conversion here defines the canonical correspondence between both formats:
-list wrappers become arrays, xs:boolean / xs:decimal / xs:integer become JSON booleans / numbers.
-"""
+import argparse
+from collections import defaultdict
 import json
-import sys
 from pathlib import Path
+import re
+import unicodedata
 
 import jsonschema
 from lxml import etree
+
 
 HERE = Path(__file__).resolve().parent
 XSD = HERE / "medicines.xsd"
 JSON_SCHEMA = HERE / "medicines.schema.json"
 SAMPLE_XML = HERE / "sample_medicines.xml"
 SAMPLE_JSON = HERE / "sample_medicines.json"
-
 LISTS = {"activeSubstances": "activeSubstance", "strengths": "strength"}
-INTS = {"activeSubstanceCount"}
 BOOLS = {"generic", "biosimilar", "orphanMedicine"}
 
 
-def _num(text):
-    f = float(text)
-    return int(f) if f.is_integer() else f
-
-
-def medicine_to_dict(el):
-    rec = {}
-    for child in el:
-        if not isinstance(child.tag, str):  # skip comments
+def medicine_to_dict(element):
+    """Convert one schema-valid XML medicine to a JSON-compatible record."""
+    record = {}
+    for child in element:
+        if not isinstance(child.tag, str):
             continue
         tag = child.tag
-        if tag in LISTS:
-            items = [c for c in child if isinstance(c.tag, str)]
-            if tag == "strengths":
-                rec[tag] = [
-                    {k: (_num(v) if k == "value" else v)
-                     for k, v in ((s.tag, s.text) for s in it if isinstance(s.tag, str))}
-                    for it in items
-                ]
-            else:
-                rec[tag] = [i.text for i in items]
-        elif tag in INTS:
-            rec[tag] = int(child.text)
+        if tag == "strengths":
+            strengths = []
+            for strength in child:
+                if not isinstance(strength.tag, str):
+                    continue
+                item = {}
+                for part in strength:
+                    if not isinstance(part.tag, str):
+                        continue
+                    if part.tag == "value":
+                        value = float(part.text)
+                        item[part.tag] = int(value) if value.is_integer() else value
+                    else:
+                        item[part.tag] = part.text
+                strengths.append(item)
+            record[tag] = strengths
+        elif tag in LISTS:
+            record[tag] = [item.text for item in child if isinstance(item.tag, str)]
+        elif tag == "activeSubstanceCount":
+            record[tag] = int(child.text)
         elif tag in BOOLS:
-            rec[tag] = child.text.strip() in ("true", "1")
+            record[tag] = child.text.strip() in ("true", "1")
         else:
-            rec[tag] = child.text
-    return rec
+            record[tag] = child.text
+    return record
 
 
 def xml_to_json(xml_path):
+    """Read medicine XML and return its equivalent JSON object."""
     root = etree.parse(str(xml_path)).getroot()
-    return {"medicines": [medicine_to_dict(m) for m in root if isinstance(m.tag, str)]}
+    return {"medicines": [medicine_to_dict(item) for item in root
+                          if isinstance(item.tag, str)]}
+
+
+def normalize_text(value):
+    """Normalize case, accents, punctuation, and whitespace for duplicate keys."""
+    text = unicodedata.normalize("NFKD", value).casefold()
+    text = "".join(char for char in text if not unicodedata.combining(char))
+    return " ".join(re.sub(r"[\W_]+", " ", text).split())
+
+
+def check_duplicates(records):
+    """Return extra-row counts for IDs, record content, and source-specific entity keys."""
+    groups = {"Duplicate IDs": defaultdict(list),
+              "Duplicate content excluding ID": defaultdict(list),
+              "Duplicate normalized entities": defaultdict(list)}
+
+    # Group Records
+    for record in records:
+        record_id = record["id"]
+        attributes = {key: value for key, value in record.items() if key != "id"}
+        content_key = json.dumps(attributes, sort_keys=True, ensure_ascii=False)
+        substances = tuple(sorted({normalize_text(value) for value in record["activeSubstances"]}))
+        entity_key = (record["source"], normalize_text(record["brandName"]), substances)
+        groups["Duplicate IDs"][record_id].append(record_id)
+        groups["Duplicate content excluding ID"][content_key].append(record_id)
+        groups["Duplicate normalized entities"][entity_key].append(record_id)
+
+    # Count Extra Rows
+    counts = {}
+    for name, values in groups.items():
+        duplicates = [ids for ids in values.values() if len(ids) > 1]
+        counts[name] = sum(len(ids) - 1 for ids in duplicates)
+        print(f"{name}: {counts[name]:,} extra rows ({len(duplicates):,} groups)")
+        for ids in duplicates[:5]:
+            print("  " + "; ".join(ids[:5]))
+    return counts
 
 
 def validate_xml(xml_path):
+    """Validate XML against the XSD and return schema and duplicate-check results."""
     schema = etree.XMLSchema(etree.parse(str(XSD)))
-    doc = etree.parse(str(xml_path))
-    if not schema.validate(doc):
-        for err in list(schema.error_log)[:20]:
-            print(f"  line {err.line}: {err.message}")
-        raise SystemExit(f"XSD validation FAILED: {xml_path}")
-    n = sum(1 for m in doc.getroot() if isinstance(m.tag, str))
-    print(f"XSD  OK  {xml_path.name} ({n} medicines)")
+    document = etree.parse(str(xml_path))
+    valid = schema.validate(document)
+    for error in list(schema.error_log)[:20]:
+        print(f"  line {error.line}: {error.message}")
+    records = [medicine_to_dict(item) for item in document.getroot()
+               if isinstance(item.tag, str)]
+    print(f"XSD {'OK' if valid else 'FAILED'}: {xml_path.name} ({len(records):,} medicines)")
+    print(f"Unique IDs: {len({record['id'] for record in records}):,}")
+    duplicates = check_duplicates(records)
+    return {"file": xml_path.name, "records": len(records), "schema_valid": valid,
+            "unique_ids": len({record['id'] for record in records}), **duplicates}
 
 
 def validate_json(obj, label):
-    schema = json.loads(JSON_SCHEMA.read_text())
+    """Validate a JSON medicine object and return schema and duplicate-check results."""
+    schema = json.loads(JSON_SCHEMA.read_text(encoding="utf-8"))
     validator = jsonschema.Draft202012Validator(
         schema, format_checker=jsonschema.Draft202012Validator.FORMAT_CHECKER)
-    errors = sorted(validator.iter_errors(obj), key=lambda e: list(e.path))
+    errors = list(validator.iter_errors(obj))
+    for error in errors[:20]:
+        print(f"  {list(error.path)}: {error.message}")
     if errors:
-        for e in errors[:20]:
-            print(f"  {list(e.path)}: {e.message}")
-        raise SystemExit(f"JSON Schema validation FAILED: {label}")
-    print(f"JSON OK  {label} ({len(obj['medicines'])} medicines)")
+        raise ValueError(f"JSON Schema validation FAILED: {label}")
+    records = obj["medicines"]
+    print(f"JSON OK: {label} ({len(records):,} medicines)")
+    print(f"Unique IDs: {len({record['id'] for record in records}):,}")
+    duplicates = check_duplicates(records)
+    return {"file": label, "records": len(records), "schema_valid": True,
+            "unique_ids": len({record['id'] for record in records}), **duplicates}
 
 
-def main(argv):
-    if "--regen-json" in argv:
-        SAMPLE_JSON.write_text(json.dumps(xml_to_json(SAMPLE_XML), indent=2, ensure_ascii=False) + "\n")
-        print(f"wrote {SAMPLE_JSON.name}")
-    paths = [Path(a) for a in argv if not a.startswith("--")]
-    if paths:
-        for p in paths:
-            if p.suffix == ".json":
-                validate_json(json.loads(p.read_text()), p.name)
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("paths", nargs="*", type=Path)
+    parser.add_argument("--regen-json", action="store_true", help="Rebuild the JSON sample from XML")
+    args = parser.parse_args(argv)
+    results = []
+
+    try:
+        # Update Sample
+        if args.regen_json:
+            sample = xml_to_json(SAMPLE_XML)
+            SAMPLE_JSON.write_text(json.dumps(sample, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+            print(f"Saved {SAMPLE_JSON.name}")
+
+        # Validate Files
+        paths = args.paths or [SAMPLE_XML, SAMPLE_JSON]
+        for path in paths:
+            if path.suffix.lower() == ".json":
+                result = validate_json(json.loads(path.read_text(encoding="utf-8-sig")), path.name)
             else:
-                validate_xml(p)
-        return
-    validate_xml(SAMPLE_XML)
-    sample_json = json.loads(SAMPLE_JSON.read_text())
-    validate_json(sample_json, SAMPLE_JSON.name)
-    if sample_json != xml_to_json(SAMPLE_XML):
-        raise SystemExit("sample_medicines.json is out of sync with the XML sample (run with --regen-json)")
-    print("XML and JSON samples are equivalent")
+                result = validate_xml(path)
+            results.append(result)
+
+        # Compare Samples
+        if not args.paths:
+            sample = json.loads(SAMPLE_JSON.read_text(encoding="utf-8-sig"))
+            if sample != xml_to_json(SAMPLE_XML):
+                raise ValueError("XML and JSON samples differ; run with --regen-json")
+            print("XML and JSON samples are equivalent")
+
+        # Check Results
+        failed = any(not item["schema_valid"] or item["Duplicate IDs"]
+                     or item["Duplicate content excluding ID"] or item["Duplicate normalized entities"]
+                     for item in results)
+        if failed:
+            parser.exit(1, "Validation FAILED: schema errors or duplicates found\n")
+    except (OSError, ValueError, TypeError, KeyError, etree.LxmlError) as error:
+        parser.exit(1, f"Validation FAILED: {error}\n")
 
 
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    main()

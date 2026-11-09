@@ -13,7 +13,7 @@ This repository contains the codebase, data pipeline, and documentation for our 
 * **Phase III: Data Fusion:** Merging matched records and resolving data conflicts across sources to produce a single, consolidated golden record per medicine.
 
 ## Local Setup
-Ensure you have Python installed, then install the necessary dependencies for data profiling and integration:
+Use **Python 3.12** (also specified in `.python-version`), then install the dependencies for data profiling and integration:
 ```bash
 pip install -r requirements.txt
 ```
@@ -24,7 +24,30 @@ For Windows PowerShell, use the project's configured virtual environment explici
 & .\.venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
+If pip encounters Windows' path-length limit in this deeply nested project
+directory, use [uv](https://docs.astral.sh/uv/) against the same environment:
+
+```powershell
+uv pip install --python .\.venv\Scripts\python.exe -r requirements.txt
+```
+
 The requirements include `lxml` and `jsonschema` for validating MapForce XML/JSON output. See [`src/mapforce/README.md`](src/mapforce/README.md#4-verification--validation) for validation commands, the current DPD mapping status, and known environment limitations.
+
+Phase II uses Mannheim's [PyDI framework](https://github.com/wbsg-uni-mannheim/PyDI),
+distributed as `uma-pydi` and imported as `PyDI`. Its version is pinned in
+`requirements.txt`. Python 3.12 is used because PyDI 0.2.1 requires NumPy 2.1.x,
+which does not provide Windows wheels for Python 3.15.
+
+Verify the environment and run a small blocking and matching example:
+
+```powershell
+& .\.venv\Scripts\python.exe -m pip check
+& .\.venv\Scripts\python.exe src/identity_resolution/check_environment.py
+```
+
+For notebooks, select this project's `.venv` interpreter as the kernel.
+The check uses synthetic medicines and needs no API key or model download.
+It verifies installation, not the accuracy of the eventual matching pipeline.
 
 ## Repository Structure
 ```text

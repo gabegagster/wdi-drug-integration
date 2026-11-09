@@ -1,11 +1,13 @@
-# Gold-standard sampling
+# Gold-standard pairs
 
 The script creates medicine pairs from the three XML files in
 `data/4_translated_mapforce`, prepares them for manual labeling, and selects
 a gold-standard set from the reviewed labels. Outputs go to
 `data/5_golden_standard_pair`.
 
-## Quick start
+## gold_standard_pair_gen.py
+
+### Quick start
 
 Run from the repository root with the project environment activated.
 You can replace `python` with `.venv\Scripts\python.exe`.
@@ -13,17 +15,17 @@ You can replace `python` with `.venv\Scripts\python.exe`.
 - **Generate pairs for review:**
 
   ```powershell
-  python src/golden_standard/gold_standard.py get-pairs --dataset1 dpd --dataset2 ema --n 500 --seed 42
+  python src/golden_standard/gold_standard_pair_gen.py get-pairs --dataset1 dpd --dataset2 ema --n 500 --seed 42
   ```
 
-  Open `../../data/5_golden_standard_pair/gs_dpd_ema_raw_2.csv`. Fill `match` with `1`
+  Open `data/5_golden_standard_pair/gs_dpd_ema_raw.csv`. Fill `match` with `1`
   for the same medicine or `0` for different medicines. Finish labeling before
   merging and preserve the other columns.
 
 - **Add another batch:**
 
   ```powershell
-  python src/golden_standard/gold_standard.py get-pairs --dataset1 dpd --dataset2 ema --n 500 --seed 99 --exclude data/5_golden_standard_pair/gs_dpd_ema_raw.csv --output-dir data/5_golden_standard_pair/round2
+  python src/golden_standard/gold_standard_pair_gen.py get-pairs --dataset1 dpd --dataset2 ema --n 500 --seed 99 --exclude data/5_golden_standard_pair/gs_dpd_ema_raw.csv --output-dir data/5_golden_standard_pair/round2
   ```
 
   Supply all earlier review files through `--exclude` and choose a new seed
@@ -32,19 +34,19 @@ You can replace `python` with `.venv\Scripts\python.exe`.
 - **Merge labeled batches:**
 
   ```powershell
-  python src/golden_standard/gold_standard.py merge --inputs data/5_golden_standard_pair/gs_dpd_ema_raw.csv data/5_golden_standard_pair/round2/gs_dpd_ema_raw.csv
+  python src/golden_standard/gold_standard_pair_gen.py merge --inputs data/5_golden_standard_pair/gs_dpd_ema_raw.csv data/5_golden_standard_pair/round2/gs_dpd_ema_raw.csv
   ```
 
 - **Check counts and percentages:**
 
   ```powershell
-  python src/golden_standard/gold_standard.py stats --input data/5_golden_standard_pair/gs_dpd_ema_unified.csv
+  python src/golden_standard/gold_standard_pair_gen.py stats --input data/5_golden_standard_pair/gs_dpd_ema_unified.csv
   ```
 
 - **Select the final labeled pairs:**
 
   ```powershell
-  python src/golden_standard/gold_standard.py select --input data/5_golden_standard_pair/gs_dpd_ema_unified.csv --size 500 --seed 42
+  python src/golden_standard/gold_standard_pair_gen.py select --input data/5_golden_standard_pair/gs_dpd_ema_unified.csv --size 500 --seed 42
   ```
 
 Dataset names are `dpd`, `ema`, and `fda`. File names use the order DPD, EMA,
@@ -52,7 +54,7 @@ FDA, so either input order for EMA and FDA produces `gs_ema_fda_raw.csv`.
 Existing files are protected from overwriting; use `--output-dir` for another
 export. Each command has `--help`.
 
-## Sampling strategy
+### Sampling strategy
 
 Each call samples pairs from two datasets using fixed proportions:
 
@@ -73,7 +75,7 @@ Each call samples pairs from two datasets using fixed proportions:
 - Keep the existing record IDs. A readable pair ID joins them in the fixed
   dataset order: `DPD_... <-> EMA_...`.
 
-### Hard-pair strategies
+#### Hard-pair strategies
 
 Medicine identity can be ambiguous because name variations and overlapping
 ingredient lists produce similar-looking records. These strategies collect
@@ -101,7 +103,7 @@ and numbers for review.
 - Stop with an error if the available hard or likely-match candidates cannot
   fill the requested batch.
 
-### Similarity examples
+#### Similarity examples
 
 These examples use fictional names and ingredients X, Y, and Z. Jaccard is
 the number of shared items divided by the number of distinct items combined.
@@ -137,7 +139,7 @@ MILER  -> mil, ile, ler
   normalize vectors to unit length, and calculate cosine scores in sparse
   batches. Ingredient sets provide additional information during manual review.
 
-## Review columns
+### Review columns
 
 | Columns | Meaning |
 | --- | --- |
@@ -159,7 +161,7 @@ brandName_dpd, brandName_ema, activeSubstances_dpd, activeSubstances_ema, ...,
 hard, match
 ```
 
-## Merging and checking
+### Merging and checking
 
 - Merge one dataset combination at a time.
 - Every input row needs a match label of `0` or `1`. Duplicate pairs must
@@ -187,7 +189,7 @@ Correct the listed pairs in the input files and merge again.
 duplicates, and conflicting labels. Pool percentages use all unique pairs.
 Label percentages use unique pairs with valid, consistent labels.
 
-## Final selection
+### Final selection
 
 `select --size N` samples from the manually labeled collection:
 
@@ -209,3 +211,63 @@ Outputs:
 - `gs_<dataset1>_<dataset2>_selected.csv`: selected review rows.
 - `gs_<dataset1>_<dataset2>_select_pydi.csv`: `id1,id2,label` for PyDI, with the manual
   match labels exported as `label`.
+
+
+## gold_standard_combine_split.py
+
+Combine the fully labeled unified review sets and save one shared train/validation
+and test split. Use the unified review CSVs containing `hard` and `match`.
+
+### Quick start
+
+Run from the repository root:
+
+```powershell
+python src/golden_standard/gold_standard_combine_split.py --inputs data/5_golden_standard_pair/dpd_ema/gs_dpd_ema_unified.csv data/5_golden_standard_pair/dpd_fda/gs_dpd_fda_unified.csv data/5_golden_standard_pair/ema_fda/gs_ema_fda_unified.csv
+```
+
+The default ratios are 0.85 for train/validation and 0.15 for test, with seed 42.
+To change them, supply both ratios so they sum to 1:
+
+```powershell
+python src/golden_standard/gold_standard_combine_split.py --inputs data/5_golden_standard_pair/dpd_ema/gs_dpd_ema_unified.csv data/5_golden_standard_pair/dpd_fda/gs_dpd_fda_unified.csv data/5_golden_standard_pair/ema_fda/gs_ema_fda_unified.csv --train-ratio 0.80 --test-ratio 0.20 --seed 42
+```
+
+### Outputs
+
+The default output directory is
+`data/5_golden_standard_pair/golden_standard_pair_complete/`.
+Use `--output-dir` to choose another destination. Existing files are protected
+from overwriting.
+
+| File | Contents |
+| --- | --- |
+| `gs_pair_whole.csv` | All input pairs, with a `source_pair` column |
+| `gs_pair_train_val.csv` | Development pairs for training and choosing rules or thresholds |
+| `gs_pair_test.csv` | Held-out pairs for the team's final evaluation |
+
+Source pairs are `dpd_ema`, `dpd_fda`, and `ema_fda`. Review attributes use the
+shared numeric suffixes (`id1`, `id2`, `brandName1`, `brandName2`, etc.) so all
+source combinations use the same columns. Manual labels remain in `match`.
+
+### Split rules
+
+- Stratify by the combination of `source_pair`, `hard`, and `match`, preserving
+  the input proportions as closely as integer counts allow.
+- Sort pairs before splitting and use a fixed seed for repeatability with the
+  same inputs and software environment.
+- Split individual pairs. The partitions have no shared pairs; medicine IDs
+  can occur in both partitions. This evaluates held-out pairs with potentially
+  familiar medicines.
+- Reject duplicate pairs, incomplete labels, invalid ratios, and strata with
+  fewer than two pairs. Very small requested partitions can also prevent stratification.
+- Everyone should use the same saved split files. Keep test pairs untouched
+  while developing blockers and matchers.
+
+For the current 3,498 unified pairs, the default split creates 2,973 train/validation
+pairs and 525 test pairs. Selecting from those unified sets beforehand would
+change the input distribution.
+
+The Python entry point is
+`combine_split(inputs, output_dir=COMPLETE_DIR, train_ratio=0.85, test_ratio=0.15, seed=42)`.
+It saves the three CSVs and returns `(whole, train_val, test)` as DataFrames.
