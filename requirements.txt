@@ -5,3 +5,4 @@ SPARQLWrapper
 jupyter
 jsonschema
 lxml
+uma-pydi==0.2.1
