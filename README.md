@@ -1,76 +1,128 @@
 # Web Data Integration: Pharmaceutical Drug Data
 
-This repository contains the codebase, data pipeline, and documentation for our Web Data Integration (WDI) student project at the University of Mannheim. We are building an integrated dataset of approved pharmaceutical drugs across the **United States, the European Union, and Canada**, modelling a **medicine** (`brandName` + `activeSubstances`) as the central entity.
+University of Mannheim WDI project integrating pharmaceutical drug data from
+Canada, the European Union, and the United States. The central entity is a
+medicine, identified through its `brandName` and full `activeSubstances` set.
 
-## Datasets
-1. **Drugs@FDA (`01_us_drugs_at_fda`):** Official U.S. FDA database of approved drug products (`TXT/TSV` relational tables joined on `ApplNo` and `ProductNo`).
-2. **EMA Medicines (`02_eu_ema_medicines`):** European Medicines Agency register of EU-authorised medicines (`XLSX/CSV`).
-3. **Health Canada DPD (`03_ca_health_canada_dpd`):** Canadian Drug Product Database covering marketed, inactive, approved, and dormant drug products (`TXT/CSV`, 12 relational tables linked via `DRUG_CODE`).
+## Data sources
 
-## Project Phases
-* **Phase I: Data Selection and Translation:** Profiling raw data, consolidating multiple contributing product records into normalized medicine entities using shared aggregation rules (plurality sponsor voting, hierarchical status resolution, and documented boolean policies — see [`src/mapforce/README.md`](src/mapforce/README.md#entity-consolidation-rules-pre-mapping-aggregations)), and mapping all three sources to the integrated target schema (`medicines.xsd` / `medicines.schema.json`) using Altova MapForce.
-* **Phase II: Identity Resolution:** Identifying overlapping medicines across the three jurisdictions using blocking and similarity measures over `brandName` and `activeSubstances` via the PyDI framework (handling USAN vs. INN nomenclature, biologic suffixes, and salt forms).
-* **Phase III: Data Fusion:** Merging matched records and resolving data conflicts across sources to produce a single, consolidated golden record per medicine.
+| Source | Coverage | Raw data folder |
+| --- | --- | --- |
+| Health Canada DPD | Canadian drug products across regulatory statuses | `data/1_raw/03_ca_health_canada_dpd/` |
+| EMA Medicines | EU-authorised medicines | `data/1_raw/02_eu_ema_medicines/` |
+| Drugs@FDA | US-approved drug products | `data/1_raw/01_us_drugs_at_fda/` |
 
-## Local Setup
-Use **Python 3.12** (also specified in `.python-version`), then install the dependencies for data profiling and integration:
-```bash
-pip install -r requirements.txt
-```
+## Project phases
 
-For Windows PowerShell, use the project's configured virtual environment explicitly:
+### Phase I: Data selection and translation
+
+Prepare source records, consolidate products into medicine entities, and
+translate them into the shared medicine schema. Integrated XML exports for
+DPD, EMA, and FDA are available in `data/4_translated_mapforce/`.
+
+The repository includes DPD and EMA MapForce mappings, shared helper libraries,
+lookup tables, XML/JSON schemas, and schema and duplicate validation.
+The FDA XML export is available; its MapForce mapping file is currently absent.
+See the [MapForce code guide](src/mapforce/README.md) for preparation and translation instructions.
+
+#### Team & Work Split (Phase I)
+
+* **Gabriel:** Requirements compliance, math checks, and final PDF assembly.
+* **Özlem:** Use case narrative and entity overlap justification.
+* **Anatole & Hai:** Data extraction and profiling (FDA, EMA, Wikidata).
+* **Trang:** Target schema design and attribute intersection mapping.
+
+### Phase II: Identity resolution
+
+#### Gold-standard datasets
+
+Reviewed medicine pairs cover DPD/EMA, DPD/FDA, and EMA/FDA. Each source-pair
+folder contains review batches, unified and selected pairs, and PyDI exports.
+The shared whole, train/validation, and test datasets are saved in
+`data/5_golden_standard_pair/golden_standard_pair_complete/`.
+
+See the [gold-standard code guide](src/golden_standard/README.md) for generation,
+label checks, selection, exports, and the shared split. Dataset files and reports
+under `data/5_golden_standard_pair/` are versioned.
+
+### Phase III: Data fusion
+
+Planned consolidation of matched medicines into shared records.
+`src/data_fusion/` and `data/3_fused/` are placeholders.
+
+## Reports and code guides
+
+| Area | Results report | Code guide |
+| --- | --- | --- |
+| Integrated XML validation | [Schema and duplicate results](data/4_translated_mapforce/integrated%20xml%20validation.md) | [MapForce README](src/mapforce/README.md) |
+| Gold-standard pairs | [Pair validation and split results](data/5_golden_standard_pair/golden%20standard%20pair%20dataset%20report.md) | [Gold-standard README](src/golden_standard/README.md) |
+| MapForce helpers | | [Helper reference](src/mapforce/helpers/README.md) |
+
+## Local setup
+
+Use **Python 3.12**, as specified in `.python-version`. Run these commands from
+the repository root in Windows PowerShell:
 
 ```powershell
+py -3.12 -m venv .venv
 & .\.venv\Scripts\python.exe -m pip install -r requirements.txt
+& .\.venv\Scripts\python.exe -m pip check
 ```
 
-If pip encounters Windows' path-length limit in this deeply nested project
-directory, use [uv](https://docs.astral.sh/uv/) against the same environment:
+For an existing environment, start with the dependency installation command.
+If installation encounters Windows path-length limits, use `uv`:
 
 ```powershell
 uv pip install --python .\.venv\Scripts\python.exe -r requirements.txt
 ```
 
-The requirements include `lxml` and `jsonschema` for validating MapForce XML/JSON output. See [`src/mapforce/README.md`](src/mapforce/README.md#4-verification--validation) for validation commands, the current DPD mapping status, and known environment limitations.
-
-Phase II uses Mannheim's [PyDI framework](https://github.com/wbsg-uni-mannheim/PyDI),
-distributed as `uma-pydi` and imported as `PyDI`. Its version is pinned in
-`requirements.txt`. Python 3.12 is used because PyDI 0.2.1 requires NumPy 2.1.x,
-which does not provide Windows wheels for Python 3.15.
-
-Verify the environment and run a small blocking and matching example:
+Dependencies include pandas, Jupyter, `lxml`, `jsonschema`, and `uma-pydi`
+(imported as `PyDI`). Verify the PyDI environment with the offline smoke check:
 
 ```powershell
-& .\.venv\Scripts\python.exe -m pip check
 & .\.venv\Scripts\python.exe src/identity_resolution/check_environment.py
 ```
 
-For notebooks, select this project's `.venv` interpreter as the kernel.
-The check uses synthetic medicines and needs no API key or model download.
-It verifies installation, not the accuracy of the eventual matching pipeline.
+The `notebooks/` folder is for experimenting with matchers. Select the project's
+`.venv` interpreter as the notebook kernel. Altova MapForce is used for the
+translation mappings; see its code guide for the tested version and engine.
 
-## Repository Structure
+## Repository structure
+
 ```text
 wdi-drug-integration/
 ├── data/
-│   ├── 1_raw/                               # Original raw files from official regulators
-│   │   ├── 01_us_drugs_at_fda/              # Core FDA tables (Products, Applications, Submissions, MarketingStatus)
-│   │   ├── 02_eu_ema_medicines/             # EMA medicines register (ema_medicines.csv)
-│   │   ├── 03_ca_health_canada_dpd/         # DPD tables split by status (marketed, inactive, approved, dormant)
-│   │   └── _archives/                       # Compressed backups and deprecated v1 datasets
-│   ├── 2_processed/                         # Pre-joined single-table CSVs (e.g., dpd_medicines.csv) ready for MapForce
-│   ├── 3_profiling/                         # Overlap estimation (entity_count) & LLM-cleaned ingredient lists
-│   ├── 4_translated_mapforce/               # Phase I outputs: XML/JSON files mapped to the integrated schema
-│   └── 5_fused/                             # Phase III outputs: Final fused dataset after PyDI resolution & fusion
+│   ├── 1_raw/                              # Source datasets and archives
+│   │   ├── 01_us_drugs_at_fda/              # FDA relational tables
+│   │   ├── 02_eu_ema_medicines/             # EMA medicines register
+│   │   ├── 03_ca_health_canada_dpd/         # Canadian DPD tables by status
+│   │   └── _archives/                      # Compressed source backups
+│   ├── 2_processed/                        # Prepared product and medicine-entity tables
+│   ├── 3_profiling/                        # Profiling and overlap analysis
+│   │   ├── entity_count/                   # Medicine-entity counts and overlap estimates
+│   │   └── ingredient_cleaning/            # Ingredient-cleaning artifacts
+│   ├── 3_fused/                            # Placeholder for fused outputs
+│   ├── 4_translated_mapforce/              # Integrated XML exports and validation report
+│   └── 5_golden_standard_pair/             # Reviewed pairs, PyDI exports, and pair report
+│       ├── dpd_ema/                        # DPD/EMA review batches and exports
+│       ├── dpd_fda/                        # DPD/FDA review batches and exports
+│       ├── ema_fda/                        # EMA/FDA review batches and exports
+│       └── golden_standard_pair_complete/  # Shared whole, train/validation, and test CSVs
 ├── src/
-│   ├── data_collection/                     # Python scripts for dataset consolidation, profiling, and overlap checks
-│   ├── mapforce/                            # Altova MapForce mapping files (.mfd) and target schema (.xsd/.json)
-│   ├── identity_resolution/                 # PyDI scripts for blocking and similarity measures
-│   └── data_fusion/                         # PyDI scripts for conflict resolution and evaluation
+│   ├── data_collection/                    # Extraction, consolidation, and profiling scripts
+│   ├── mapforce/                           # Source-to-schema mappings and code guide
+│   │   ├── schema/                         # XML/JSON schemas, samples, and validation script
+│   │   ├── lookups/                        # Controlled vocabularies and lookup builder
+│   │   └── helpers/                        # Shared mapping libraries and helper checks
+│   ├── golden_standard/                    # Pair generation, review statistics, and split scripts
+│   ├── identity_resolution/                # PyDI environment smoke check
+│   └── data_fusion/                        # Placeholder for data-fusion code
+├── notebooks/                              # Experiments with matchers
 ├── docs/
-│   ├── outline/                             # The 4-page project outline (LaTeX & PDF)
-│   └── final_report/                        # Springer CS LaTeX files and final 12-page report
-├── .gitignore                               # Excludes large raw data files while keeping .gitkeep folder structure
-├── requirements.txt                         # Python dependencies
-└── README.md                                # Project overview
+│   ├── outline/                            # Project outline
+│   └── final_report/                       # Final-report materials
+├── .gitignore                              # Local environments, caches, and generated-file exclusions
+├── .python-version                         # Python 3.12 environment version
+├── requirements.txt                        # Python dependencies
+└── README.md                               # Project overview and documentation links
 ```
