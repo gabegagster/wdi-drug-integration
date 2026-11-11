@@ -58,7 +58,17 @@ def enforce_greedy_one_to_one(
             for _, r in df.iterrows()
         ]
 
-    df = df.sort_values(by=score_col, ascending=False)
+    # Sort descending by score with deterministic tie-breaking on id1, id2
+    sort_cols = [score_col]
+    ascending_orders = [False]
+    if "id1" in df.columns:
+        sort_cols.append("id1")
+        ascending_orders.append(True)
+    if "id2" in df.columns:
+        sort_cols.append("id2")
+        ascending_orders.append(True)
+
+    df = df.sort_values(by=sort_cols, ascending=ascending_orders)
 
     kept_rows = []
     removed_conflicts = 0

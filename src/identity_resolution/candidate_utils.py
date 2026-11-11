@@ -14,6 +14,59 @@ from typing import Any
 import pandas as pd
 
 
+COMMON_PHARMACEUTICAL_SALTS = {
+    "HYDROCHLORIDE", "HCL", "DIHYDROCHLORIDE", "MONOHYDROCHLORIDE",
+    "SODIUM", "DISODIUM", "TRISODIUM",
+    "POTASSIUM", "DIPOTASSIUM",
+    "SULFATE", "BISULFATE", "SULPHATE",
+    "BESYLATE", "BESILATE", "MESYLATE", "MESILATE", "TOSYLATE",
+    "ACETATE", "DIACETATE",
+    "MALEATE", "FUMARATE", "TARTRATE", "BITARTRATE", "SUCCINATE",
+    "CALCIUM", "MAGNESIUM", "ZINC",
+    "BROMIDE", "CHLORIDE", "IODIDE",
+    "PHOSPHATE", "DIPHOSPHATE", "MONOPHOSPHATE",
+    "CITRATE", "GLUCONATE", "LACTATE", "PROPIONATE",
+    "MONOHYDRATE", "DIHYDRATE", "TRIHYDRATE", "HEMIHYDRATE", "ANHYDROUS",
+    "AS", "OF", "WITH", "BASE",
+}
+
+
+def strip_salts(subs_str: Any) -> set[str]:
+    """Strip common salt, ester, and hydration modifiers from active substances.
+
+    Example:
+        'AMLODIPINE BESYLATE' -> {'AMLODIPINE'}
+        'abacavir (as sulfate); dolutegravir sodium' -> {'ABACAVIR', 'DOLUTEGRAVIR'}
+    """
+    if val_is_empty(subs_str):
+        return set()
+    clean = re.sub(r"[\(\)\[\],]", " ", str(subs_str).upper())
+    parts = clean.split(";")
+    base_substances = set()
+    for p in parts:
+        words = [
+            w
+            for w in re.findall(r"\b[A-Z0-9]+\b", p)
+            if w not in COMMON_PHARMACEUTICAL_SALTS and len(w) > 2
+        ]
+        if words:
+            base_substances.add(" ".join(words))
+    return base_substances
+
+
+def parse_substance_tokens(subs_str: Any) -> set[str]:
+    """Extract individual pharmacological word tokens excluding salt modifiers."""
+    if val_is_empty(subs_str):
+        return set()
+    clean = re.sub(r"[\(\)\[\],;]", " ", str(subs_str).upper())
+    tokens = {
+        w
+        for w in re.findall(r"\b[A-Z0-9]+\b", clean)
+        if w not in COMMON_PHARMACEUTICAL_SALTS and len(w) > 2
+    }
+    return tokens
+
+
 def norm_text(val: Any) -> str:
     """Normalize text by converting to upper case and condensing whitespace."""
     if val is None or pd.isna(val):

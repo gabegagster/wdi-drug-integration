@@ -42,6 +42,8 @@ from src.identity_resolution.candidate_utils import (
     load_blocking_candidates,
     load_xml_entities,
     norm_text,
+    parse_substance_tokens,
+    strip_salts,
 )
 
 # Load environment variable from .env if present
@@ -375,6 +377,7 @@ def evaluate_candidates_hierarchical(
     print(f"Loaded {total_candidates:,} candidate pairs across blocking partitions.")
 
     exact_matches = 0
+    salt_matches = 0
     fuzzy_matches = 0
     pruned_disjoint = 0
     pos_pairs = []
@@ -383,9 +386,14 @@ def evaluate_candidates_hierarchical(
 
     for _, r in df.iterrows():
         b1, b2 = norm_text(r["brandName1"]), norm_text(r["brandName2"])
-        s1, s2 = parse_substances(r["activeSubstances1"]), parse_substances(r["activeSubstances2"])
+        s1_raw, s2_raw = norm_text(r["activeSubstances1"]), norm_text(r["activeSubstances2"])
+        base_s1 = strip_salts(r["activeSubstances1"])
+        base_s2 = strip_salts(r["activeSubstances2"])
+        tokens_s1 = parse_substance_tokens(r["activeSubstances1"])
+        tokens_s2 = parse_substance_tokens(r["activeSubstances2"])
 
-        if b1 == b2 and b1 != "" and s1 == s2 and len(s1) > 0:
+        # 1. Deterministic exact normalized match (identical brand and substance string)
+        if b1 == b2 and b1 != "" and s1_raw == s2_raw and s1_raw != "":
             exact_matches += 1
             pos_pairs.append({
                 "id1": r["id1"],
@@ -396,9 +404,23 @@ def evaluate_candidates_hierarchical(
                 "match_type": "exact",
                 "reason": "Exact normalized brand and active substance match",
             })
-        elif len(s1 & s2) == 0:
+        # 2. Exact brand with cross-border salt/ester variation (e.g. Amlodipine vs Amlodipine Besylate)
+        elif b1 == b2 and b1 != "" and base_s1 == base_s2 and len(base_s1) > 0:
+            salt_matches += 1
+            pos_pairs.append({
+                "id1": r["id1"],
+                "id2": r["id2"],
+                "source_pair": r.get("source_pair", "all"),
+                "score": 0.95,
+                "match": 1,
+                "match_type": "salt_variation",
+                "reason": f"Exact brand with matching base active substances ({', '.join(sorted(base_s1))}) and regional salt variation",
+            })
+        # 3. Disjoint active substances (zero shared pharmacological tokens)
+        elif len(tokens_s1 & tokens_s2) == 0:
             pruned_disjoint += 1
-        elif s1 == s2 and len(s1) > 0:
+        # 4. Fuzzy brand with matching base active substances
+        elif base_s1 == base_s2 and len(base_s1) > 0:
             sim = SequenceMatcher(None, b1, b2).ratio()
             if sim >= fuzzy_threshold:
                 fuzzy_matches += 1
@@ -409,7 +431,7 @@ def evaluate_candidates_hierarchical(
                     "score": round(0.5 + 0.5 * sim, 4),
                     "match": 1,
                     "match_type": "fuzzy",
-                    "reason": f"Identical active substances with brand similarity {sim:.2f}",
+                    "reason": f"Matching base active substances with brand similarity {sim:.2f}",
                 })
             else:
                 borderline_candidates.append(r)
@@ -459,6 +481,7 @@ def evaluate_candidates_hierarchical(
     stats = {
         "total_candidates": total_candidates,
         "exact_matches": exact_matches,
+        "salt_matches": salt_matches,
         "fuzzy_matches": fuzzy_matches,
         "pruned_disjoint_substances": pruned_disjoint,
         "total_positive_matches": len(df_matches),
@@ -469,6 +492,7 @@ def evaluate_candidates_hierarchical(
     print(f"\nHierarchical Candidate Matching Completed in {elapsed:.2f}s:")
     print(f"- Total Candidates Evaluated: {total_candidates:,}")
     print(f"- Deterministic Exact Matches: {exact_matches:,} (0 API cost)")
+    print(f"- Cross-Border Salt Variations (same brand): {salt_matches:,} (0 API cost)")
     print(f"- Pruned Disjoint Substances: {pruned_disjoint:,} (0 API cost)")
     print(f"- High-Confidence Fuzzy Matches: {fuzzy_matches:,}")
     if sample_llm > 0:
