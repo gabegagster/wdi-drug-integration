@@ -12,6 +12,11 @@ import sys
 from pathlib import Path
 from typing import Sequence
 
+# Add project root to sys.path
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
 import networkx as nx
 import pandas as pd
 
@@ -27,9 +32,57 @@ def get_source_from_id(entity_id: str) -> str:
     return "UNKNOWN"
 
 
+def enforce_greedy_one_to_one(
+    match_pairs: pd.DataFrame,
+    score_col: str = "score",
+) -> tuple[pd.DataFrame, int]:
+    """Enforce strict 1:1 matching greedily by descending confidence score.
+
+    Iterates through candidate match correspondences and eliminates 1:N or N:M
+    conflicts per source pair.
+
+    Returns:
+        tuple of (filtered_df, removed_conflicts_count).
+    """
+    df = match_pairs.copy()
+    if "match" in df.columns:
+        df = df[df["match"] == 1]
+
+    if score_col not in df.columns:
+        df[score_col] = 1.0
+
+    # Ensure source_pair exists or infer from IDs
+    if "source_pair" not in df.columns:
+        df["source_pair"] = [
+            f"{get_source_from_id(str(r['id1'])).lower()}_{get_source_from_id(str(r['id2'])).lower()}"
+            for _, r in df.iterrows()
+        ]
+
+    df = df.sort_values(by=score_col, ascending=False)
+
+    kept_rows = []
+    removed_conflicts = 0
+
+    for _, group in df.groupby("source_pair"):
+        matched_left: set[str] = set()
+        matched_right: set[str] = set()
+        for _, row in group.iterrows():
+            id1, id2 = str(row["id1"]), str(row["id2"])
+            if id1 not in matched_left and id2 not in matched_right:
+                matched_left.add(id1)
+                matched_right.add(id2)
+                kept_rows.append(row)
+            else:
+                removed_conflicts += 1
+
+    df_kept = pd.DataFrame(kept_rows)
+    return df_kept, removed_conflicts
+
+
 def cluster_correspondences(
     match_pairs: pd.DataFrame | Sequence[tuple[str, str]],
     output_csv: Path | str | None = None,
+    enforce_one_to_one: bool = False,
 ) -> tuple[pd.DataFrame, dict[str, int | float]]:
     """Cluster pairwise match correspondences using connected components.
 
@@ -37,16 +90,22 @@ def cluster_correspondences(
         match_pairs: DataFrame with ['id1', 'id2'] columns (optionally 'match' where match=1),
                      or a sequence of (id1, id2) tuples.
         output_csv: Optional destination path for cluster mappings.
+        enforce_one_to_one: If True, applies greedy conflict resolution to ensure 1:1 matching.
 
     Returns:
         tuple of (clusters_df, metrics_dict).
     """
     graph = nx.Graph()
+    conflicts_resolved = 0
 
     if isinstance(match_pairs, pd.DataFrame):
         df_edges = match_pairs.copy()
         if "match" in df_edges.columns:
             df_edges = df_edges[df_edges["match"] == 1]
+
+        if enforce_one_to_one:
+            df_edges, conflicts_resolved = enforce_greedy_one_to_one(df_edges)
+
         for _, row in df_edges.iterrows():
             id1, id2 = str(row["id1"]), str(row["id2"])
             graph.add_edge(id1, id2)
@@ -118,6 +177,7 @@ def cluster_correspondences(
         "dpd_fda_pairwise_only": dpd_fda_only,
         "ema_fda_pairwise_only": ema_fda_only,
         "intra_source_conflict_clusters": intra_source_conflicts,
+        "conflicts_resolved": conflicts_resolved,
         "requirement_1000_met": bool(cross_dataset_clusters >= 1000),
     }
 
@@ -171,6 +231,11 @@ def main():
         default="data/3_fused/medicine_clusters.csv",
         help="Output CSV file path for cluster assignments.",
     )
+    parser.add_argument(
+        "--enforce-one-to-one",
+        action="store_true",
+        help="Apply greedy 1:1 conflict resolution before clustering.",
+    )
     args = parser.parse_args()
 
     if not args.inputs:
@@ -184,14 +249,18 @@ def main():
             ("DPD_5a", "FDA_5"),
             ("DPD_5b", "FDA_5"),  # 1:N variant cluster
         ]
-        clusters_df, metrics = cluster_correspondences(synthetic_pairs)
+        clusters_df, metrics = cluster_correspondences(
+            synthetic_pairs, enforce_one_to_one=args.enforce_one_to_one
+        )
         print(print_clustering_report(metrics))
         print("PASS: clustering smoke test completed.")
         return
 
     dfs = [pd.read_csv(p) for p in args.inputs]
     combined_df = pd.concat(dfs, ignore_index=True)
-    clusters_df, metrics = cluster_correspondences(combined_df, output_csv=args.output)
+    clusters_df, metrics = cluster_correspondences(
+        combined_df, output_csv=args.output, enforce_one_to_one=args.enforce_one_to_one
+    )
     report_text = print_clustering_report(metrics)
     print(report_text)
 

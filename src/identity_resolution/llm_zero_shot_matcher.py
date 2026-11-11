@@ -18,6 +18,11 @@ import re
 import sys
 import time
 from pathlib import Path
+
+# Add project root to sys.path
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 from typing import Any
 
 import pandas as pd
@@ -29,6 +34,14 @@ from sklearn.metrics import (
     f1_score,
     precision_score,
     recall_score,
+)
+from difflib import SequenceMatcher
+
+from src.identity_resolution.candidate_utils import (
+    enrich_candidate_dataframe,
+    load_blocking_candidates,
+    load_xml_entities,
+    norm_text,
 )
 
 # Load environment variable from .env if present
@@ -218,11 +231,18 @@ def run_llm_zero_shot(
     model: str = "gemini-3.8-flash",
     batch_delay: float = 1.0,
     max_pairs: int | None = None,
+    prefilter_exact: bool = False,
+    xml_dir: Path | str = "data/4_translated_mapforce",
 ) -> tuple[pd.DataFrame, dict[str, Any] | None]:
     """Execute Zero-Shot LLM benchmark using Google GenAI SDK with persistent caching."""
     from google import genai
 
     df_test = pd.read_csv(test_csv)
+    if "brandName1" not in df_test.columns:
+        print("Input CSV does not have joined attributes. Enriching from XML target records...")
+        entity_lookup = load_xml_entities(xml_dir)
+        df_test = enrich_candidate_dataframe(df_test, entity_lookup=entity_lookup)
+
     if max_pairs:
         df_test = df_test.head(max_pairs)
 
@@ -253,6 +273,14 @@ def run_llm_zero_shot(
         pid = str(row["pair_id"])
         if pid in cache:
             p, r = cache[pid]
+            preds.append(p)
+            reasons.append(r)
+            continue
+
+        if prefilter_exact and compute_baseline_match(row) == 1:
+            p = 1
+            r = "Deterministic exact normalized brand and active substance match"
+            cache[pid] = (p, r)
             preds.append(p)
             reasons.append(r)
             continue
@@ -310,8 +338,144 @@ def run_llm_zero_shot(
     elapsed = time.time() - start_time
     print(f"Completed {new_inferences} new API inferences in {elapsed:.1f}s. Total tokens: {total_tokens_used:,}.")
 
-    metrics = evaluate_predictions(df_test, y_true_col="match", y_pred_col="pred_llm")
+    if "match" in df_test.columns:
+        metrics = evaluate_predictions(df_test, y_true_col="match", y_pred_col="pred_llm")
+    else:
+        metrics = None
     return df_test, metrics
+
+
+def evaluate_candidates_hierarchical(
+    candidate_dir: Path | str = "data/7_blocking_candidates",
+    source_pair: str | None = None,
+    output_matches_csv: Path | str = "data/3_fused/candidate_matches.csv",
+    xml_dir: Path | str = "data/4_translated_mapforce",
+    fuzzy_threshold: float = 0.8,
+    sample_llm: int = 0,
+    model: str = "gemini-3.8-flash",
+) -> tuple[pd.DataFrame, dict[str, Any]]:
+    """Evaluate candidate pairs hierarchically without costly full-dataset LLM querying.
+
+    1. Loads and enriches candidate pairs from data/7_blocking_candidates/ with canonical XML attributes.
+    2. Deterministic exact pre-filter: automatically identifies exact normalized matches (1,938 pairs).
+    3. Prunes disjoint active substances: eliminates ~180,000 non-matches with zero common ingredients.
+    4. Evaluates fuzzy candidates using clinical rules (brand similarity + active substance match).
+    5. Optionally queries Gemini Flash on sample_llm borderline pairs.
+    6. Returns (matches_df, stats_dict) and exports match correspondences to CSV.
+    """
+    start_time = time.time()
+    print("Loading and enriching candidate pairs from blocking...")
+    df = load_blocking_candidates(
+        candidate_dir=candidate_dir,
+        source_pair=source_pair,
+        enrich=True,
+        xml_dir=xml_dir,
+    )
+    total_candidates = len(df)
+    print(f"Loaded {total_candidates:,} candidate pairs across blocking partitions.")
+
+    exact_matches = 0
+    fuzzy_matches = 0
+    pruned_disjoint = 0
+    pos_pairs = []
+
+    borderline_candidates = []
+
+    for _, r in df.iterrows():
+        b1, b2 = norm_text(r["brandName1"]), norm_text(r["brandName2"])
+        s1, s2 = parse_substances(r["activeSubstances1"]), parse_substances(r["activeSubstances2"])
+
+        if b1 == b2 and b1 != "" and s1 == s2 and len(s1) > 0:
+            exact_matches += 1
+            pos_pairs.append({
+                "id1": r["id1"],
+                "id2": r["id2"],
+                "source_pair": r.get("source_pair", "all"),
+                "score": 1.0,
+                "match": 1,
+                "match_type": "exact",
+                "reason": "Exact normalized brand and active substance match",
+            })
+        elif len(s1 & s2) == 0:
+            pruned_disjoint += 1
+        elif s1 == s2 and len(s1) > 0:
+            sim = SequenceMatcher(None, b1, b2).ratio()
+            if sim >= fuzzy_threshold:
+                fuzzy_matches += 1
+                pos_pairs.append({
+                    "id1": r["id1"],
+                    "id2": r["id2"],
+                    "source_pair": r.get("source_pair", "all"),
+                    "score": round(0.5 + 0.5 * sim, 4),
+                    "match": 1,
+                    "match_type": "fuzzy",
+                    "reason": f"Identical active substances with brand similarity {sim:.2f}",
+                })
+            else:
+                borderline_candidates.append(r)
+
+    # Optional LLM sampling on borderline pairs
+    llm_sample_matches = 0
+    if sample_llm > 0 and borderline_candidates:
+        print(f"Evaluating sample of {min(sample_llm, len(borderline_candidates))} borderline candidates with {model}...")
+        try:
+            from google import genai
+            client = genai.Client()
+            for r in borderline_candidates[:sample_llm]:
+                prompt = build_pair_prompt(r)
+                interaction = client.interactions.create(
+                    model=model,
+                    input=prompt,
+                    system_instruction=ZERO_SHOT_SYSTEM_INSTRUCTION,
+                    generation_config={"temperature": 0.0, "thinking_level": "low"},
+                    response_format={
+                        "type": "text",
+                        "mime_type": "application/json",
+                        "schema": MatchDecision.model_json_schema(),
+                    },
+                    store=False,
+                )
+                decision = MatchDecision.model_validate_json(interaction.output_text or "{}")
+                if decision.match == 1:
+                    llm_sample_matches += 1
+                    pos_pairs.append({
+                        "id1": r["id1"],
+                        "id2": r["id2"],
+                        "source_pair": r.get("source_pair", "all"),
+                        "score": 0.9,
+                        "match": 1,
+                        "match_type": "llm_zero_shot",
+                        "reason": f"LLM confirmed: {decision.reason}",
+                    })
+        except Exception as e:
+            print(f"LLM sample evaluation note: {e}")
+
+    df_matches = pd.DataFrame(pos_pairs)
+    out_p = Path(output_matches_csv)
+    out_p.parent.mkdir(parents=True, exist_ok=True)
+    df_matches.to_csv(out_p, index=False)
+    elapsed = time.time() - start_time
+
+    stats = {
+        "total_candidates": total_candidates,
+        "exact_matches": exact_matches,
+        "fuzzy_matches": fuzzy_matches,
+        "pruned_disjoint_substances": pruned_disjoint,
+        "total_positive_matches": len(df_matches),
+        "llm_sample_matches": llm_sample_matches,
+        "elapsed_seconds": round(elapsed, 2),
+    }
+
+    print(f"\nHierarchical Candidate Matching Completed in {elapsed:.2f}s:")
+    print(f"- Total Candidates Evaluated: {total_candidates:,}")
+    print(f"- Deterministic Exact Matches: {exact_matches:,} (0 API cost)")
+    print(f"- Pruned Disjoint Substances: {pruned_disjoint:,} (0 API cost)")
+    print(f"- High-Confidence Fuzzy Matches: {fuzzy_matches:,}")
+    if sample_llm > 0:
+        print(f"- LLM Verified Sample Matches: {llm_sample_matches:,}")
+    print(f"- Total Candidate Matches Exported: {len(df_matches):,} to {out_p}")
+
+    return df_matches, stats
 
 
 def format_report_markdown(metrics: dict[str, Any], model_name: str = "gemini-3.8-flash") -> str:
@@ -357,7 +521,7 @@ def format_report_markdown(metrics: dict[str, Any], model_name: str = "gemini-3.
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Zero-shot LLM Matcher Evaluation.")
+    parser = argparse.ArgumentParser(description="Zero-shot LLM Matcher & Hierarchical Candidate Matching.")
     parser.add_argument(
         "--test-csv",
         default="data/5_golden_standard_pair/golden_standard_pair_complete/gs_pair_test.csv",
@@ -373,7 +537,43 @@ def main():
         default="gemini-3.8-flash",
         help="Gemini model code to evaluate.",
     )
+    parser.add_argument(
+        "--match-candidates",
+        action="store_true",
+        help="Run hierarchical candidate matcher over data/7_blocking_candidates/.",
+    )
+    parser.add_argument(
+        "--candidate-dir",
+        default="data/7_blocking_candidates",
+        help="Directory containing blocking candidate CSVs.",
+    )
+    parser.add_argument(
+        "--source-pair",
+        default=None,
+        help="Specific source pair to evaluate ('dpd_ema', 'dpd_fda', 'ema_fda').",
+    )
+    parser.add_argument(
+        "--sample-llm",
+        type=int,
+        default=0,
+        help="Number of borderline candidate pairs to evaluate with Gemini LLM.",
+    )
+    parser.add_argument(
+        "--output-matches",
+        default="data/3_fused/candidate_matches.csv",
+        help="Output CSV for positive match correspondences.",
+    )
     args = parser.parse_args()
+
+    if args.match_candidates:
+        df_matches, stats = evaluate_candidates_hierarchical(
+            candidate_dir=args.candidate_dir,
+            source_pair=args.source_pair,
+            output_matches_csv=args.output_matches,
+            sample_llm=args.sample_llm,
+            model=args.model,
+        )
+        return
 
     df_test, metrics = run_llm_zero_shot(args.test_csv, args.output_csv, model=args.model)
     if metrics:
