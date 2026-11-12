@@ -55,7 +55,7 @@
   Anatole Lobenko (2187322)\\
   Hai Nguyen (2267317)\\
   Thu Huyen Trang Trinh (2111810)
-} \date{October 29, 2026}
+} \date{November 29, 2026}
 \publishers{{\small Submitted to}\\
   Data and Web Science Group\\
   Dr. Ralph Peeters\\
@@ -823,7 +823,7 @@ Executing \texttt{clustering.py} on the exact normalized baseline
 correspondences across the three validated XML datasets produces
 \textbf{1,372 cross-dataset medicine clusters} spanning at least two
 jurisdictions, including \textbf{283 three-way clusters} present in
-Canada, the EU, and the US simultaneously (Table~\ref{tab:clustering_overlap}).
+Canada, the EU, and the US simultaneously (Table~\ref{tab:clustering_profile}).
 This confirms that the integrated dataset exceeds the course threshold of
 $1{,}000$ overlapping entities even before incorporating fuzzy and learned
 matcher correspondences. This count refines the preliminary exploratory
@@ -844,37 +844,91 @@ with three-way international clusters increasing to \textbf{502} ($+77.4\%$ gain
 
 \begin{table}[htbp]
 \centering
-\caption{Cross-jurisdictional medicine clusters formed via connected-components transitive closure: Baseline Exact vs.\ Candidate Correspondences (Deterministic Greedy 1:1)}
-\label{tab:clustering_overlap}
+\caption{Connected-components clustering profile: Group size distribution and jurisdictional overlap breakdown (Baseline Exact vs.\ Candidate Matches with Greedy 1:1)}
+\label{tab:clustering_profile}
 \scriptsize
-\setlength{\tabcolsep}{2.5pt}
+\setlength{\tabcolsep}{4pt}
 \begin{tabular}{|l|r|r|r|r|}
 \hline
-\textbf{Jurisdiction Combination} & \textbf{Exact Baseline} & \textbf{Share} & \textbf{Candidate Matches} & \textbf{Share} \\
+\textbf{Metric / Category} & \textbf{Exact Baseline} & \textbf{Share} & \textbf{Candidate Matches} & \textbf{Share} \\
 \hline
-All 3 Sources (\texttt{DPD + EMA + FDA})      &   283 &  20.63\% &   502 &  21.43\% \\
-Canada \& US Only (\texttt{DPD + FDA})        &   629 &  45.85\% & 1,388 &  59.24\% \\
-Canada \& EU Only (\texttt{DPD + EMA})        &   311 &  22.67\% &   314 &  13.40\% \\
-EU \& US Only (\texttt{EMA + FDA})            &   149 &  10.86\% &   139 &   5.93\% \\
+\multicolumn{5}{|l|}{\textit{\textbf{Group Size Distribution ($k$)}}} \\
 \hline
-\textbf{Total Overlapping Entities ($\ge 2$ Sources)} & \textbf{1,372} & \textbf{100.00\%} & \textbf{2,343} & \textbf{100.00\%} \\
+Pairwise ($k = 2$)            & 1,089 &  79.37\% & 1,841 &  78.57\% \\
+Tri-Jurisdictional ($k = 3$)  &   283 &  20.63\% &   497 &  21.21\% \\
+Size $k = 4$                  &     0 &   0.00\% &     4 &   0.17\% \\
+Size $k = 5$                  &     0 &   0.00\% &     1 &   0.04\% \\
+\hline
+\textbf{Total Multi-Source Clusters} & \textbf{1,372} & \textbf{100.00\%} & \textbf{2,343} & \textbf{100.00\%} \\
+Total Entities Clustered      & 3,027 & ---      & 5,194 & ---      \\
+Intra-Source Variations ($k > 3$) & 0 & 0.00\%   &     5 &   0.21\% \\
+\hline
+\multicolumn{5}{|l|}{\textit{\textbf{Jurisdictional Overlap Breakdown ($\ge 2$ Sources)}}} \\
+\hline
+All 3 Sources (\texttt{DPD + EMA + FDA}) &   283 &  20.63\% &   502 &  21.43\% \\
+Canada \& US Only (\texttt{DPD + FDA})   &   629 &  45.85\% & 1,388 &  59.24\% \\
+Canada \& EU Only (\texttt{DPD + EMA})   &   311 &  22.67\% &   314 &  13.40\% \\
+EU \& US Only (\texttt{EMA + FDA})       &   149 &  10.86\% &   139 &   5.93\% \\
+\hline
+\textbf{Total Overlapping Entities}      & \textbf{1,372} & \textbf{100.00\%} & \textbf{2,343} & \textbf{100.00\%} \\
 \hline
 \end{tabular}
 \end{table}
 
+\paragraph{Cluster / Group Size Distribution.}
+A crucial quality metric for identity resolution is the group size distribution resulting from transitive closure over match correspondences. Table~\ref{tab:clustering_profile} summarizes the resulting cluster sizes for both the Exact Baseline and the Candidate Correspondences.
+\begin{itemize}
+  \item \textbf{Exact Baseline:} Transitive closure unifies $3{,}027$ medicine records into $1{,}372$ clusters (mean size $2.21$). Exactly $1{,}089$ clusters ($79.37\%$) are pairwise ($k=2$, linking two jurisdictions), and $283$ clusters ($20.63\%$) are triplets ($k=3$, linking Canada, the EU, and the US). No clusters exceed size 3 ($100.0\%$ pure $1{:}1$ and $1{:}1{:}1$ equivalence classes with zero intra-source conflicts).
+  \item \textbf{Candidate Matches (Greedy 1:1):} Transitive closure consolidates $5{,}194$ entity records into $2{,}343$ multi-source clusters (mean size $2.22$). Pairwise clusters account for $1{,}841$ clusters ($78.57\%$), and tri-jurisdictional triplets account for $497$ clusters ($21.21\%$). Only 5 clusters ($0.21\%$) contain more than three records (four of size 4, one of size 5), demonstrating that $99.79\%$ of resolved candidate clusters are strictly duplicate-free single-entry-per-source components.
+\end{itemize}
 
-
+\paragraph{Analysis of Clusters with Size $> 3$.}
+Following course guidelines, clusters containing multiple entities from the same source jurisdiction were manually audited to assess whether they originate from false-positive transitive chaining or legitimate intra-source duplicates:
+\begin{enumerate}
+  \item \texttt{CLUSTER\_00001} ($k=5$): Fixed-dose combination \textit{Irbesartan and Hydrochlorothiazide}. Both EMA and FDA contain separate marketing authorizations for competing generic manufacturers (EMA has BMS and Teva licences; FDA has two distinct ANDA applications). Transitive closure links these duplicate generic authorisations to the single Canadian DPD entry, yielding 5 records.
+  \item \texttt{CLUSTER\_00002} ($k=4$): \textit{Temozolomide}, an oncology therapeutic. Health Canada DPD contains two separate active DIN approvals from competing generic sponsors (\textit{ACH Temozolomide} and \textit{Temozolomide Capsules}) linking to single EMA and FDA records.
+  \item \texttt{CLUSTER\_00003} ($k=4$): \textit{Sitagliptin + Metformin Hydrochloride}. DPD contains two distinct generic DIN approvals (\textit{Apo-Sitagliptin} and \textit{Reddy-Sitagliptin}) matching the corresponding EMA and FDA entries.
+  \item \texttt{CLUSTER\_00004} ($k=4$): \textit{Emtricitabine + Tenofovir Disoproxil}. DPD registers two distinct generic approvals (\textit{Jamp} and \textit{Mylan}) clustering with the international reference entries.
+  \item \texttt{CLUSTER\_00005} ($k=4$): \textit{Koselugo} (\textit{selumetinib}). US Drugs@FDA lists two separate application records reflecting base substance (\textit{selumetinib}) versus sulfate salt (\textit{selumetinib sulfate}) representations, both clustering with the Canadian and European entries.
+\end{enumerate}
+In all five cases, the expanded group size reflects legitimate upstream intra-source generic duplicates or multi-application salt variations in the regulatory registers rather than false-positive cross-substance matching errors.
 
 % ============================================================
 \section{Phase III: Data Fusion}
+\label{sec:data_fusion}
 % ============================================================
 
+Phase~III integrates attributes across clustered entities, resolves conflicting values, and measures the quality profile of the consolidated pharmaceutical dataset. In accordance with the course report guidelines, this section documents the experimental results across six dimensions:
 
+\subsection{Provenance Tracking}
+Each fused entity and individual attribute value is enriched with provenance metadata, recording the source regulatory registry (\texttt{Drugs@FDA}, \texttt{EMA}, \texttt{DPD}), original national identifiers, and dataset release dates (Drugs@FDA 2026, EMA 2026, DPD 2026) to provide full lineage and auditability.
 
+\subsection{Dataset Density and Consistency Assessment}
+We evaluate the density of each input dataset prior to fusion alongside the merged dataset across the 16 target attributes. Intra-source and cross-source attribute consistency is analyzed to identify systematic discrepancies across jurisdictions (e.g., brand naming suffixes, salt representations, and regulatory status categories).
+
+\subsection{Fusion Evaluation Benchmark Set}
+To rigorously assess conflict resolution quality, an evaluation benchmark set containing $\ge 15$ multi-source medicine entities with $\ge 4$ attributes per entity is established. Ground-truth values are independently validated against external regulatory monographs and clinical pharmacopeia (e.g., DailyMed, WHO INN register), ensuring unambiguous single-record references without evaluation ambiguities.
+
+\subsection{Conflict Resolution Functions and Custom Rules}
+We systematically experiment with standard conflict resolution strategies (Voting, Longest String, Most Trusted Source based on jurisdiction data quality scores, and Union for multi-valued active substances and strengths) as well as custom pharmaceutical domain heuristics (e.g., INN-preference for substance nomenclature and hierarchical dosage form mapping).
+
+\subsection{Conflict Resolution Accuracy Comparison}
+The performance of different resolution functions is comparatively evaluated against the benchmark set. A comparative table reports attribute-level accuracy across alternative functions, identifying the optimal strategy for each target attribute.
+
+\subsection{Remaining Error Analysis}
+An error audit is performed on the remaining discrepancies following the application of the best resolution functions, categorizing residual errors into regulatory classification differences, temporal update lags, and typographical reporting variants.
 
 % ============================================================
 \section{Conclusion}
+\label{sec:conclusion}
 % ============================================================
+
+In accordance with the project report requirements, the overall integration results are summarized by addressing three core evaluation questions:
+\begin{enumerate}
+  \item \textbf{Additional Entities Added:} The total number of unique medicine entities gained beyond the largest individual input dataset (Health Canada DPD with $41{,}636$ entities), quantifying the expanded international coverage achieved through tri-dataset alignment.
+  \item \textbf{Data Density Increase:} The net increase in attribute density achieved in the fused dataset relative to the highest-density input source, demonstrating the complementary informational yield of multi-jurisdiction merging.
+  \item \textbf{Overall Dataset Accuracy:} The end-to-end accuracy of the final fused dataset as measured against the independent ground-truth evaluation benchmark.
+\end{enumerate}
 
 
 
