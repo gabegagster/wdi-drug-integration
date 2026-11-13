@@ -1,4 +1,7 @@
 # Byte-compiled / optimized / DLL files
+# Local agent instructions
+/AGENTS.md
+
 __pycache__/
 *.py[codz]
 *$py.class
@@ -77,6 +80,11 @@ target/
 
 # Jupyter Notebook
 .ipynb_checkpoints
+
+# Local DistilBERT weights and download cache
+/notebooks/PLM_DistilBERT/pretrained/
+/notebooks/PLM_DistilBERT/.hf_cache/
+/notebooks/PLM_DistilBERT/best_model.safetensors
 
 # IPython
 profile_default/

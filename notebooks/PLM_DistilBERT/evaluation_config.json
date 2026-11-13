@@ -1,0 +1,6 @@
+{
+  "test_file": "gs_pair_test.csv",
+  "threshold": 0.17,
+  "test_pairs": 525,
+  "test_loss": 0.6160048865183212
+}

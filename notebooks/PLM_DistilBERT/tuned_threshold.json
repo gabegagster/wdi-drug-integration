@@ -1,0 +1,10 @@
+{
+  "threshold": 0.17,
+  "default_threshold": 0.5,
+  "validation_macro_f1": 0.9386730133148431,
+  "grid_start": 0.1,
+  "grid_end": 0.9,
+  "grid_step": 0.01,
+  "selection_metric": "validation_macro_f1",
+  "tie_break": "closest_to_0.50_then_smaller_threshold"
+}

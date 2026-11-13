@@ -1,0 +1,11 @@
+group,value,configuration,pairs,macro_f1
+source_pair,dpd_ema,Default,150,0.9245714285714286
+source_pair,dpd_ema,Validation-tuned,150,0.9245714285714286
+source_pair,dpd_fda,Default,116,0.9194444444444444
+source_pair,dpd_fda,Validation-tuned,116,0.9194444444444444
+source_pair,ema_fda,Default,259,0.9137891767838686
+source_pair,ema_fda,Validation-tuned,259,0.9186103351955307
+hard,0,Default,290,0.9592146714671468
+hard,0,Validation-tuned,290,0.9592146714671468
+hard,1,Default,235,0.8739463601532567
+hard,1,Validation-tuned,235,0.8787015618727179
