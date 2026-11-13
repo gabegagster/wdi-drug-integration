@@ -650,9 +650,44 @@ EMA--FDA &  21,647,400 &  15,934 & 99.9264\% & 85 & 83 &  \textbf{97.65\%} \\
 \subsection{Rule-Based, Machine Learning, and Fine-Tuned PLM Matchers}
 % ------------------------------------------------------------
 
-% TODO (Hai, Trang, Özlem): Insert comparator definitions, Rule-Based
-% matcher tuning, supervised ML classifiers (Decision Tree, Random Forest,
-% SVM, Logistic Regression), and fine-tuned PLM evaluation results.
+\subsubsection{ML Classifiers: SVM and Logistic Regression}
+
+To evaluate supervised learning approaches for the pharmaceutical entity matching task, we trained a Support Vector Machine (SVM) and a Logistic Regression classifier on 2,973 development pairs and evaluated both on the held-out test set of 525 pairs. SVM was selected for its strong generalisation on small, high-dimensional feature spaces via the RBF kernel, while Logistic Regression provides an interpretable linear baseline whose feature coefficients directly reveal which similarity signals drive the match decision.
+
+Each pair was represented as a six-dimensional feature vector of attribute similarity scores: SequenceMatcher ratio on normalised brand names, SequenceMatcher ratio on normalised active substance strings, Jaccard overlap of substance token sets after salt-form removal, token overlap coefficient on licence holder names after company-suffix removal, a binary flag for absent licence holders, and absolute difference in active substance counts. Both classifiers were wrapped in a \texttt{StandardScaler} pipeline and tuned via 5-fold stratified cross-validation on the training set optimising for Macro F1. Best hyperparameters found were SVM with RBF kernel ($C{=}100$, $\gamma{=}0.1$, CV Macro F1\,=\,88.69\%) and Logistic Regression with L2 regularisation ($C{=}0.1$, liblinear solver, CV Macro F1\,=\,87.60\%).
+
+Table~\ref{tab:ml_classifiers} reports held-out test results overall and disaggregated by difficulty pool and source jurisdiction pair.
+
+\begin{table}[htbp]
+\centering
+\caption{SVM and Logistic Regression test set results ($n = 525$ pairs)}
+\label{tab:ml_classifiers}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{|l|l|r|r|r|r|r|r|}
+\hline
+\textbf{Matcher} & \textbf{Subgroup} & \textbf{Pairs} & \textbf{Macro F1} & \textbf{Match P} & \textbf{Match R} & \textbf{Match F1} & \textbf{Non-match F1} \\
+\hline
+SVM & Overall                      & 525 & 0.8698 & 0.9379 & 0.7312 & 0.8218 & 0.9179 \\
+SVM & Ordinary (\texttt{hard=0})   & 290 & 0.9004 & 0.9855 & 0.7556 & 0.8553 & 0.9454 \\
+SVM & Difficult (\texttt{hard=1})  & 235 & 0.8349 & 0.8947 & 0.7083 & 0.7907 & 0.8792 \\
+SVM & DPD / EMA                    & 150 & 0.9100 & 0.9310 & 0.8571 & 0.8926 & 0.9274 \\
+SVM & DPD / FDA                    & 116 & 0.7887 & 0.8750 & 0.5676 & 0.6885 & 0.8889 \\
+SVM & EMA / FDA                    & 259 & 0.8728 & 0.9683 & 0.7093 & 0.8188 & 0.9268 \\
+\hline
+LR  & Overall                      & 525 & 0.8610 & 0.9241 & 0.7204 & 0.8097 & 0.9124 \\
+LR  & Ordinary (\texttt{hard=0})   & 290 & 0.9004 & 0.9855 & 0.7556 & 0.8553 & 0.9454 \\
+LR  & Difficult (\texttt{hard=1})  & 235 & 0.8166 & 0.8684 & 0.6875 & 0.7674 & 0.8658 \\
+LR  & DPD / EMA                    & 150 & 0.8961 & 0.9138 & 0.8413 & 0.8760 & 0.9162 \\
+LR  & DPD / FDA                    & 116 & 0.8366 & 0.9231 & 0.6486 & 0.7619 & 0.9112 \\
+LR  & EMA / FDA                    & 259 & 0.8433 & 0.9344 & 0.6628 & 0.7755 & 0.9111 \\
+\hline
+\end{tabular}
+\end{table}
+
+Both classifiers achieve around 87\% Macro F1, with high precision but lower recall on the match class, reflecting a conservative decision boundary that avoids false positives at the cost of missing some true matches. Confusion matrices on the 525 test pairs show SVM producing 136 true positives, 9 false positives, 50 false negatives, and 330 true negatives; Logistic Regression produces 134 true positives, 11 false positives, 52 false negatives, and 328 true negatives. On ordinary pairs both models reach 90\% Macro F1; hard pairs are more challenging, dropping to 83.5\% for SVM and 81.7\% for Logistic Regression. Across source pairs, DPD/FDA proved hardest for SVM (78.9\%), likely because Canadian brand names frequently differ from their US equivalents and the smaller DPD/FDA test slice (116 pairs) amplifies individual misclassifications, while Logistic Regression handled it better (83.7\%). Logistic Regression coefficients confirm that substance token Jaccard overlap and brand name similarity are the strongest predictive features, consistent with the expectation that active substance identity and brand name proximity are the primary matching signals.
+
+% TODO (Trang, Hai): Insert your results here.
 
 % ------------------------------------------------------------
 \subsection{Zero-Shot LLM Matcher Benchmark}
