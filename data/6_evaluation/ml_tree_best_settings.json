@@ -1,0 +1,41 @@
+{
+  "Random Forest": {
+    "best_params": {
+      "class_weight": "balanced",
+      "max_depth": 6,
+      "max_features": "sqrt",
+      "min_samples_leaf": 4,
+      "n_estimators": 287
+    },
+    "cv_macro_f1": 0.9023,
+    "tuned_threshold": 0.48,
+    "features": [
+      "brand_sim",
+      "substance_sim",
+      "substance_token_jaccard",
+      "holder_sim",
+      "holder_missing",
+      "substance_count_diff"
+    ]
+  },
+  "Gradient Boosting": {
+    "best_params": {
+      "learning_rate": 0.0333,
+      "max_depth": 4,
+      "min_samples_leaf": 9,
+      "n_estimators": 127,
+      "subsample": 0.9452
+    },
+    "cv_macro_f1": 0.8964,
+    "tuned_threshold": 0.44,
+    "features": [
+      "brand_sim",
+      "substance_sim",
+      "substance_token_jaccard",
+      "holder_sim",
+      "holder_missing",
+      "substance_count_diff"
+    ]
+  },
+  "_cv": "StratifiedKFold(n_splits=5, shuffle=True, random_state=42), scoring=f1_macro, RandomizedSearchCV n_iter=40"
+}
