@@ -1,0 +1,118 @@
+eval_id,attribute,rule,fused_value,gold_value,DPD,EMA,FDA
+FDA_AGENERASE|AMPRENAVIR,licenceHolder,longest_string,GLAXOSMITHKLINE INC,GlaxoSmithKline,['GLAXOSMITHKLINE INC'],['Glaxo Group Ltd.'],['GLAXOSMITHKLINE']
+FDA_AGENERASE|AMPRENAVIR,dosageForm,union,"['Capsule', 'Liquid', 'Solution']","['Capsule', 'Solution']","[['Capsule', 'Liquid']]",[None],"[['Capsule', 'Solution']]"
+FDA_AGENERASE|AMPRENAVIR,strengths,union,"[('15', 'mg'), ('15', 'mg/mL'), ('150', 'mg'), ('50', 'mg')]","[('50', 'mg'), ('150', 'mg'), ('15', 'mg/mL')]","[[('50', 'mg'), ('150', 'mg'), ('15', 'mg')]]",[None],"[[('150', 'mg'), ('15', 'mg/mL'), ('50', 'mg')]]"
+FDA_BOSULIF|BOSUTINIB MONOHYDRATE,activeSubstances,union,"['BOSUTINIB', 'BOSUTINIB MONOHYDRATE', 'bosutinib (as monohydrate)']",['bosutinib'],[['BOSUTINIB']],[['bosutinib (as monohydrate)']],[['BOSUTINIB MONOHYDRATE']]
+FDA_BOSULIF|BOSUTINIB MONOHYDRATE,licenceHolder,longest_string,Pfizer Europe MA EEIG,PF Prism C.V.,['PFIZER CANADA ULC'],['Pfizer Europe MA EEIG'],['PF PRISM CV']
+FDA_CINQAIR|RESLIZUMAB,brandName,longest_string,Cinqaero,CINQAIR,['CINQAIR'],['Cinqaero'],['CINQAIR']
+FDA_CINQAIR|RESLIZUMAB,dosageForm,union,"['Injection', 'Solution']",['Injection'],[['Solution']],[None],[['Injection']]
+FDA_CINQAIR|RESLIZUMAB,route,union,"['Injection', 'Intravenous']",['Intravenous'],[['Intravenous']],[None],[['Injection']]
+FDA_CINQAIR|RESLIZUMAB,strengths,union,"[('10', 'mg'), ('10', 'mg/mL')]","[('10', 'mg/mL')]","[[('10', 'mg')]]",[None],"[[('10', 'mg/mL')]]"
+FDA_ELELYSO|TALIGLUCERASE ALFA,licenceHolder,longest_string,PFIZER CANADA ULC,Pfizer Inc.,['PFIZER CANADA ULC'],['Pfizer Ltd.'],['PFIZER']
+FDA_ELELYSO|TALIGLUCERASE ALFA,dosageForm,union,"['Powder', 'Powder for solution']",['Powder for solution'],[['Powder for solution']],[None],[['Powder']]
+FDA_ELELYSO|TALIGLUCERASE ALFA,strengths,union,"[('200', 'U'), ('200', 'U/vial')]","[('200', 'U')]","[[('200', 'U')]]",[None],"[[('200', 'U/vial')]]"
+FDA_HEMLIBRA|EMICIZUMAB,licenceHolder,longest_string,Roche Registration Limited,"Genentech, Inc.",['HOFFMANN-LA ROCHE LIMITED'],['Roche Registration Limited'],['GENENTECH INC']
+FDA_HEMLIBRA|EMICIZUMAB,dosageForm,union,"['Injection', 'Solution']",['Injection'],[['Solution']],[None],[['Injection']]
+FDA_HEMLIBRA|EMICIZUMAB,route,union,"['Injection', 'Subcutaneous']",['Subcutaneous'],[['Subcutaneous']],[None],[['Injection']]
+FDA_HEMLIBRA|EMICIZUMAB,strengths,union,"[('105', 'mg'), ('12', 'mg'), ('150', 'mg'), ('150', 'mg/mL'), ('30', 'mg'), ('30', 'mg/mL'), ('300', 'mg'), ('60', 'mg')]","[('30', 'mg/mL'), ('150', 'mg/mL')]","[[('30', 'mg'), ('60', 'mg'), ('105', 'mg'), ('150', 'mg'), ('12', 'mg'), ('300', 'mg')]]",[None],"[[('150', 'mg/mL'), ('150', 'mg'), ('30', 'mg/mL'), ('150', 'mg/mL')]]"
+FDA_INVANZ|ERTAPENEM SODIUM,activeSubstances,union,"['ERTAPENEM', 'ERTAPENEM SODIUM', 'ertapenem sodium']",['ertapenem'],[['ERTAPENEM']],[['ertapenem sodium']],[['ERTAPENEM SODIUM']]
+FDA_INVANZ|ERTAPENEM SODIUM,licenceHolder,longest_string,Merck Sharp & Dohme B.V.,Merck Sharp & Dohme LLC,['MERCK CANADA INC'],['Merck Sharp & Dohme B.V.'],['MSD SUB MERCK']
+FDA_INVANZ|ERTAPENEM SODIUM,dosageForm,union,"['Injection', 'Powder for solution']",['Powder for solution'],[['Powder for solution']],[None],[['Injection']]
+FDA_INVANZ|ERTAPENEM SODIUM,strengths,union,"[('1', 'g'), ('1', 'g/vial')]","[('1', 'g')]","[[('1', 'g')]]",[None],"[[('1', 'g/vial')]]"
+FDA_KANUMA|SEBELIPASE ALFA,licenceHolder,longest_string,ALEXION PHARMA GMBH,"Alexion Pharmaceuticals, Inc.",['ALEXION PHARMA GMBH'],['Alexion Europe SAS'],['ALEXION PHARM']
+FDA_KANUMA|SEBELIPASE ALFA,atcCode,union,"['A16', 'A16AB14']",['A16AB14'],[['A16AB14']],[['A16']],[None]
+FDA_KANUMA|SEBELIPASE ALFA,dosageForm,union,"['Injection', 'Solution']",['Injection'],[['Solution']],[None],[['Injection']]
+FDA_KANUMA|SEBELIPASE ALFA,route,union,"['Injection', 'Intravenous']",['Intravenous'],[['Intravenous']],[None],[['Injection']]
+FDA_KANUMA|SEBELIPASE ALFA,strengths,union,"[('2', 'mg'), ('2', 'mg/mL')]","[('2', 'mg/mL')]","[[('2', 'mg')]]",[None],"[[('2', 'mg/mL')]]"
+FDA_KESIMPTA|OFATUMUMAB,licenceHolder,longest_string,NOVARTIS PHARMACEUTICALS CANADA INC,Novartis Pharmaceuticals Corporation,['NOVARTIS PHARMACEUTICALS CANADA INC'],['Novartis Europharm Limited'],['NOVARTIS']
+FDA_KESIMPTA|OFATUMUMAB,atcCode,union,"['L04AA52', 'L04AG12']",['L04AG12'],[['L04AG12']],[['L04AA52']],[None]
+FDA_KESIMPTA|OFATUMUMAB,dosageForm,union,['Solution'],['Injection'],[['Solution']],[None],[['Solution']]
+FDA_KESIMPTA|OFATUMUMAB,strengths,union,"[('20', 'mg'), ('50', 'mg/mL')]","[('50', 'mg/mL')]","[[('20', 'mg')]]",[None],"[[('50', 'mg/mL')]]"
+FDA_PRAXBIND|IDARUCIZUMAB,licenceHolder,longest_string,Boehringer Ingelheim International GmbH,"Boehringer Ingelheim Pharmaceuticals, Inc.",['BOEHRINGER INGELHEIM (CANADA) LTD LTEE'],['Boehringer Ingelheim International GmbH'],['BOEHRINGER INGELHEIM']
+FDA_PRAXBIND|IDARUCIZUMAB,atcCode,union,"['V03AB', 'V03AB37']",['V03AB37'],[['V03AB37']],[['V03AB']],[None]
+FDA_PRAXBIND|IDARUCIZUMAB,dosageForm,union,"['Injection', 'Solution']",['Injection'],[['Solution']],[None],[['Injection']]
+FDA_PRAXBIND|IDARUCIZUMAB,route,union,"['Injection', 'Intravenous']",['Intravenous'],[['Intravenous']],[None],[['Injection']]
+FDA_PRAXBIND|IDARUCIZUMAB,strengths,union,"[('0.05', 'g/mL'), ('50', 'mg')]","[('50', 'mg/mL')]","[[('50', 'mg')]]",[None],"[[('0.05', 'g/mL')]]"
+FDA_QUVIVIQ|DARIDOREXANT HYDROCHLORIDE,activeSubstances,union,"['DARIDOREXANT', 'DARIDOREXANT HYDROCHLORIDE', 'daridorexant hydrochloride']",['daridorexant'],[['DARIDOREXANT']],[['daridorexant hydrochloride']],[['DARIDOREXANT HYDROCHLORIDE']]
+FDA_QUVIVIQ|DARIDOREXANT HYDROCHLORIDE,licenceHolder,longest_string,Idorsia Pharmaceuticals Deutschland GmbH,Idorsia Pharmaceuticals Ltd,['IDORSIA PHARMACEUTICALS LTD'],['Idorsia Pharmaceuticals Deutschland GmbH'],['IDORSIA']
+FDA_REPATHA|EVOLOCUMAB,licenceHolder,longest_string,Amgen Europe B.V.,Amgen Inc.,['AMGEN CANADA INC'],['Amgen Europe B.V.'],['AMGEN INC']
+FDA_REPATHA|EVOLOCUMAB,dosageForm,union,"['Injection', 'Solution']",['Injection'],[['Solution']],[None],[['Injection']]
+FDA_REPATHA|EVOLOCUMAB,route,union,"['Injection', 'Subcutaneous']",['Subcutaneous'],[['Subcutaneous']],[None],[['Injection']]
+FDA_REPATHA|EVOLOCUMAB,strengths,union,"[('120', 'mg'), ('140', 'mg'), ('140', 'mg/mL')]","[('120', 'mg/mL'), ('140', 'mg/mL')]","[[('140', 'mg'), ('120', 'mg')]]",[None],"[[('140', 'mg/mL')]]"
+FDA_WEGOVY|SEMAGLUTIDE,licenceHolder,longest_string,NOVO NORDISK CANADA INC,Novo Nordisk Inc.,['NOVO NORDISK CANADA INC'],['Novo Nordisk A/S'],['NOVO']
+FDA_WEGOVY|SEMAGLUTIDE,dosageForm,union,"['Solution', 'Tablet']","['Injection', 'Tablet']",[['Solution']],[None],"[['Solution', 'Tablet']]"
+FDA_WEGOVY|SEMAGLUTIDE,strengths,union,"[('0.25', 'mg'), ('0.5', 'mg'), ('0.5', 'mg/mL'), ('1', 'mg'), ('1', 'mg/mL'), ('1.5', 'mg'), ('1.7', 'mg'), ('2', 'mg'), ('2', 'mg/mL'), ('2.266667', 'mg/mL'), ('2.4', 'mg'), ('25', 'mg'), ('3.2', 'mg/mL'), ('4', 'mg'), ('6.8', 'mg'), ('9', 'mg'), ('9.6', 'mg')]","[('0.5', 'mg/mL'), ('1', 'mg/mL'), ('2', 'mg/mL'), ('2.266667', 'mg/mL'), ('3.2', 'mg/mL'), ('9.6', 'mg/mL'), ('1.5', 'mg'), ('4', 'mg'), ('9', 'mg'), ('25', 'mg')]","[[('1', 'mg'), ('2', 'mg'), ('4', 'mg'), ('6.8', 'mg'), ('9.6', 'mg'), ('0.25', 'mg'), ('0.5', 'mg'), ('1.7', 'mg'), ('2.4', 'mg')]]",[None],"[[('0.5', 'mg/mL'), ('1', 'mg/mL'), ('1.5', 'mg'), ('2.266667', 'mg/mL'), ('2', 'mg/mL'), ('3.2', 'mg/mL'), ('25', 'mg'), ('4', 'mg'), ('9', 'mg')]]"
+FDA_CYTARABINE|CYTARABINE,brandName,longest_string,AJ-CYTARABINE,CYTARABINE,['AJ-CYTARABINE'],[],['CYTARABINE']
+FDA_CYTARABINE|CYTARABINE,licenceHolder,longest_string,AGILA JAMP CANADA INC,"Hospira, Inc.",['AGILA JAMP CANADA INC'],[],['HOSPIRA']
+FDA_CYTARABINE|CYTARABINE,dosageForm,union,['Solution'],['Injection'],[['Solution']],[],[None]
+FDA_CYTARABINE|CYTARABINE,strengths,union,"[('1', 'g/vial'), ('100', 'mg'), ('100', 'mg/mL'), ('100', 'mg/vial'), ('2', 'g/vial'), ('20', 'mg/mL'), ('500', 'mg/vial')]","[('20', 'mg/mL'), ('100', 'mg/mL')]","[[('100', 'mg')]]",[],"[[('100', 'mg/mL'), ('100', 'mg/vial'), ('1', 'g/vial'), ('20', 'mg/mL'), ('2', 'g/vial'), ('500', 'mg/vial')]]"
+FDA_DUREZOL|DIFLUPREDNATE,licenceHolder,longest_string,NOVARTIS PHARMACEUTICALS CANADA INC,Sandoz Inc.,['NOVARTIS PHARMACEUTICALS CANADA INC'],[],['SANDOZ']
+FDA_DUREZOL|DIFLUPREDNATE,atcCode,union,['S01BA'],['S01BA16'],[['S01BA']],[],[None]
+FDA_DUREZOL|DIFLUPREDNATE,strengths,union,"[('0.05', '%')]","[('0.5', 'mg/mL')]","[[('0.05', '%')]]",[],"[[('0.05', '%')]]"
+FDA_FROVA|FROVATRIPTAN SUCCINATE,activeSubstances,union,"['FROVATRIPTAN', 'FROVATRIPTAN SUCCINATE']",['frovatriptan'],[['FROVATRIPTAN']],[],[['FROVATRIPTAN SUCCINATE']]
+FDA_FROVA|FROVATRIPTAN SUCCINATE,licenceHolder,longest_string,KNIGHT THERAPEUTICS INC.,ENDO OPERATIONS,['KNIGHT THERAPEUTICS INC.'],[],['ENDO OPERATIONS']
+FDA_PREDNISOLONE SODIUM PHOSPHATE|PREDNISOLONE SODIUM PHOSPHATE,brandName,longest_string,MINIMS PREDNISOLONE SODIUM PHOSPHATE,PREDNISOLONE SODIUM PHOSPHATE,['MINIMS PREDNISOLONE SODIUM PHOSPHATE'],[],['PREDNISOLONE SODIUM PHOSPHATE']
+FDA_PREDNISOLONE SODIUM PHOSPHATE|PREDNISOLONE SODIUM PHOSPHATE,activeSubstances,union,"['PREDNISOLONE', 'PREDNISOLONE SODIUM PHOSPHATE']",['prednisolone'],[['PREDNISOLONE']],[],[['PREDNISOLONE SODIUM PHOSPHATE']]
+FDA_PREDNISOLONE SODIUM PHOSPHATE|PREDNISOLONE SODIUM PHOSPHATE,licenceHolder,longest_string,BAUSCH & LOMB INC,"Pharmaceutical Associates, Inc.",['BAUSCH & LOMB INC'],[],['PHARM ASSOC']
+FDA_PREDNISOLONE SODIUM PHOSPHATE|PREDNISOLONE SODIUM PHOSPHATE,atcCode,union,['S01BA04'],['H02AB06'],[['S01BA04']],[],[None]
+FDA_PREDNISOLONE SODIUM PHOSPHATE|PREDNISOLONE SODIUM PHOSPHATE,dosageForm,union,['Drops'],['Solution'],[['Drops']],[],[None]
+FDA_PREDNISOLONE SODIUM PHOSPHATE|PREDNISOLONE SODIUM PHOSPHATE,route,union,['Ophthalmic'],['Oral'],[['Ophthalmic']],[],[None]
+FDA_PREDNISOLONE SODIUM PHOSPHATE|PREDNISOLONE SODIUM PHOSPHATE,strengths,union,"[('0.11', '%'), ('0.5', '%'), ('0.9', '%'), ('1', 'mg/mL'), ('10', 'mg'), ('15', 'mg'), ('2', 'mg/mL'), ('20', 'mg/mL'), ('3', 'mg/mL'), ('30', 'mg'), ('4', 'mg/mL'), ('5', 'mg/mL'), ('6', 'mg/mL')]","[('1', 'mg/mL'), ('2', 'mg/mL'), ('3', 'mg/mL'), ('4', 'mg/mL'), ('6', 'mg/mL')]","[[('0.5', '%')]]",[],"[[('0.11', '%'), ('0.9', '%'), ('10', 'mg'), ('2', 'mg/mL'), ('15', 'mg'), ('3', 'mg/mL'), ('4', 'mg/mL'), ('20', 'mg/mL'), ('5', 'mg/mL'), ('30', 'mg'), ('6', 'mg/mL'), ('1', 'mg/mL')]]"
+FDA_MOUNJARO KWIKPEN|TIRZEPATIDE,licenceHolder,longest_string,ELI LILLY CANADA INC,Eli Lilly and Company,['ELI LILLY CANADA INC'],[],['ELI LILLY AND CO']
+FDA_MOUNJARO KWIKPEN|TIRZEPATIDE,dosageForm,union,['Solution'],['Injection'],[['Solution']],[],[['Solution']]
+FDA_MOUNJARO KWIKPEN|TIRZEPATIDE,strengths,union,"[('10', 'mg'), ('12.5', 'mg'), ('12.5', 'mg/mL'), ('15', 'mg'), ('16.666667', 'mg/mL'), ('2.5', 'mg'), ('20.833333', 'mg/mL'), ('25', 'mg/mL'), ('4.166667', 'mg/mL'), ('5', 'mg'), ('7.5', 'mg'), ('8.333333', 'mg/mL')]","[('4.17', 'mg/mL'), ('8.33', 'mg/mL'), ('12.5', 'mg/mL'), ('16.7', 'mg/mL'), ('20.8', 'mg/mL'), ('25', 'mg/mL')]","[[('2.5', 'mg'), ('5', 'mg'), ('7.5', 'mg'), ('10', 'mg'), ('12.5', 'mg'), ('15', 'mg')]]",[],"[[('4.166667', 'mg/mL'), ('8.333333', 'mg/mL'), ('12.5', 'mg/mL'), ('16.666667', 'mg/mL'), ('20.833333', 'mg/mL'), ('25', 'mg/mL')]]"
+FDA_SEPTRA|SULFAMETHOXAZOLE; TRIMETHOPRIM,licenceHolder,longest_string,GLAXOSMITHKLINE INC,"Monarch Pharmaceuticals, LLC",['GLAXOSMITHKLINE INC'],[],['MONARCH PHARMS']
+FDA_SEPTRA|SULFAMETHOXAZOLE; TRIMETHOPRIM,dosageForm,union,['Tablet'],"['Injection', 'Suspension', 'Tablet']",[['Tablet']],[],[None]
+FDA_SEPTRA|SULFAMETHOXAZOLE; TRIMETHOPRIM,route,union,['Oral'],"['Intravenous', 'Oral']",[['Oral']],[],[None]
+FDA_SEPTRA|SULFAMETHOXAZOLE; TRIMETHOPRIM,strengths,union,"[('16', 'mg/mL'), ('40', 'mg/mL'), ('400', 'mg'), ('8', 'mg/mL'), ('80', 'mg'), ('80', 'mg/mL')]","[('400', 'mg'), ('800', 'mg'), ('80', 'mg'), ('160', 'mg'), ('40', 'mg/mL'), ('8', 'mg/mL'), ('80', 'mg/mL'), ('16', 'mg/mL')]","[[('80', 'mg'), ('400', 'mg')]]",[],"[[('16', 'mg/mL'), ('40', 'mg/mL'), ('400', 'mg'), ('8', 'mg/mL'), ('80', 'mg'), ('80', 'mg/mL')]]"
+FDA_PAMIDRONATE DISODIUM|PAMIDRONATE DISODIUM,brandName,longest_string,VAL-PAMIDRONATE DISODIUM,PAMIDRONATE DISODIUM,['VAL-PAMIDRONATE DISODIUM'],[],['PAMIDRONATE DISODIUM']
+FDA_PAMIDRONATE DISODIUM|PAMIDRONATE DISODIUM,activeSubstances,union,"['PAMIDRONATE', 'PAMIDRONATE DISODIUM']",['pamidronic acid'],[['PAMIDRONATE']],[],[['PAMIDRONATE DISODIUM']]
+FDA_PAMIDRONATE DISODIUM|PAMIDRONATE DISODIUM,licenceHolder,longest_string,VALEO PHARMA INC,Hikma Pharmaceuticals USA Inc.,['VALEO PHARMA INC'],[],['HIKMA']
+FDA_PAMIDRONATE DISODIUM|PAMIDRONATE DISODIUM,dosageForm,union,"['Injection', 'Solution']",['Injection'],[['Solution']],[],[['Injection']]
+FDA_PAMIDRONATE DISODIUM|PAMIDRONATE DISODIUM,route,union,"['Injection', 'Intravenous']",['Intravenous'],[['Intravenous']],[],[['Injection']]
+FDA_PAMIDRONATE DISODIUM|PAMIDRONATE DISODIUM,strengths,union,"[('3', 'mg/mL'), ('30', 'mg/vial'), ('6', 'mg/mL'), ('60', 'mg/vial'), ('9', 'mg'), ('9', 'mg/mL'), ('90', 'mg/vial')]","[('3', 'mg/mL'), ('9', 'mg/mL')]","[[('9', 'mg')]]",[],"[[('3', 'mg/mL'), ('30', 'mg/vial'), ('6', 'mg/mL'), ('60', 'mg/vial'), ('9', 'mg/mL'), ('90', 'mg/vial')]]"
+FDA_XENON XE 133|XENON XE 133,brandName,longest_string,XENON XE-133 GAS,XENON XE 133,['XENON XE-133 GAS'],[],['XENON XE 133']
+FDA_XENON XE 133|XENON XE 133,activeSubstances,union,"['XENON 133 XE', 'XENON XE 133']",['xenon (133xe)'],[['XENON 133 XE']],[],[['XENON XE 133']]
+FDA_XENON XE 133|XENON XE 133,licenceHolder,longest_string,BRISTOL-MYERS SQUIBB CANADA,GE HEALTHCARE,['BRISTOL-MYERS SQUIBB CANADA'],[],['GE HEALTHCARE']
+FDA_XENON XE 133|XENON XE 133,atcCode,union,,['V09EX03'],[None],[],[None]
+FDA_XENON XE 133|XENON XE 133,dosageForm,union,['Gas'],"['Gas', 'Injection']",[['Gas']],[],[None]
+FDA_XENON XE 133|XENON XE 133,route,union,['Inhalation'],"['Inhalation', 'Injection']",[['Inhalation']],[],[None]
+FDA_XENON XE 133|XENON XE 133,strengths,union,"[('1', 'Ci/ampoule'), ('10', 'mCi/vial'), ('150', 'mCi'), ('20', 'mCi/vial'), ('6.3', 'mCi/mL')]","[('1', 'Ci/ampoule'), ('1.3-1.7', 'Ci/ampoule'), ('10', 'mCi'), ('20', 'mCi')]","[[('150', 'mCi')]]",[],"[[('1', 'Ci/ampoule'), ('10', 'mCi/vial'), ('20', 'mCi/vial'), ('6.3', 'mCi/mL')]]"
+EMA_ADVAGRAF|TACROLIMUS,licenceHolder,longest_string,ASTELLAS PHARMA CANADA INC,Astellas Pharma Europe B.V.,['ASTELLAS PHARMA CANADA INC'],['Astellas Pharma Europe BV'],[]
+EMA_KOMBOGLYZE|METFORMIN HYDROCHLORIDE; SAXAGLIPTIN HYDROCHLORIDE,activeSubstances,union,"['METFORMIN', 'SAXAGLIPTIN', 'metformin hydrochloride', 'saxagliptin hydrochloride']","['metformin', 'saxagliptin']","[['METFORMIN', 'SAXAGLIPTIN']]","[['metformin hydrochloride', 'saxagliptin hydrochloride']]",[]
+EMA_KOMBOGLYZE|METFORMIN HYDROCHLORIDE; SAXAGLIPTIN HYDROCHLORIDE,licenceHolder,longest_string,ASTRAZENECA CANADA INC,AstraZeneca AB,['ASTRAZENECA CANADA INC'],['AstraZeneca AB'],[]
+EMA_KOMBOGLYZE|METFORMIN HYDROCHLORIDE; SAXAGLIPTIN HYDROCHLORIDE,strengths,union,"[('1000', 'mg'), ('2.5', 'mg'), ('500', 'mg'), ('850', 'mg')]","[('2.5', 'mg'), ('850', 'mg'), ('1000', 'mg')]","[[('2.5', 'mg'), ('500', 'mg'), ('850', 'mg'), ('1000', 'mg')]]",[None],[]
+EMA_LEQEMBI|LECANEMAB,licenceHolder,longest_string,EISAI LIMITED,Eisai GmbH,['EISAI LIMITED'],['Eisai GmbH'],[]
+EMA_LEQEMBI|LECANEMAB,dosageForm,union,['Solution'],['Concentrate'],[['Solution']],[None],[]
+EMA_LEQEMBI|LECANEMAB,strengths,union,"[('100', 'mg')]","[('100', 'mg/mL')]","[[('100', 'mg')]]",[None],[]
+EMA_PREHEVBRI|HEPATITIS B SURFACE ANTIGEN,brandName,longest_string,PREHEVBRIO,PreHevbri,['PREHEVBRIO'],['PreHevbri'],[]
+EMA_PREHEVBRI|HEPATITIS B SURFACE ANTIGEN,licenceHolder,longest_string,VBI VACCINES INC.,VBI Vaccines B.V.,['VBI VACCINES INC.'],['VBI Vaccines B.V.'],[]
+EMA_PREHEVBRI|HEPATITIS B SURFACE ANTIGEN,strengths,union,"[('10', 'mcg')]","[('0.01', 'mg/mL')]","[[('10', 'mcg')]]",[None],[]
+EMA_RASILEZ|ALISKIREN,licenceHolder,longest_string,Lxo Ireland Designated Activity Company,LXO Ireland DAC,['NODEN PHARMA DAC'],['Lxo Ireland Designated Activity Company'],[]
+EMA_RIXIMYO|RITUXIMAB,licenceHolder,longest_string,SANDOZ CANADA INCORPORATED,Sandoz GmbH,['SANDOZ CANADA INCORPORATED'],['Sandoz GmbH'],[]
+EMA_RIXIMYO|RITUXIMAB,dosageForm,union,['Solution'],['Concentrate'],[['Solution']],[None],[]
+EMA_RIXIMYO|RITUXIMAB,strengths,union,"[('10', 'mg')]","[('10', 'mg/mL')]","[[('10', 'mg')]]",[None],[]
+EMA_SOGROYA|SOMAPACITAN,licenceHolder,longest_string,NOVO NORDISK CANADA INC,Novo Nordisk A/S,['NOVO NORDISK CANADA INC'],['Novo Nordisk A/S'],[]
+EMA_SOGROYA|SOMAPACITAN,dosageForm,union,['Solution'],['Injection'],[['Solution']],[None],[]
+EMA_SOGROYA|SOMAPACITAN,strengths,union,"[('10', 'mg'), ('15', 'mg'), ('5', 'mg')]","[('3.3', 'mg/mL'), ('6.7', 'mg/mL'), ('10', 'mg/mL')]","[[('5', 'mg'), ('10', 'mg'), ('15', 'mg')]]",[None],[]
+EMA_XENPOZYME|OLIPUDASE ALFA,licenceHolder,longest_string,SANOFI-AVENTIS CANADA INC,Sanofi B.V.,['SANOFI-AVENTIS CANADA INC'],['Sanofi B.V.'],[]
+FDA_CABAZITAXEL|CABAZITAXEL,brandName,longest_string,Cabazitaxel Teva,CABAZITAXEL,[],['Cabazitaxel Teva'],['CABAZITAXEL']
+FDA_CABAZITAXEL|CABAZITAXEL,licenceHolder,longest_string,ACCORD HLTHCARE,"Accord Healthcare, Inc.",[],['Teva B.V.'],['ACCORD HLTHCARE']
+FDA_CABAZITAXEL|CABAZITAXEL,dosageForm,union,,['Injection'],[],[None],[None]
+FDA_CABAZITAXEL|CABAZITAXEL,route,union,,['Intravenous'],[],[None],[None]
+FDA_CABAZITAXEL|CABAZITAXEL,strengths,union,"[('10', 'mg/mL'), ('20', 'mg/mL'), ('40', 'mg/mL')]","[('20', 'mg/mL'), ('40', 'mg/mL')]",[],[None],"[[('20', 'mg/mL'), ('10', 'mg/mL'), ('40', 'mg/mL'), ('20', 'mg/mL'), ('10', 'mg/mL')]]"
+FDA_EPIVIR|LAMIVUDINE,licenceHolder,longest_string,ViiV Healthcare BV,ViiV Healthcare Company,[],['ViiV Healthcare BV'],['VIIV HLTHCARE']
+FDA_FINTEPLA|FENFLURAMINE HYDROCHLORIDE,activeSubstances,union,"['FENFLURAMINE HYDROCHLORIDE', 'fenfluramine hydrochloride']",['fenfluramine'],[],[['fenfluramine hydrochloride']],[['FENFLURAMINE HYDROCHLORIDE']]
+FDA_FINTEPLA|FENFLURAMINE HYDROCHLORIDE,licenceHolder,longest_string,UCB Pharma S.A.,"UCB, Inc.",[],['UCB Pharma S.A.'],['UCB INC']
+FDA_FINTEPLA|FENFLURAMINE HYDROCHLORIDE,atcCode,union,['N03'],['N03AX26'],[],[['N03']],[None]
+FDA_IONSYS|FENTANYL HYDROCHLORIDE,activeSubstances,union,"['FENTANYL HYDROCHLORIDE', 'fentanyl hydrochloride']",['fentanyl'],[],[['fentanyl hydrochloride']],[['FENTANYL HYDROCHLORIDE']]
+FDA_IONSYS|FENTANYL HYDROCHLORIDE,licenceHolder,longest_string,Incline Therapeutics Europe Ltd,The Medicines Company,[],['Incline Therapeutics Europe Ltd'],['THE MEDICINES CO']
+FDA_MIPLYFFA|ARIMOCLOMOL CITRATE,activeSubstances,union,"['ARIMOCLOMOL CITRATE', 'arimoclomol citrate']",['arimoclomol'],[],[['arimoclomol citrate']],[['ARIMOCLOMOL CITRATE']]
+FDA_MIPLYFFA|ARIMOCLOMOL CITRATE,licenceHolder,longest_string,Orphazyme A/S,Zevra Denmark A/S,[],['Orphazyme A/S'],['ZEVRA DENMARK']
+FDA_MIPLYFFA|ARIMOCLOMOL CITRATE,atcCode,union,['N07'],['N07XX17'],[],[['N07']],[None]
+FDA_MYCAPSSA|OCTREOTIDE ACETATE,activeSubstances,union,"['OCTREOTIDE ACETATE', 'octreotide acetate']",['octreotide'],[],[['octreotide acetate']],[['OCTREOTIDE ACETATE']]
+FDA_MYCAPSSA|OCTREOTIDE ACETATE,licenceHolder,longest_string,Amryt Pharmaceuticals DAC,Chiesi Farmaceutici S.p.A.,[],['Amryt Pharmaceuticals DAC'],['CHIESI']
+FDA_VIJOICE|ALPELISIB,licenceHolder,longest_string,Novartis Europharm Limited,Novartis Pharmaceuticals Corporation,[],['Novartis Europharm Limited'],['NOVARTIS']
+FDA_VIJOICE|ALPELISIB,dosageForm,union,,"['Granules', 'Tablet']",[],[None],[None]
+FDA_VIJOICE|ALPELISIB,strengths,union,"[('125', 'mg'), ('200', 'mg'), ('50', 'mg'), ('50', 'mg/packet')]","[('50', 'mg'), ('125', 'mg'), ('200', 'mg')]",[],[None],"[[('125', 'mg'), ('200', 'mg'), ('50', 'mg'), ('50', 'mg/packet')]]"
+FDA_ZONEGRAN|ZONISAMIDE,licenceHolder,longest_string,Amdipharm Limited,Advanz Pharma (US) Corp.,[],['Amdipharm Limited'],['ADVANZ PHARMA']

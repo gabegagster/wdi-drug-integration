@@ -1,6 +1,6 @@
 """Pairwise similarity features for the ML matchers.
 
-The six features of ``notebooks/ml_classifier_experiment.ipynb`` (SVM + Logistic
+The six features of ``notebooks/ml_classifier_experiment/ml_classifier_experiment.ipynb`` (SVM + Logistic
 Regression), moved into a module so that every ML classifier (SVM, LR, Random
 Forest, Gradient Boosting) uses identical inputs and the same code can later
 score the blocking candidates.
