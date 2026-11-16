@@ -1,0 +1,2 @@
+strategy,overall_accuracy,brandName_accuracy,activeSubstances_accuracy,activeSubstanceCount_accuracy,licenceHolder_accuracy,productClass_accuracy,atcCode_accuracy,dosageForm_accuracy,route_accuracy,strengths_accuracy,biosimilar_accuracy
+Simple rules,0.675,0.8055555555555556,0.6666666666666666,1.0,0.027777777777777776,1.0,0.7777777777777778,0.4166666666666667,0.7222222222222222,0.3333333333333333,1.0
