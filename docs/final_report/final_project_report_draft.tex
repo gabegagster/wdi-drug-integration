@@ -46,7 +46,7 @@
 \maketitle
 
 \begin{abstract}
-This project integrates official pharmaceutical approval registers from the United States (Drugs@FDA), the European Union (EMA Medicines), and Canada (Health Canada DPD) into a unified, conflict-free dataset of 16 target attributes. We document Phase~I schema mapping and XML translation (52,459 validated records), Phase~II blocking, entity matching, and connected-components clustering (2,343 multi-source medicine clusters), and Phase~III data fusion and quality evaluation using PyDI.
+This project integrates official pharmaceutical approval registers from the United States (Drugs@FDA), the European Union (EMA Medicines), and Canada (Health Canada DPD) into a unified dataset across 16 target attributes. We document Phase~I schema mapping and XML translation (52,459 validated records), Phase~II hybrid blocking and entity resolution benchmarking rule-based matchers, four supervised ML classifiers, fine-tuned DistilBERT (0.9215 Macro F1), and a zero-shot LLM (0.9485 Macro F1) with connected-components clustering (2,343 multi-source clusters), and Phase~III data loading, 36-entity evaluation set construction, and initial PyDI fusion baseline evaluation.
 \keywords{Web Data Integration \and Pharmaceutical Data \and Data Translation \and Identity Resolution \and Data Fusion.}
 \end{abstract}
 
@@ -667,7 +667,33 @@ RF  & \textbf{0.9023} & \textbf{0.9054} & 0.8571 & \textbf{0.9032} & 28 & \textb
 
 As Table~\ref{tab:ml_classifiers} shows, the tree ensembles outperform SVM and LR by 3--4 points of Macro F1 on identical features. SVM and LR draw a conservative decision boundary with high precision but low recall, missing 50--52 of the 186 matches. RF misses only 18 matches and none in the ordinary pool, at the cost of more false positives (28 instead of 9). Almost all of these false positives share the active substance and have a similar or identical brand but different licence holders: competing generics, and same-brand products marketed by another company in a different jurisdiction. Holder similarity separates them only partly, because generic words such as \textit{Pharma} also occur in the names of unrelated companies. Brand and licence-holder similarity are the strongest signals in all three models (standardised LR coefficients 2.03 and 1.63; together 71\% of the RF importance); the substance features correlate strongly with brand similarity ($r \approx 0.85$) and add little on top. DPD/FDA remains the hardest source pair for every classifier. A decision threshold tuned on out-of-fold probabilities did not improve CV Macro F1 beyond its standard deviation, so the default of 0.5 was kept. With 90.54\% Macro F1, RF ranks below the fine-tuned DistilBERT model and the zero-shot LLM matcher (94.85\%), but trains in under a second and scores the test set in milliseconds without API costs.
 
-% TODO (Hai): Insert your results here.
+\subsubsection{Rule-Based Matchers}
+
+To establish interpretable deterministic baselines (\texttt{notebooks/manual\_matcher\_experiment/}), we evaluated three conjunctive rules over \texttt{brandName}, \texttt{activeSubstances}, and \texttt{licenceHolder} on the 525 held-out test pairs: (1)~\textbf{Exact} requires identical normalized brand and ordered substance strings; (2)~\textbf{Salt} matches unordered substance sets after stripping common pharmaceutical salt and hydration modifiers; and (3)~\textbf{Fuzzy} requires matching base substance sets, shared substance tokens, and brand \texttt{SequenceMatcher} similarity $\ge 0.80$ (selected from a $0.70$--$0.95$ sweep). All three rules enforce \texttt{holder\_agreement}: normalized licence-holder token overlap coefficient $\ge 0.80$ after company-suffix removal when both holders are present (10 missing in \texttt{licenceHolder1}, 14 in \texttt{licenceHolder2}). Table~\ref{tab:rule_plm_matchers} summarizes test-set results. While \textbf{Exact} and \textbf{Salt} achieve $1.0000$ precision, recall stays low ($0.2151$ and $0.2527$). Adding \textbf{Fuzzy} raises Macro F1 to $0.6381$ ($53$ TP, $1$ FP on \textit{Alphagan} vs.\ \textit{Alphagan P}, $133$ FN; all rule combinations including Fuzzy yield identical predictions). Low recall stems from requiring both full-substance equality and regional licence-holder agreement, which rejects cross-border subsidiaries and regional co-brands.
+
+\subsubsection{Fine-Tuned Pretrained Language Model (DistilBERT)}
+
+We fine-tuned \texttt{distilbert-base-uncased}~\cite{sanh2019distilbert} (\texttt{notebooks/PLM\_DistilBERT/}) as a binary sequence-pair classifier over \texttt{[COL]}/\texttt{[VAL]}-serialized \texttt{brandName}, \texttt{activeSubstances}, and \texttt{licenceHolder} fields (max length 128, batch size 16, AdamW with learning rate $2\times10^{-5}$, weight decay $0.01$, cosine schedule). Using an 80/20 stratified train/validation split of \texttt{gs\_pair\_train\_val.csv} ($2{,}378$ train / $595$ val pairs), early stopping ended at epoch 36 with the best checkpoint at epoch 16 (validation Macro F1 $0.9366$ at cutoff $0.50$). Sweeping thresholds over $[0.10, 0.90]$ on validation probabilities selected $0.17$ (validation Macro F1 $0.9387$), as $\sim 99\%$ of probabilities lie outside $[0.10, 0.90]$. On the held-out test set ($n=525$), DistilBERT reaches \textbf{0.9193 Macro F1} at default $0.50$ ($159$ TP, $11$ FP, $27$ FN) and \textbf{0.9215 Macro F1} at $0.17$ ($160$ TP, $11$ FP, $26$ FN, $328$ TN; Match P $0.9357$, R $0.8602$, Accuracy $0.9295$), outperforming all feature-based ML classifiers ($+1.61$ pp over RF) while trailing the zero-shot LLM ($0.9485$).
+
+\begin{table}[htbp]
+\centering
+\caption{Rule-based and fine-tuned DistilBERT matchers on the held-out test set ($n = 525$ pairs; subgroups show Macro F1).}
+\label{tab:rule_plm_matchers}
+\scriptsize
+\setlength{\tabcolsep}{2.2pt}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}X|r|r|r|r|r|r|r|r|r|}
+\hline
+\textbf{Matcher} & \textbf{Mac.\ F1} & \textbf{P} & \textbf{R} & \textbf{Match F1} & \textbf{Ord.} & \textbf{Hard} & \textbf{D/E} & \textbf{D/F} & \textbf{E/F} \\
+\hline
+Rule: Exact            & 0.5884 & \textbf{1.0000} & 0.2151 & 0.3540 & 0.7521 & 0.3717 & 0.5594 & 0.5793 & 0.6086 \\
+Rule: Salt             & 0.6166 & \textbf{1.0000} & 0.2527 & 0.4034 & 0.7521 & 0.4467 & 0.5962 & 0.6398 & 0.6172 \\
+Rule: Fuzzy / Comb.    & 0.6381 & 0.9815 & 0.2849 & 0.4417 & 0.7521 & 0.5015 & 0.6195 & 0.6507 & 0.6422 \\
+\hline
+DistilBERT (thr.\ 0.50) & 0.9193 & ---    & ---    & ---    & 0.9592 & 0.8739 & 0.9246 & 0.9194 & 0.9138 \\
+DistilBERT (thr.\ 0.17) & \textbf{0.9215} & 0.9357 & \textbf{0.8602} & \textbf{0.8964} & \textbf{0.9592} & \textbf{0.8787} & \textbf{0.9246} & \textbf{0.9194} & \textbf{0.9186} \\
+\hline
+\end{tabularx}
+\end{table}
 
 % ------------------------------------------------------------
 \subsection{Zero-Shot LLM Matcher Benchmark}
@@ -913,25 +939,60 @@ In all five cases, the expanded group size reflects legitimate upstream intra-so
 \label{sec:data_fusion}
 % ============================================================
 
-Phase~III integrates attributes across clustered entities, resolves conflicting values, and measures the quality profile of the consolidated pharmaceutical dataset. In accordance with the course report guidelines, this section documents the experimental results across six dimensions:
+Phase~III integrates attributes across clustered entities, resolves conflicting values, and measures the quality profile of the consolidated dataset using PyDI~\cite{pydi_framework}. Below we document the implemented data-loading pipeline, provenance setup, evaluation benchmark, and initial baseline fusion experiments on the evaluation sample (\texttt{notebooks/data\_fusion\_skeleton/}).
 
 \subsection{Provenance Tracking}
-Each fused entity and individual attribute value is enriched with provenance metadata, recording the source regulatory registry (\texttt{Drugs@FDA}, \texttt{EMA}, \texttt{DPD}), original national identifiers, and dataset release dates (Drugs@FDA 2026, EMA 2026, DPD 2026) to provide full lineage and auditability.
+The ingestion scripts (\texttt{loader.py} and \texttt{correspondence\_prep.py} in \texttt{src/data\_fusion/}) parse all three XSD-validated XML exports into PyDI DataFrames totaling \textbf{52,459 records and 18 columns} (DPD $41{,}636$, EMA $2{,}648$, FDA $8{,}175$), verifying all $944{,}262$ field values and types against \texttt{medicines.xsd} and project vocabularies. Each source DataFrame carries provenance metadata (\texttt{trust\_score = 1.0} and \texttt{dataset\_score = 1.0} as an explicit equal-weight baseline; \texttt{dataset\_date = None}, keeping record-level approval/status dates separate). Pairwise correspondences are converted into \texttt{id1,id2,similarity} tuples and passed to \texttt{DataFusionEngine} with \texttt{include\_singletons=True} to retain unmatched records alongside transitive entity clusters.
 
 \subsection{Dataset Density and Consistency Assessment}
-We evaluate the density of each input dataset prior to fusion alongside the merged dataset across the 16 target attributes. Intra-source and cross-source attribute consistency is analyzed to identify systematic discrepancies across jurisdictions (e.g., brand naming suffixes, salt representations, and regulatory status categories).
+Table~\ref{tab:fusion_density_consistency} reports attribute density and pre-fusion cross-source consistency across the 36-cluster evaluation sample ($28$ DPD, $28$ EMA, and $28$ FDA records) and its fused output across the 10 evaluated attributes. Core identifying and classification attributes (\texttt{brandName}, \texttt{activeSubstances}, \texttt{activeSubstanceCount}, \texttt{licenceHolder}, \texttt{productClass}) have $1.000$ density in all three sources, whereas complementary regulatory coverage appears in \texttt{atcCode} (absent in FDA), \texttt{dosageForm}/\texttt{route}/\texttt{strengths} (absent in EMA), and \texttt{biosimilar} (absent in FDA). Merging raises mean sample attribute density from $0.700$ (EMA) and $0.761$ (FDA)---versus $0.996$ (DPD)---to \textbf{0.989} overall.
+
+Pre-fusion cross-source consistency (fraction of multi-source groups with agreeing values) is $1.000$ for \texttt{activeSubstanceCount}, \texttt{productClass}, and \texttt{biosimilar}, and high for \texttt{atcCode} ($0.914$), \texttt{brandName} ($0.806$), \texttt{route} ($0.800$), and \texttt{activeSubstances} ($0.778$). Lower consistency occurs in \texttt{dosageForm} ($0.676$) and \texttt{strengths} ($0.528$) due to unit/granularity differences, and drops to $0.000$ for \texttt{licenceHolder} because every sampled medicine is marketed by different regional affiliates or licensees across jurisdictions.
+
+\begin{table}[htbp]
+\centering
+\caption{Pre-fusion vs.\ fused attribute density, cross-source consistency, and \texttt{Simple rules} baseline accuracy on the 36-cluster Phase~III evaluation sample.}
+\label{tab:fusion_density_consistency}
+\scriptsize
+\setlength{\tabcolsep}{2.5pt}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}X|r|r|r|r|r|l|r|}
+\hline
+\textbf{Attribute} & \textbf{DPD} & \textbf{EMA} & \textbf{FDA} & \textbf{Fused} & \textbf{Consist.} & \textbf{Baseline Rule} & \textbf{Acc.} \\
+\hline
+\texttt{brandName}            & 1.000 & 1.000 & 1.000 & 1.000 & 0.806 & \texttt{longest\_string} & 0.806 \\
+\texttt{activeSubstances}     & 1.000 & 1.000 & 1.000 & 1.000 & 0.778 & \texttt{union}           & 0.667 \\
+\texttt{activeSubstanceCount} & 1.000 & 1.000 & 1.000 & 1.000 & 1.000 & \texttt{voting}          & \textbf{1.000} \\
+\texttt{licenceHolder}        & 1.000 & 1.000 & 1.000 & 1.000 & 0.000 & \texttt{longest\_string} & 0.028 \\
+\texttt{productClass}         & 1.000 & 1.000 & 1.000 & 1.000 & 1.000 & \texttt{voting}          & \textbf{1.000} \\
+\texttt{atcCode}              & 0.964 & 1.000 & 0.000 & 0.972 & 0.914 & \texttt{union}           & 0.778 \\
+\texttt{dosageForm}           & 1.000 & 0.000 & 0.786 & 0.944 & 0.676 & \texttt{union}           & 0.417 \\
+\texttt{route}                & 1.000 & 0.000 & 0.821 & 0.972 & 0.800 & \texttt{union}           & 0.722 \\
+\texttt{strengths}            & 1.000 & 0.000 & 1.000 & 1.000 & 0.528 & \texttt{union}           & 0.333 \\
+\texttt{biosimilar}           & 1.000 & 1.000 & 0.000 & 1.000 & 1.000 & \texttt{voting}          & \textbf{1.000} \\
+\hline
+\textbf{Mean / Overall}       & \textbf{0.996} & \textbf{0.700} & \textbf{0.761} & \textbf{0.989} & --- & \textbf{Simple rules} & \textbf{0.675} \\
+\hline
+\end{tabularx}
+\end{table}
 
 \subsection{Fusion Evaluation Benchmark Set}
-To rigorously assess conflict resolution quality, an evaluation benchmark set containing $\ge 15$ multi-source medicine entities with $\ge 4$ attributes per entity is established. Ground-truth values are independently validated against external regulatory monographs and clinical pharmacopeia (e.g., DailyMed, WHO INN register), ensuring unambiguous single-record references without evaluation ambiguities.
+To evaluate fusion accuracy without ambiguities (\texttt{sample\_eval\_set.py} and \texttt{data/8\_fusion\_eval/fusion\_eval\_worksheet.csv}), we filtered the $2{,}343$ multi-source clusters down to $2{,}247$ eligible duplicate-free human-medicine clusters (excluding the 5 clusters with intra-source duplicates and veterinary/disinfectant products). Using stratified sampling (seed 42), we selected \textbf{36 clusters}: \textbf{12} three-way (\texttt{DPD+EMA+FDA}) and \textbf{8} each of \texttt{DPD+FDA}, \texttt{DPD+EMA}, and \texttt{EMA+FDA}. Each cluster is identified unambiguously by a single source record ID (\texttt{eval\_id}) using reference priority $\text{FDA} > \text{EMA} > \text{DPD}$.
+
+Each entity is annotated across \textbf{10 conflicting attributes}; single-source regional dates and jurisdiction-specific \texttt{regulatoryStatus}, \texttt{generic}, and \texttt{orphanMedicine} flags are excluded. Ground-truth values are sourced exclusively from primary regulatory monographs and labels (FDA/DailyMed~\cite{fda_drugsatfda}, EMA EPARs~\cite{ema_medicines}, Health Canada DPD~\cite{healthcanada_dpd}, and the WHO ATC/DDD Index~\cite{whocc_atc}): rows 1--5 are human-verified and rows 6--36 are populated with official evidence URLs pending final human sign-off.
 
 \subsection{Conflict Resolution Functions and Custom Rules}
-We systematically experiment with standard conflict resolution strategies (Voting, Longest String, Most Trusted Source based on jurisdiction data quality scores, and Union for multi-valued active substances and strengths) as well as custom pharmaceutical domain heuristics (e.g., INN-preference for substance nomenclature and hierarchical dosage form mapping).
+As an initial PyDI baseline (\texttt{Simple rules} in Table~\ref{tab:fusion_density_consistency}), we assign \texttt{longest\_string} to free text (\texttt{brandName}, \texttt{licenceHolder}), \texttt{voting} to categorical/count fields (\texttt{activeSubstanceCount}, \texttt{productClass}, \texttt{biosimilar}), and \texttt{union} to multi-valued attributes (\texttt{activeSubstances}, \texttt{atcCode}, \texttt{dosageForm}, \texttt{route}, \texttt{strengths}). Ongoing Phase~III work extends this skeleton with provenance-aware strategies (\texttt{favour\_sources}, \texttt{prefer\_higher\_trust}) and custom domain resolvers (salt-stripping INN voting for \texttt{activeSubstances}, deepest 7-character ATC selection, and unit-normalized strength merging) across the full 52,459-record dataset.
 
 \subsection{Conflict Resolution Accuracy Comparison}
-The performance of different resolution functions is comparatively evaluated against the benchmark set. A comparative table reports attribute-level accuracy across alternative functions, identifying the optimal strategy for each target attribute.
+Evaluated against the 36-entity benchmark ($360$ attribute cells) using tokenized word-set matching for text/lists and exact matching for \texttt{atcCode}, \texttt{activeSubstanceCount}, \texttt{productClass}, and \texttt{biosimilar}, the \texttt{Simple rules} baseline achieves \textbf{67.50\% overall accuracy} ($243/360$ correct; Table~\ref{tab:fusion_density_consistency}). It reaches $100\%$ on \texttt{activeSubstanceCount}, \texttt{productClass}, and \texttt{biosimilar}, and $72.2\%$--$80.6\%$ on \texttt{brandName}, \texttt{atcCode}, and \texttt{route}, but degrades sharply on \texttt{dosageForm} ($41.7\%$), \texttt{strengths} ($33.3\%$), and \texttt{licenceHolder} ($2.8\%$).
 
 \subsection{Remaining Error Analysis}
-An error audit is performed on the remaining discrepancies following the application of the best resolution functions, categorizing residual errors into regulatory classification differences, temporal update lags, and typographical reporting variants.
+Inspecting all \textbf{117 baseline errors} (\texttt{fusion\_errors.csv}) reveals clear target areas for provenance and custom rules:
+\begin{itemize}
+  \item \textbf{Regional Licence Holders (35 errors):} \texttt{longest\_string} selects verbose Canadian/EU affiliate strings (e.g., \texttt{GLAXOSMITHKLINE INC}) rather than the reference FDA applicant, explaining the $2.8\%$ accuracy on \texttt{licenceHolder}; \texttt{favour\_sources} aligned with reference priority directly targets this.
+  \item \textbf{Strengths \& Dosage Forms (24 and 21 errors):} Naive \texttt{union} mixes per-vial quantities and concentrations (e.g., \texttt{200 U} vs.\ \texttt{200 U/vial} for \textit{Elelyso}) and combines differing regulatory form granularities (DPD \texttt{Solution} vs.\ FDA \texttt{Injection}).
+  \item \textbf{Salt Forms, Routes, ATC Prefixes, and Regional Brands (12, 10, 8, and 7 errors):} \texttt{union} retains both base and salt names (\texttt{bosutinib} alongside \texttt{bosutinib monohydrate}), merges generic FDA \texttt{Injection} with specific \texttt{Intravenous}/\texttt{Subcutaneous} routes, keeps truncated 3-character EMA ATC prefixes (\texttt{A16} alongside \texttt{A16AB14}), and picks longer EU trade variants (e.g., \textit{Cinqaero} vs.\ \textit{Cinqair}).
+\end{itemize}
 
 % ============================================================
 \section{Conclusion}
