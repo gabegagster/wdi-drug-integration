@@ -250,3 +250,6 @@ data/3_fused/*
 *.lot
 *.bbl
 *.blg
+
+# Local planning notes
+docs/phase3_role_split.md

@@ -1,73 +1,60 @@
-% Do not change document class, margins, fonts, etc.
-\documentclass[a4paper,oneside,bibliography=totoc]{scrbook}
+% Springer LNCS (Lecture Notes in Computer Science) template
+\documentclass{llncs}
 
-
+\usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
-\usepackage{latexsym}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{tabularx}
 \usepackage{booktabs}
-\usepackage{algorithm}
-\counterwithin{algorithm}{chapter}
-\usepackage{algorithmic}
+\usepackage{microtype}
 \usepackage{csquotes}
-\renewcommand{\algorithmiccomment}[1]{\hfill\textit{// #1}}
-\usepackage[usenames,dvipsnames,table]{xcolor}
+\usepackage[dvipsnames,table]{xcolor}
 \usepackage{array}
-\usepackage{longtable}
 \usepackage{xurl}
-\usepackage[colorlinks,citecolor=Green]{hyperref}
+\usepackage[colorlinks,citecolor=Green,linkcolor=NavyBlue,urlcolor=NavyBlue]{hyperref}
+\renewcommand\UrlFont{\color{blue}\rmfamily}
 
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash\hspace{0pt}}p{#1}}
 \newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
 \definecolor{TableHeader}{RGB}{0,51,102}
 \definecolor{LightTable}{RGB}{235,241,248}
 \definecolor{Missing}{RGB}{192,0,0}
-\newcommand{\tablegroup}[1]{\textbf{#1}\ }
 \setlength{\emergencystretch}{3em}
-\newcommand{\miss}[1]{#1\textsuperscript{\textcolor{Missing}{**}}}
-\usepackage{lipsum}
-
-
-\usepackage{natbib}
-\bibliographystyle{chicagoa}
-\setcitestyle{authoryear,round,semicolon,aysep={},yysep={,}} \let\cite\citep
-
-
-\newtheorem{definition}{Definition} \newtheorem{proposition}{Proposition}
 
 \begin{document}
+\pagestyle{plain}
 
-
-\makeatletter
-\renewcommand\thesection{\arabic{section}}
-\renewcommand\thesubsection{\arabic{section}.\arabic{subsection}}
-\renewcommand\thesubsubsection{\arabic{section}.\arabic{subsection}.\arabic{subsubsection}}
-\makeatother
-
-\subject{Web Data Integration \\ Final Report}
 \title{Pharmaceutical Drug Integration: Linking US, EU and Canadian Approval Data}
+\subtitle{Web Data Integration --- Final Project Report (November 29, 2026)}
+
 \author{
-  Gabriel Himmelein (1649181)\\
-  Özlem Ölçer (2265825)\\
-  Anatole Lobenko (2187322)\\
-  Hai Nguyen (2267317)\\
-  Thu Huyen Trang Trinh (2111810)
-} \date{November 29, 2026}
-\publishers{{\small Submitted to}\\
-  Data and Web Science Group\\
-  Dr. Ralph Peeters\\
-  Prof. Dr. Christian Bizer\\
-  University of Mannheim\\}
+  Gabriel Himmelein\inst{1} \and
+  \"Ozlem \"Ol\c{c}er\inst{1} \and
+  Anatole Lobenko\inst{1} \and
+  Hai Nguyen\inst{1} \and
+  Thu Huyen Trang Trinh\inst{1}
+}
+
+\institute{
+  Data and Web Science Group, University of Mannheim, Germany\\
+  Submitted to Dr.\ Ralph Peeters and Prof.\ Dr.\ Christian Bizer\\
+  Student IDs: 1649181, 2265825, 2187322, 2267317, 2111810
+}
+
 \maketitle
+
+\begin{abstract}
+This project integrates official pharmaceutical approval registers from the United States (Drugs@FDA), the European Union (EMA Medicines), and Canada (Health Canada DPD) into a unified, conflict-free dataset of 16 target attributes. We document Phase~I schema mapping and XML translation (52,459 validated records), Phase~II blocking, entity matching, and connected-components clustering (2,343 multi-source medicine clusters), and Phase~III data fusion and quality evaluation using PyDI.
+\keywords{Web Data Integration \and Pharmaceutical Data \and Data Translation \and Identity Resolution \and Data Fusion.}
+\end{abstract}
 
 % ============================================================
 \section{Use Case}
 % ============================================================
 
-This project builds a unified view of approved pharmaceutical drugs across the United States, European Union, and Canada by integrating three official regulatory datasets: Drugs@FDA (US), EMA Medicines (EU), and the Health Canada Drug Product Database (DPD). The central entity is a medicine identified by its brand name and active substance(s); each integrated record includes licence holder, regulatory status, product class, ATC code, dosage form, route, strengths, substance count, regional dates, and generic/biosimilar/orphan flags.
+This project builds a unified view of approved pharmaceutical drugs across the United States, European Union, and Canada by integrating three official regulatory datasets: Drugs@FDA (US)~\cite{fda_drugsatfda}, EMA Medicines (EU)~\cite{ema_medicines}, and the Health Canada Drug Product Database (DPD)~\cite{healthcanada_dpd}. The central entity is a medicine identified by its brand name and active substance(s); each integrated record includes licence holder, regulatory status, product class, ATC code, dosage form, route, strengths, substance count, regional dates, and generic/biosimilar/orphan flags.
 
 % ============================================================
 \section{Requirements Suitability}
@@ -106,7 +93,8 @@ the remaining 14 attributes are single-valued (including the numeric attribute
 \caption{Attribute Intersection with Integrated Schema}
 \label{tab:schema}
 \scriptsize
-\begin{tabular}{|l|l|>{\raggedright\arraybackslash}p{5.5cm}|}
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\textwidth}{|l|l|>{\raggedright\arraybackslash}X|}
 \hline
 \textbf{Attribute name} & \textbf{Attribute type} & \textbf{Datasets in which the attribute is found} \\
 \hline
@@ -122,12 +110,12 @@ the remaining 14 attributes are single-valued (including the numeric attribute
 \texttt{orphanMedicine} & boolean & EMA Medicines \\
 \texttt{dosageForm} & string & Drugs@FDA, DPD \\
 \texttt{route} & string & Drugs@FDA, DPD \\
-\texttt{strengths} & list (numeric value, unit) & Drugs@FDA, DPD \\
+\texttt{strengths} & list (numeric, unit) & Drugs@FDA, DPD \\
 \texttt{usApprovalDate} & date & Drugs@FDA \\
 \texttt{euAuthorisationDate} & date & EMA Medicines \\
 \texttt{caStatusDate} & date & DPD \\
 \hline
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 % ============================================================
@@ -173,8 +161,9 @@ can vary across countries (Table~\ref{tab:difficult_match}):
 \centering
 \caption{Examples of identical medicines with differing identifying attributes across sources}
 \label{tab:difficult_match}
-\footnotesize
-\begin{tabularx}{\textwidth}{|l|l|X|}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\textwidth}{|l|l|>{\raggedright\arraybackslash}X|}
 \hline
 \textbf{Dataset} & \textbf{Brand Name} & \textbf{Active Substance} \\
 \hline
@@ -228,7 +217,8 @@ sources.
 \caption{Shared UDFs used across mappers}
 \label{tab:udfs}
 \scriptsize
-\begin{tabular}{|l|>{\raggedright\arraybackslash}p{7.5cm}|}
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\textwidth}{|l|>{\raggedright\arraybackslash}X|}
 \hline
 \textbf{Function} & \textbf{Purpose} \\
 \hline
@@ -243,7 +233,7 @@ sources.
 \texttt{stdRoute} / \texttt{routeList} & Standardizes single or multi-value administration routes \\
 \texttt{splitStrengths} & Tokenizes a DPD strength string into (value, unit) pairs \\
 \hline
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 % ------------------------------------------------------------
@@ -263,7 +253,8 @@ field correspondences.
 \caption{EMA Medicines field mapping}
 \label{tab:ema_mapping}
 \scriptsize
-\begin{tabular}{|l|l|l|}
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\textwidth}{|L{3.1cm}|L{3.0cm}|>{\raggedright\arraybackslash}X|}
 \hline
 \textbf{Target field} & \textbf{Source column} & \textbf{Transformation} \\
 \hline
@@ -274,11 +265,11 @@ field correspondences.
 \texttt{licenceHolder}        & MA holder                    & Direct copy \\
 \texttt{regulatoryStatus}     & Medicine status              & \texttt{standardizeRegulatoryStatus} \\
 \texttt{productClass}         & Category                     & \texttt{standardizeProductClass} \\
-\texttt{atcCode}              & ATC code (human) + ATCvet    & \texttt{standardizeAtcCodes} \\
+\texttt{atcCode}              & ATC (human) + ATCvet         & \texttt{standardizeAtcCodes} \\
 \texttt{generic} / \texttt{biosimilar} / \texttt{orphanMedicine} & Generic / Biosimilar / Orphan & \texttt{yesNoToBoolean} \\
 \texttt{euAuthorisationDate}  & Marketing authorisation date & \texttt{parseAuthorisationDate} \\
 \hline
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 The most intricate correspondence handles active substances. For 57 of
@@ -324,14 +315,14 @@ preparation. Table~\ref{tab:fda_mapping} summarises the field mappings.
 \caption{Drugs@FDA field mapping}
 \label{tab:fda_mapping}
 \scriptsize
-\setlength{\tabcolsep}{4pt}
-\begin{tabular}{|l|l|>{\raggedright\arraybackslash}p{5.5cm}|}
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\textwidth}{|L{2.8cm}|L{3.1cm}|>{\raggedright\arraybackslash}X|}
 \hline
 \textbf{Target field} & \textbf{Source column} & \textbf{Transformation} \\
 \hline
 \texttt{id}                   & medicine\_id                     & \texttt{makeMedicineId("FDA", id)} \\
 \texttt{brandName}            & DrugName (plurality)             & Direct copy \\
-\texttt{activeSubstances}     & ActiveIngredient                 & \texttt{getActiveSubstances}; separator \texttt{"; "} \\
+\texttt{activeSubstances}     & ActiveIngredient                 & \texttt{getActiveSubstances}; sep.\ \texttt{"; "} \\
 \texttt{activeSubstanceCount} & (derived)                        & \texttt{count(activeSubstances)} \\
 \texttt{licenceHolder}        & SponsorName (plurality)          & Direct copy \\
 \texttt{regulatoryStatus}     & MarketingStatusID                & \texttt{standardizeRegulatoryStatus} \\
@@ -339,10 +330,10 @@ preparation. Table~\ref{tab:fda_mapping} summarises the field mappings.
 \texttt{generic}              & ApplType (\texttt{ANDA}/\texttt{NDA}/\texttt{BLA}) & \texttt{true} if all \texttt{ANDA}; \texttt{false} if all \texttt{NDA}/\texttt{BLA}; omit if mixed \\
 \texttt{dosageForm}           & Form (form component)            & \texttt{fdaFormPart} $\rightarrow$ \texttt{dosageFormList} \\
 \texttt{route}                & Form (route component)           & \texttt{fdaRoutePart} $\rightarrow$ \texttt{routeList} \\
-\texttt{strengths}            & Strength                         & Pre-split combination tokens $\rightarrow$ \texttt{splitStrengths} \\
+\texttt{strengths}            & Strength                         & Pre-split tokens $\rightarrow$ \texttt{splitStrengths} \\
 \texttt{usApprovalDate}       & SubmissionStatusDate (\texttt{AP}) & Earliest non-empty approval date (ISO~8601) \\
 \hline
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 Drugs@FDA stores dosage form and administration route jointly in
@@ -377,13 +368,14 @@ the three sources.
 \caption{Health Canada DPD field mapping}
 \label{tab:dpd_mapping}
 \scriptsize
-\begin{tabular}{|l|l|l|}
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\textwidth}{|L{3.1cm}|L{2.8cm}|>{\raggedright\arraybackslash}X|}
 \hline
 \textbf{Target field} & \textbf{Source column} & \textbf{Transformation} \\
 \hline
 \texttt{id}                   & medicine\_id          & \texttt{makeMedicineId("DPD", id)} \\
 \texttt{brandName}            & brand\_name           & Direct copy \\
-\texttt{activeSubstances}     & active\_substances    & \texttt{getActiveSubstances}; separator \texttt{"; "} \\
+\texttt{activeSubstances}     & active\_substances    & \texttt{getActiveSubstances}; sep.\ \texttt{"; "} \\
 \texttt{activeSubstanceCount} & (derived)             & \texttt{count(activeSubstances)} \\
 \texttt{licenceHolder}        & licence\_holder       & Direct copy \\
 \texttt{regulatoryStatus}     & current\_status       & \texttt{standardizeRegulatoryStatus} \\
@@ -395,7 +387,7 @@ the three sources.
 \texttt{strengths}            & strengths             & \texttt{splitStrengths} $\rightarrow$ (value, unit) pairs \\
 \texttt{caStatusDate}         & status\_date          & Direct copy (ISO date) \\
 \hline
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 The main mapping challenge in DPD is strength parsing. Each entity row
@@ -431,9 +423,10 @@ Phase~II identity resolution.
 \caption{Validation summary of translated XML datasets}
 \label{tab:xml_validation}
 \scriptsize
+\setlength{\tabcolsep}{3pt}
 \begin{tabular}{|l|r|r|r|}
 \hline
-\textbf{Validation check} & \textbf{\texttt{dpd\_medicines.xml}} & \textbf{\texttt{ema\_medicines.xml}} & \textbf{\texttt{fda\_medicines.xml}} \\
+\textbf{Validation check} & \textbf{\texttt{dpd\_med.}} & \textbf{\texttt{ema\_med.}} & \textbf{\texttt{fda\_med.}} \\
 \hline
 Records                       & 41,636 & 2,648 & 8,175 \\
 Unique IDs                    & 41,636 & 2,648 & 8,175 \\
@@ -546,7 +539,7 @@ Performance is governed by two complementary metrics:
 \end{itemize}
 
 \paragraph{Lexical Blocking Baselines.}
-We initially benchmarked standard lexical blocking rules implemented via PyDI
+We initially benchmarked standard lexical blocking rules implemented via PyDI~\cite{pydi_framework}
 (\texttt{StandardBlocker} and \texttt{TokenBlocker}) on the development split
 (\texttt{gs\_pair\_train\_val.csv}, $1{,}038$ unique eligible positive matches
 after EMA ID alignment and deduplication; Table~\ref{tab:blocking_development}):
@@ -569,7 +562,7 @@ after EMA ID alignment and deduplication; Table~\ref{tab:blocking_development}):
 \paragraph{Dense Semantic Embeddings (Qwen3-Embedding-0.6B).}
 To capture semantic equivalence across international nonproprietary names (INNs),
 salt variations, and brand synonyms, we evaluated dense vector blocking using
-\texttt{Qwen/Qwen3-Embedding-0.6B} ($1{,}024$-dimensional representations).
+\texttt{Qwen/Qwen3-Embedding-0.6B}~\cite{qwen3_embedding} ($1{,}024$-dimensional representations).
 For each medicine entity, the normalized brand name and alphabetically sorted
 active substances were concatenated and encoded without fine-tuning.
 Cosine nearest-neighbor search was executed from the smaller source into the
@@ -582,28 +575,28 @@ positives (\textbf{98.36\% pooled completeness}; Table~\ref{tab:blocking_develop
 \caption{Comparison of lexical and dense embedding blocking methods on the development set ($1{,}038$ positive matches)}
 \label{tab:blocking_development}
 \scriptsize
-\setlength{\tabcolsep}{2.5pt}
+\setlength{\tabcolsep}{2pt}
 \begin{tabular}{|l|l|r|r|r|r|r|}
 \hline
-\textbf{Source Pair} & \textbf{Blocking Method} & \textbf{Candidates} & \textbf{Matches} & \textbf{Retained} & \textbf{Completeness} & \textbf{Red.\ Ratio} \\
+\textbf{Pair} & \textbf{Blocking Method} & \textbf{Cand.} & \textbf{Match} & \textbf{Ret.} & \textbf{PC} & \textbf{RR} \\
 \hline
-DPD--EMA & Brand Prefix-4             &  16,398 & 352 & 313 & 88.92\% & 99.9851\% \\
-DPD--EMA & Brand Trigrams (cap 1,000) & 431,353 & 352 & 323 & 91.76\% & 99.6088\% \\
-DPD--EMA & Prefix-4 $\cup$ Trigrams   & 443,207 & 352 & 346 & 98.30\% & 99.5980\% \\
-DPD--EMA & Qwen Top-5                 &  13,240 & 352 & 346 & 98.30\% & 99.9880\% \\
-DPD--EMA & \textbf{Qwen Top-5 $\cup$ Prefix-4} & \textbf{27,966} & \textbf{352} & \textbf{350} & \textbf{99.43\%} & \textbf{99.9746\%} \\
+DPD--EMA & Brand Prefix-4             &  16,398 & 352 & 313 & 88.92\% & 99.985\% \\
+DPD--EMA & Brand Trigrams (cap 1,000) & 431,353 & 352 & 323 & 91.76\% & 99.609\% \\
+DPD--EMA & Prefix-4 $\cup$ Trigrams   & 443,207 & 352 & 346 & 98.30\% & 99.598\% \\
+DPD--EMA & Qwen Top-5                 &  13,240 & 352 & 346 & 98.30\% & 99.988\% \\
+DPD--EMA & \textbf{Qwen Top-5 $\cup$ Prefix-4} & \textbf{27,966} & \textbf{352} & \textbf{350} & \textbf{99.43\%} & \textbf{99.975\%} \\
 \hline
-DPD--FDA & Brand Prefix-4             & 133,069 & 211 & 210 & 99.53\% & 99.9609\% \\
-DPD--FDA & Brand Trigrams (cap 1,000) & 544,036 & 211 & 172 & 81.52\% & 99.8402\% \\
-DPD--FDA & Prefix-4 $\cup$ Trigrams   & 663,705 & 211 & 210 & 99.53\% & 99.8050\% \\
-DPD--FDA & Qwen Top-5                 &  40,875 & 211 & 210 & 99.53\% & 99.9880\% \\
-DPD--FDA & \textbf{Qwen Top-5 $\cup$ Prefix-4} & \textbf{162,930} & \textbf{211} & \textbf{211} & \textbf{100.00\%} & \textbf{99.9521\%} \\
+DPD--FDA & Brand Prefix-4             & 133,069 & 211 & 210 & 99.53\% & 99.961\% \\
+DPD--FDA & Brand Trigrams (cap 1,000) & 544,036 & 211 & 172 & 81.52\% & 99.840\% \\
+DPD--FDA & Prefix-4 $\cup$ Trigrams   & 663,705 & 211 & 210 & 99.53\% & 99.805\% \\
+DPD--FDA & Qwen Top-5                 &  40,875 & 211 & 210 & 99.53\% & 99.988\% \\
+DPD--FDA & \textbf{Qwen Top-5 $\cup$ Prefix-4} & \textbf{162,930} & \textbf{211} & \textbf{211} & \textbf{100.00\%} & \textbf{99.952\%} \\
 \hline
-EMA--FDA & Brand Prefix-4             &   4,456 & 475 & 468 & 98.53\% & 99.9794\% \\
-EMA--FDA & Brand Trigrams (cap 1,000) & 261,601 & 475 & 472 & 99.37\% & 98.7915\% \\
-EMA--FDA & Prefix-4 $\cup$ Trigrams   & 262,625 & 475 & 474 & 99.79\% & 98.7868\% \\
-EMA--FDA & Qwen Top-5                 &  13,240 & 475 & 465 & 97.89\% & 99.9388\% \\
-EMA--FDA & \textbf{Qwen Top-5 $\cup$ Prefix-4} & \textbf{15,934} & \textbf{475} & \textbf{474} & \textbf{99.79\%} & \textbf{99.9264\%} \\
+EMA--FDA & Brand Prefix-4             &   4,456 & 475 & 468 & 98.53\% & 99.979\% \\
+EMA--FDA & Brand Trigrams (cap 1,000) & 261,601 & 475 & 472 & 99.37\% & 98.792\% \\
+EMA--FDA & Prefix-4 $\cup$ Trigrams   & 262,625 & 475 & 474 & 99.79\% & 98.787\% \\
+EMA--FDA & Qwen Top-5                 &  13,240 & 475 & 465 & 97.89\% & 99.939\% \\
+EMA--FDA & \textbf{Qwen Top-5 $\cup$ Prefix-4} & \textbf{15,934} & \textbf{475} & \textbf{474} & \textbf{99.79\%} & \textbf{99.926\%} \\
 \hline
 \end{tabular}
 \end{table}
@@ -632,10 +625,10 @@ checksums verified in \texttt{manifest.json}.
 \caption{Final candidate handoff summary and held-out test set evaluation ($185$ known matches)}
 \label{tab:blocking_candidates}
 \scriptsize
-\setlength{\tabcolsep}{3pt}
+\setlength{\tabcolsep}{2.5pt}
 \begin{tabular}{|l|r|r|r|r|r|r|}
 \hline
-\textbf{Source Pair} & \textbf{Cartesian Space} & \textbf{Candidates} & \textbf{Red.\ Ratio} & \textbf{Test Matches} & \textbf{Retained} & \textbf{Completeness} \\
+\textbf{Pair} & \textbf{Cartesian} & \textbf{Candidates} & \textbf{RR} & \textbf{Test} & \textbf{Ret.} & \textbf{PC} \\
 \hline
 DPD--EMA & 110,252,128 &  27,966 & 99.9746\% & 63 & 63 & \textbf{100.00\%} \\
 DPD--FDA & 340,374,300 & 162,930 & 99.9521\% & 37 & 37 & \textbf{100.00\%} \\
@@ -656,13 +649,13 @@ We trained four supervised classifiers on the 2,973 development pairs and evalua
 
 \begin{table}[htbp]
 \centering
-\caption{ML classifiers on the test set ($n = 525$ pairs). CV = cross-validated Macro F1 on the development set; P/R = match precision/recall; the last four columns give Macro F1 per subgroup.}
+\caption{ML classifiers on the test set ($n = 525$ pairs). CV = cross-validated Macro F1 on the development set; P/R = match precision/recall; the last four columns give Macro F1 per subgroup (D/E = DPD/EMA, D/F = DPD/FDA, E/F = EMA/FDA).}
 \label{tab:ml_classifiers}
 \scriptsize
-\setlength{\tabcolsep}{2.4pt}
+\setlength{\tabcolsep}{2.0pt}
 \begin{tabular}{|l|r|r|r|r|r|r|r|r|r|r|}
 \hline
-\textbf{Matcher} & \textbf{CV} & \textbf{Macro F1} & \textbf{P} & \textbf{R} & \textbf{FP} & \textbf{FN} & \textbf{Hard} & \textbf{DPD/EMA} & \textbf{DPD/FDA} & \textbf{EMA/FDA} \\
+\textbf{Model} & \textbf{CV} & \textbf{Mac.\ F1} & \textbf{P} & \textbf{R} & \textbf{FP} & \textbf{FN} & \textbf{Hard} & \textbf{D/E} & \textbf{D/F} & \textbf{E/F} \\
 \hline
 LR  & 0.8760 & 0.8610 & 0.9241 & 0.7204 & 11 & 52 & 0.8166 & 0.8961 & \textbf{0.8366} & 0.8433 \\
 SVM & 0.8869 & 0.8698 & \textbf{0.9379} & 0.7312 & \textbf{9} & 50 & 0.8349 & 0.9100 & 0.7887 & 0.8728 \\
@@ -690,7 +683,7 @@ integer $\texttt{match} \in \{0, 1\}$ and clinical rationale string
 \texttt{reason}).
 
 \paragraph{Decontaminated Zero-Shot Prompt Architecture.}
-Each test pair in \texttt{gs\_pair\_test.csv} ($n = 525$) is formatted
+Each held-out pair in \texttt{gs\_pair\_test.csv} ($n = 525$) is formatted
 with four record attributes per jurisdiction: \texttt{brandName},
 \texttt{activeSubstances}, \texttt{licenceHolder}, and \texttt{dosageForm}
 (with missing values formatted as \texttt{"Not specified"}). The system
@@ -724,10 +717,10 @@ performance across all 525 held-out pairs.
 \caption{Held-out test set evaluation ($n = 525$ pairs): Naive Exact-Match Baseline vs.\ Zero-Shot LLM (\texttt{gemini-3.8-flash})}
 \label{tab:llm_vs_baseline}
 \scriptsize
-\setlength{\tabcolsep}{4pt}
-\begin{tabular}{|l|r|r|r|}
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\textwidth}{|l|r|r|>{\raggedleft\arraybackslash}X|}
 \hline
-\textbf{Metric} & \textbf{Exact-Match Baseline} & \textbf{Zero-Shot LLM (\texttt{gemini-3.8-flash})} & \textbf{Improvement ($\Delta$)} \\
+\textbf{Metric} & \textbf{Exact Baseline} & \textbf{Zero-Shot LLM} & \textbf{Improvement ($\Delta$)} \\
 \hline
 \textbf{Macro F1 Score}       & 0.7307 (73.07\%) & \textbf{0.9485 (94.85\%)} & \textbf{+21.78 pp} \\
 \textbf{Match Class F1 (1)}   & 0.6122 (61.22\%) & \textbf{0.9344 (93.44\%)} & \textbf{+32.21 pp} \\
@@ -743,7 +736,7 @@ False Negatives (FN)          & 96               & \textbf{8}                & $
 False Positives (FP)          & 18               & \textbf{17}               & $-1$ false alarm \\
 True Negatives (TN)           & 321              & \textbf{322}              & +1 \\
 \hline
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 The Naive Exact-Match Baseline achieves a Macro F1 of $73.07\%$ and misses
@@ -768,23 +761,23 @@ $0.9704$ on \texttt{DPD/FDA}, and $0.9144$ on \texttt{EMA/FDA}.
 \caption{Zero-Shot LLM vs.\ Naive Baseline breakdown by difficulty pool and source jurisdiction pair}
 \label{tab:llm_breakdowns}
 \scriptsize
-\setlength{\tabcolsep}{4pt}
-\begin{tabular}{|l|r|r|r|r|r|r|}
+\setlength{\tabcolsep}{2.5pt}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}X|r|r|r|r|r|r|}
 \hline
-\textbf{Subgroup} & \textbf{Pairs} & \textbf{Base.\ Macro F1} & \textbf{Base.\ Match F1} & \textbf{LLM Acc.} & \textbf{LLM Macro F1} & \textbf{LLM Match F1} \\
+\textbf{Subgroup} & \textbf{Pairs} & \textbf{Base.\ Mac.} & \textbf{Base.\ F1} & \textbf{LLM Acc.} & \textbf{LLM Mac.} & \textbf{LLM F1} \\
 \hline
 \multicolumn{7}{|l|}{\textit{Breakdown by Difficulty Pool}} \\
 \hline
-Ordinary Pool (\texttt{hard=0}) & 290 & 0.9310 & 0.9091 & 96.90\% & \textbf{0.9647} & 0.9524 \\
-Hard Pool (\texttt{hard=1})     & 235 & 0.3717 & 0.0000 & 93.19\% & \textbf{0.9296} & 0.9167 \\
+Ordinary (\texttt{hard=0}) & 290 & 0.9310 & 0.9091 & 96.90\% & \textbf{0.9647} & 0.9524 \\
+Hard (\texttt{hard=1})     & 235 & 0.3717 & 0.0000 & 93.19\% & \textbf{0.9296} & 0.9167 \\
 \hline
 \multicolumn{7}{|l|}{\textit{Breakdown by Source Jurisdiction Pair}} \\
 \hline
-DPD / EMA (Canada $\leftrightarrow$ EU) & 150 & 0.7366 & 0.6383 & 98.67\% & \textbf{0.9864} & 0.9844 \\
-DPD / FDA (Canada $\leftrightarrow$ US) & 116 & 0.6979 & 0.5625 & 97.41\% & \textbf{0.9704} & 0.9600 \\
-EMA / FDA (EU $\leftrightarrow$ US)     & 259 & 0.7408 & 0.6176 & 92.28\% & \textbf{0.9144} & 0.8876 \\
+DPD / EMA (CA $\leftrightarrow$ EU) & 150 & 0.7366 & 0.6383 & 98.67\% & \textbf{0.9864} & 0.9844 \\
+DPD / FDA (CA $\leftrightarrow$ US) & 116 & 0.6979 & 0.5625 & 97.41\% & \textbf{0.9704} & 0.9600 \\
+EMA / FDA (EU $\leftrightarrow$ US) & 259 & 0.7408 & 0.6176 & 92.28\% & \textbf{0.9144} & 0.8876 \\
 \hline
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 \paragraph{Qualitative Clinical Error Analysis.}
@@ -869,10 +862,10 @@ with three-way international clusters increasing to \textbf{502} ($+77.4\%$ gain
 \caption{Connected-components clustering profile: Group size distribution and jurisdictional overlap breakdown (Baseline Exact vs.\ Candidate Matches with Greedy 1:1)}
 \label{tab:clustering_profile}
 \scriptsize
-\setlength{\tabcolsep}{4pt}
-\begin{tabular}{|l|r|r|r|r|}
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}X|r|r|r|r|}
 \hline
-\textbf{Metric / Category} & \textbf{Exact Baseline} & \textbf{Share} & \textbf{Candidate Matches} & \textbf{Share} \\
+\textbf{Metric / Category} & \textbf{Exact Base.} & \textbf{Share} & \textbf{Cand.\ Match} & \textbf{Share} \\
 \hline
 \multicolumn{5}{|l|}{\textit{\textbf{Group Size Distribution ($k$)}}} \\
 \hline
@@ -894,7 +887,7 @@ EU \& US Only (\texttt{EMA + FDA})       &   149 &  10.86\% &   139 &   5.93\% \
 \hline
 \textbf{Total Overlapping Entities}      & \textbf{1,372} & \textbf{100.00\%} & \textbf{2,343} & \textbf{100.00\%} \\
 \hline
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 \paragraph{Cluster / Group Size Distribution.}
@@ -956,24 +949,10 @@ In accordance with the project report requirements, the overall integration resu
 
 
 % ============================================================
-% SOURCES
+% BIBLIOGRAPHY (Springer LNCS splncs04)
 % ============================================================
 
-\section*{Sources}
-\addcontentsline{toc}{section}{Sources}
-
-\begin{itemize}
-    \item U.S. Food and Drug Administration,
-    \emph{Drugs@FDA Data Files}.\\
-    \url{https://www.fda.gov/drugs/drug-approvals-and-databases/drugsfda-data-files}
-
-    \item European Medicines Agency,
-    \emph{Download medicine data}.\\
-    \url{https://www.ema.europa.eu/en/medicines/download-medicine-data}
-
-    \item Health Canada,
-    \emph{Drug Product Database}.\\
-    \url{https://www.canada.ca/en/health-canada/services/drugs-health-products/drug-products/drug-product-database.html}
-\end{itemize}
+\bibliographystyle{splncs04}
+\bibliography{references}
 
 \end{document}
