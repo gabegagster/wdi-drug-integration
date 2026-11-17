@@ -342,11 +342,11 @@ Inspecting all 25 test discrepancies ($17$ FP, $8$ FN) reveals four patterns: (1
 \label{subsec:clustering}
 % ------------------------------------------------------------
 
-Transitive closure via NetworkX connected components (\texttt{clustering.py}) consolidates exact baseline matches into \textbf{1,372 cross-dataset clusters} ($283$ three-way, $3{,}027$ entities, $100\%$ duplicate-free; refining the raw exploratory estimate of $1{,}407$). Running the hierarchical matcher with salt normalization and greedy $1{:}1$ conflict resolution (\texttt{--enforce-one-to-one}) over the $206{,}830$ hybrid-blocker candidates expands yield to \textbf{2,343 multi-source clusters} ($+70.8\%$, covering $5{,}194$ entities) and \textbf{502 three-way clusters} ($+77.4\%$; Table~\ref{tab:clustering_profile}), leaving $99.79\%$ of clusters strictly single-entry-per-source ($k \le 3$). Auditing all 5 clusters with $k > 3$ confirms legitimate upstream intra-source duplicates rather than matching errors: \texttt{CLUSTER\_00001} ($k=5$, \textit{Irbesartan/HCTZ}: dual EMA BMS/Teva + dual FDA ANDAs), \texttt{CLUSTER\_00002} ($k=4$, \textit{Temozolomide}: two DPD DINs), \texttt{CLUSTER\_00003} ($k=4$, \textit{Sitagliptin/Metformin}: Apo vs.\ Reddy DPD DINs), \texttt{CLUSTER\_00004} ($k=4$, \textit{Emtricitabine/Tenofovir}: Jamp vs.\ Mylan DPD DINs), and \texttt{CLUSTER\_00005} ($k=4$, \textit{Koselugo}: FDA base vs.\ sulfate records).
+Transitive closure via NetworkX connected components (\texttt{clustering.py}) consolidates exact baseline matches into \textbf{1,372 cross-dataset clusters} ($283$ three-way, $3{,}027$ entities, $100\%$ duplicate-free; refining the raw exploratory estimate of $1{,}407$) alongside $49{,}432$ unmatched singletons ($k=1$, where no slot filling is possible), yielding $50{,}804$ total groups across $52{,}459$ input records. Running the hierarchical matcher with salt normalization and greedy $1{:}1$ conflict resolution (\texttt{--enforce-one-to-one}) over the $206{,}830$ hybrid-blocker candidates expands yield to \textbf{2,343 multi-source clusters} ($+70.8\%$, covering $5{,}194$ entities) and \textbf{502 three-way clusters} ($+77.4\%$, $47{,}265$ singletons, $49{,}608$ total groups; Table~\ref{tab:clustering_profile}), leaving $99.79\%$ of multi-source clusters strictly single-entry-per-source ($k \le 3$). Auditing all 5 clusters with $k > 3$ confirms legitimate upstream intra-source duplicates rather than matching errors: \texttt{CLUSTER\_00001} ($k=5$, \textit{Irbesartan/HCTZ}: dual EMA BMS/Teva + dual FDA ANDAs), \texttt{CLUSTER\_00002} ($k=4$, \textit{Temozolomide}: two DPD DINs), \texttt{CLUSTER\_00003} ($k=4$, \textit{Sitagliptin/Metformin}: Apo vs.\ Reddy DPD DINs), \texttt{CLUSTER\_00004} ($k=4$, \textit{Emtricitabine/Tenofovir}: Jamp vs.\ Mylan DPD DINs), and \texttt{CLUSTER\_00005} ($k=4$, \textit{Koselugo}: FDA base vs.\ sulfate records).
 
 \begin{table}[htbp]
 \centering
-\caption{Connected-components clustering profile: group size distribution and jurisdictional overlap (Exact Baseline vs.\ Candidate Matches with Greedy 1:1)}
+\caption{Connected-components clustering profile: full group size distribution (incl.\ singletons $k=1$) and jurisdictional overlap (Share = share of multi-source clusters $k \ge 2$)}
 \label{tab:clustering_profile}
 \scriptsize
 \setlength{\tabcolsep}{3pt}
@@ -354,13 +354,15 @@ Transitive closure via NetworkX connected components (\texttt{clustering.py}) co
 \hline
 \textbf{Metric / Category} & \textbf{Exact Base.} & \textbf{Share} & \textbf{Cand.\ Match} & \textbf{Share} \\
 \hline
+Singletons ($k = 1$, no cross-source overlap) & 49,432 & --- & 47,265 & --- \\
 Pairwise ($k = 2$) / Tri-Jurisdictional ($k = 3$) & 1,089 / 283 & 79.4\% / 20.6\% & 1,841 / 497 & 78.6\% / 21.2\% \\
 Intra-source variations ($k = 4$ / $k = 5$) & 0 / 0 & 0.0\% & 4 / 1 & 0.21\% \\
 \hline
 All 3 Sources (\texttt{DPD + EMA + FDA}) & 283 & 20.63\% & 502 & 21.43\% \\
 \texttt{DPD + FDA} / \texttt{DPD + EMA} / \texttt{EMA + FDA} & 629 / 311 / 149 & 45.8 / 22.7 / 10.9\% & 1,388 / 314 / 139 & 59.2 / 13.4 / 5.9\% \\
 \hline
-\textbf{Total Multi-Source Clusters (Entities)} & \textbf{1,372 (3,027)} & \textbf{100.00\%} & \textbf{2,343 (5,194)} & \textbf{100.00\%} \\
+\textbf{Multi-Source Clusters ($k \ge 2$, Entities)} & \textbf{1,372 (3,027)} & \textbf{100.00\%} & \textbf{2,343 (5,194)} & \textbf{100.00\%} \\
+\textbf{Total Groups incl.\ Singletons ($52{,}459$ in)} & \textbf{50,804} & --- & \textbf{49,608} & --- \\
 \hline
 \end{tabularx}
 \end{table}
