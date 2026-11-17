@@ -30,11 +30,11 @@
 \subtitle{Web Data Integration -- Project Report\\(November 29, 2026)}
 
 \author{
-  Gabriel Himmelein\inst{1} \and
-  \"Ozlem \"Ol\c{c}er\inst{1} \and
-  Anatole Lobenko\inst{1} \and
-  Hai Nguyen\inst{1} \and
-  Thu Huyen Trang Trinh\inst{1}
+  Gabriel Himmelein \and
+  \"Ozlem \"Ol\c{c}er \and
+  Anatole Lobenko \and
+  Hai Nguyen \and
+  Thu Huyen Trang Trinh
 }
 
 \institute{
@@ -78,7 +78,7 @@ DPD        & Health Can. & TXT/CSV  & 58,137 & 41,636 & 87 \\
 \end{table}
 
 \label{subsec:entity_id}
-A medicine is identified by its \texttt{brandName} and \texttt{activeSubstances}. Contrary to initial expectations, \texttt{licenceHolder} cannot serve as an identifying key because identical medicines are frequently marketed by distinct regional subsidiaries or licensing partners across jurisdictions (for instance, \textit{Verkazia} is held by \texttt{HARROW EYE} in the US, \texttt{Santen Oy} in the EU, and \texttt{APOTEX INC} in Canada). Using normalized \texttt{brandName} and sorted \texttt{activeSubstances} keys over the raw extracts yields $1{,}407$ distinct cross-source medicines ($428$ FDA--EMA, $949$ FDA--DPD, $594$ EMA--DPD)---well above the course minimum of $1{,}000$ overlapping entities (refined to $1{,}372$ unified clusters on the finalized XMLs in Section~\ref{subsec:clustering}). Nevertheless, exact matching misses identical products whose regional International Nonproprietary Name (INN) or US Adopted Name (USAN) spellings, salt modifiers, or formulation suffixes diverge across borders (Table~\ref{tab:difficult_match}).
+A medicine is identified by its \texttt{brandName} and \texttt{activeSubstances}. Contrary to initial expectations, \texttt{licenceHolder} cannot serve as an identifying key because identical medicines are frequently marketed by distinct regional subsidiaries or licensing partners across jurisdictions (for instance, \textit{Verkazia} is held by \texttt{HARROW EYE} in the US, \texttt{Santen Oy} in the EU, and \texttt{APOTEX INC} in Canada). Using normalized \texttt{brandName} and sorted \texttt{activeSubstances} keys over the raw extracts yields $1{,}407$ distinct cross-source medicines ($428$ FDA--EMA, $949$ FDA--DPD, $594$ EMA--DPD), which is well above the course minimum of $1{,}000$ overlapping entities (refined to $1{,}372$ unified clusters on the finalized XMLs in Section~\ref{subsec:clustering}). Nevertheless, exact matching misses identical products whose regional International Nonproprietary Name (INN) or US Adopted Name (USAN) spellings, salt modifiers, or formulation suffixes diverge across borders (Table~\ref{tab:difficult_match}).
 
 \begin{table}[htbp]
 \centering
@@ -260,7 +260,7 @@ EMA / FDA & 282 / 670 & 292 / 485 & 1,729 & 1,470 & 259 (86 / 173) \\
 
 We compared PyDI~\cite{pydi_framework} lexical blockers (\texttt{Brand Prefix-4}, \texttt{Brand Trigrams} capped at $1{,}000$ co-occurrences per shingle to prevent fragment explosions, and their union) against zero-shot dense semantic blocking using \texttt{Qwen/Qwen3-Embedding-0.6B}~\cite{qwen3_embedding} ($1{,}024$-dimensional encodings of normalized brand and sorted substances, retrieving top-5 cosine neighbors from smaller to larger source) on the $1{,}038$ development positives (Table~\ref{tab:blocking_development}).
 
-Lexical Prefix-4 runs in $0.30\text{ s}$ total across all three source pairs ($0.11\text{ s}$ DPD--EMA, $0.16\text{ s}$ DPD--FDA, $0.03\text{ s}$ EMA--FDA), but misses DPD--EMA matches carrying regional generic prefixes (e.g., \texttt{TEVA-}). Adding trigrams boosts completeness above $98\%$ at the cost of $1.37\text{M}$ candidates. Dense Qwen Top-5 vector search completes in $10.4\text{ s}$ total ($2.5\text{ s}$ EMA$\rightarrow$DPD, $6.8\text{ s}$ FDA$\rightarrow$DPD, $1.1\text{ s}$ EMA$\rightarrow$FDA) and narrows the shortlist to $67{,}355$ candidates with $98.36\%$ pooled development completeness, yet drops to $92.94\%$ ($79/85$) on EMA--FDA held-out test matches---below our $97\%$ per-pair target. Combining both complementary signals as $\mathcal{C}_{\text{final}} = \mathcal{C}_{\text{Qwen top-5}} \cup \mathcal{C}_{\text{Prefix-4}}$ recovers all six missed EMA--FDA test pairs (Table~\ref{tab:blocking_candidates}), yielding \textbf{206,830 candidates} ($99.96\%$ reduction ratio) and \textbf{98.92\% pooled test completeness}.
+Lexical Prefix-4 runs in $0.30\text{ s}$ total across all three source pairs ($0.11\text{ s}$ DPD--EMA, $0.16\text{ s}$ DPD--FDA, $0.03\text{ s}$ EMA--FDA), but misses DPD--EMA matches carrying regional generic prefixes (e.g., \texttt{TEVA-}). Adding trigrams boosts completeness above $98\%$ at the cost of $1.37\text{M}$ candidates. Dense Qwen Top-5 vector search completes in $10.4\text{ s}$ total ($2.5\text{ s}$ EMA$\rightarrow$DPD, $6.8\text{ s}$ FDA$\rightarrow$DPD, $1.1\text{ s}$ EMA$\rightarrow$FDA) and narrows the shortlist to $67{,}355$ candidates with $98.36\%$ pooled development completeness, yet drops to $92.94\%$ ($79/85$) on EMA--FDA held-out test matches, falling below our $97\%$ per-pair target. Combining both complementary signals as $\mathcal{C}_{\text{final}} = \mathcal{C}_{\text{Qwen top-5}} \cup \mathcal{C}_{\text{Prefix-4}}$ recovers all six missed EMA--FDA test pairs (Table~\ref{tab:blocking_candidates}), yielding \textbf{206,830 candidates} ($99.96\%$ reduction ratio) and \textbf{98.92\% pooled test completeness}.
 
 \begin{table}[htbp]
 \centering
@@ -319,7 +319,7 @@ EMA--FDA &  21,647,400 &  15,934 & 99.9264\% & 85 & 83 &  \textbf{97.65\%} \\
 We evaluated four entity-matching paradigms on the identical 525 held-out test pairs (Table~\ref{tab:all_matchers}):
 
 \begin{itemize}
-  \item \textbf{Deterministic \& Rule-Based Matchers:} The naive exact-key baseline matches normalized brands and substance sets, achieving moderate precision but missing over half of all true matches due to salt modifiers and brand suffixes. Three stricter conjunctive rules requiring licence-holder token overlap ($\ge 0.80$ after company-suffix removal, bypassed if missing)---\textbf{Exact}, \textbf{Salt} (base moiety sets), and \textbf{Fuzzy} (brand similarity $\ge 0.80$)---reach near-perfect precision ($0.98$--$1.00$) at low recall because legitimate cross-border licence holders often differ.
+  \item \textbf{Deterministic \& Rule-Based Matchers:} The naive exact-key baseline matches normalized brands and substance sets, achieving moderate precision but missing over half of all true matches due to salt modifiers and brand suffixes. Three stricter conjunctive rules requiring licence-holder token overlap ($\ge 0.80$ after company-suffix removal, bypassed if missing): \textbf{Exact}, \textbf{Salt} (base moiety sets), and \textbf{Fuzzy} (brand similarity $\ge 0.80$). All three reach near-perfect precision ($0.98$--$1.00$) at low recall because legitimate cross-border licence holders often differ.
   \item \textbf{Supervised ML Classifiers:} Logistic Regression (LR), RBF-SVM, Gradient Boosting (GB), and Random Forest (RF) were tuned via 5-fold stratified cross-validation over six lexical/salt similarity features. Tree ensembles outperform linear and kernel boundaries by 3--4 Macro F1 points, with RF reaching \textbf{0.9054 Macro F1} while fitting in under a second and scoring in milliseconds without API cost. Residual false positives mostly stem from competing generics sharing active substances and similar brand prefixes.
   \item \textbf{Fine-Tuned DistilBERT:} Fine-tuning \texttt{distilbert-base-uncased}~\cite{sanh2019distilbert} over serialized \texttt{brandName}, \texttt{activeSubstances}, and \texttt{licenceHolder} pairs ($2{,}378$ train / $595$ val; $7.54\text{ h}$ CPU training, best checkpoint at epoch 16) yields $0.9193$ Macro F1 at default cutoff $0.50$ and \textbf{0.9215 Macro F1} at the validation-tuned threshold $0.17$, outperforming all tabular ML models.
   \item \textbf{Zero-Shot LLM:} Prompting \texttt{gemini-3.8-flash} ($\texttt{temperature}=0.0$) with three strictly blind domain rules over four attributes (no test examples) achieves the highest overall score of \textbf{0.9485 Macro F1} ($95.24\%$ accuracy), cutting false negatives by $91.7\%$ compared to the exact baseline.
