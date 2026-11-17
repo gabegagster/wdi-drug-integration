@@ -78,7 +78,7 @@ DPD        & Health Can. & TXT/CSV  & 58,137 & 41,636 & 87 \\
 \end{table}
 
 \label{subsec:entity_id}
-A medicine is identified by its \texttt{brandName} and \texttt{activeSubstances}. Contrary to initial expectations, \texttt{licenceHolder} cannot serve as an identifying key because identical medicines are frequently marketed by distinct regional subsidiaries or licensing partners across jurisdictions (for instance, \textit{Verkazia} is held by \texttt{HARROW EYE} in the US, \texttt{Santen Oy} in the EU, and \texttt{APOTEX INC} in Canada). Using normalized \texttt{brandName} and sorted \texttt{activeSubstances} keys over the raw extracts yields $1{,}407$ distinct cross-source medicines ($428$ FDA--EMA, $949$ FDA--DPD, $594$ EMA--DPD)---well above the course minimum of $1{,}000$ overlapping entities (refined to $1{,}372$ unified clusters on the finalized XMLs in Section~\ref{subsec:clustering}). Nevertheless, exact matching misses identical products whose regional INN/USAN spellings, salt modifiers, or formulation suffixes diverge across borders (Table~\ref{tab:difficult_match}).
+A medicine is identified by its \texttt{brandName} and \texttt{activeSubstances}. Contrary to initial expectations, \texttt{licenceHolder} cannot serve as an identifying key because identical medicines are frequently marketed by distinct regional subsidiaries or licensing partners across jurisdictions (for instance, \textit{Verkazia} is held by \texttt{HARROW EYE} in the US, \texttt{Santen Oy} in the EU, and \texttt{APOTEX INC} in Canada). Using normalized \texttt{brandName} and sorted \texttt{activeSubstances} keys over the raw extracts yields $1{,}407$ distinct cross-source medicines ($428$ FDA--EMA, $949$ FDA--DPD, $594$ EMA--DPD)---well above the course minimum of $1{,}000$ overlapping entities (refined to $1{,}372$ unified clusters on the finalized XMLs in Section~\ref{subsec:clustering}). Nevertheless, exact matching misses identical products whose regional International Nonproprietary Name (INN) or US Adopted Name (USAN) spellings, salt modifiers, or formulation suffixes diverge across borders (Table~\ref{tab:difficult_match}).
 
 \begin{table}[htbp]
 \centering
@@ -327,7 +327,7 @@ We evaluated four entity-matching paradigms on the identical 525 held-out test p
 
 \begin{table}[htbp]
 \centering
-\caption{Unified test-set comparison of all entity matchers ($n = 525$ pairs; CV = 5-fold dev Macro F1; subgroups report test Macro F1)}
+\caption{Unified test-set comparison of all entity matchers ($n = 525$ pairs; CV = 5-fold dev Macro F1; D/E = DPD/EMA, D/F = DPD/FDA, E/F = EMA/FDA subgroup Macro F1)}
 \label{tab:all_matchers}
 \scriptsize
 \setlength{\tabcolsep}{1.6pt}
