@@ -51,16 +51,18 @@ This project integrates official pharmaceutical approval registers from the Unit
 \end{abstract}
 
 % ============================================================
-\section{Use Case and Requirements Suitability}
+\section{Phase I: Data Selection and Translation}
 % ============================================================
 
-This project integrates official pharmaceutical approval registers from the United States (Drugs@FDA~\cite{fda_drugsatfda}), the European Union (EMA Medicines~\cite{ema_medicines}), and Canada (Health Canada DPD~\cite{healthcanada_dpd}). Each medicine entity is identified by \texttt{brandName} and \texttt{activeSubstances} and described across 16 target attributes (11 present in $\ge 2$ sources; Table~\ref{tab:schema}).
+This project integrates official pharmaceutical approval registers from the United States (Drugs@FDA~\cite{fda_drugsatfda}), the European Union (EMA Medicines~\cite{ema_medicines}), and Canada (Health Canada DPD~\cite{healthcanada_dpd}) into a unified view across 16 target attributes. Phase~I profiles the source datasets, defines the consolidated XML target schema (\texttt{medicines.xsd}), and produces validated XML exports consumed by Phases~II and~III.
 
-\subsection{Input Profiling and Integrated Schema}
+\subsection{Use Case and Input Dataset Profile}
+
+In all three regulatory registers, a single commercial medicine spans multiple product, package, or application rows (such as multiple dosage forms, strengths, or generic ANDA applications), causing raw product tables to outnumber distinct medicines (Table~\ref{tab:datasets}). High missingness in the raw extracts is largely structural rather than random, arising from category-specific fields (e.g., veterinary attributes) or regulatory-event dates that apply only to particular approval statuses.
 
 \begin{table}[htbp]
 \centering
-\caption{Overview of input datasets (product rows, consolidated entities, and source attributes)}
+\caption{Overview of the three input regulatory datasets}
 \label{tab:datasets}
 \scriptsize
 \setlength{\tabcolsep}{4pt}
@@ -69,40 +71,14 @@ This project integrates official pharmaceutical approval registers from the Unit
 \textbf{Dataset} & \textbf{Source} & \textbf{Format} & \textbf{Product Rows} & \textbf{Entities} & \textbf{Attr.} \\
 \hline
 Drugs@FDA & U.S. FDA    & TXT/TSV  & 51,839 &  8,175 & 56 \\
-EMA Med.  & EMA         & XLSX/CSV &  2,746 &  2,648 & 39 \\
-DPD       & Health Can. & TXT/CSV  & 58,137 & 41,636 & 87 \\
+EMA Med.   & EMA         & XLSX/CSV &  2,746 &  2,648 & 39 \\
+DPD        & Health Can. & TXT/CSV  & 58,137 & 41,636 & 87 \\
 \hline
 \end{tabular}
 \end{table}
 
-Table~\ref{tab:datasets} summarises the three inputs. Drugs@FDA consolidates 51,839 product rows across 29,377 applications (78.3\% ANDAs) into 8,175 entities; EMA Medicines consolidates 2,746 rows into 2,648 entities (85.6\% human; 28 recovered via INN fallback); Health Canada DPD consolidates 58,137 product records (across 42,042 pre-grouped rows) into 41,636 entities. Missingness is largely structural (e.g., veterinary-only or status-dependent dates). Table~\ref{tab:schema} details attribute coverage across the 16-attribute target schema (\texttt{activeSubstances} and \texttt{strengths} are list-valued; the remaining 14 are single-valued).
-
-\begin{table}[htbp]
-\centering
-\caption{Attribute intersection with the 16-attribute integrated schema}
-\label{tab:schema}
-\scriptsize
-\setlength{\tabcolsep}{3pt}
-\begin{tabularx}{\textwidth}{|l|l|>{\raggedright\arraybackslash}X|}
-\hline
-\textbf{Attribute} & \textbf{Type} & \textbf{Sources} \\
-\hline
-\texttt{brandName}, \texttt{licenceHolder}, \texttt{regulatoryStatus} & string (cat.) & FDA, EMA, DPD \\
-\texttt{activeSubstances} / \texttt{activeSubstanceCount} & list / integer & FDA (derived cnt), EMA (derived cnt), DPD \\
-\texttt{productClass} & categorical & FDA (derived), EMA, DPD \\
-\texttt{atcCode} & string & EMA, DPD \\
-\texttt{generic} & boolean & FDA (derived), EMA \\
-\texttt{biosimilar} / \texttt{orphanMedicine} & boolean & EMA (and DPD for \texttt{biosimilar}) \\
-\texttt{dosageForm}, \texttt{route}, \texttt{strengths} & string / list & FDA, DPD \\
-\texttt{usApprovalDate} / \texttt{euAuthorisationDate} / \texttt{caStatusDate} & date & FDA / EMA / DPD (source-specific) \\
-\hline
-\end{tabularx}
-\end{table}
-
-\subsection{Entity Identification and Overlap Estimate}
 \label{subsec:entity_id}
-
-A medicine is identified by \texttt{brandName} and \texttt{activeSubstances}; \texttt{licenceHolder} is non-identifying because regional affiliates or licensees differ across markets (e.g., \textit{Verkazia}: \texttt{HARROW EYE} in US, \texttt{Santen Oy} in EU, \texttt{APOTEX INC} in Canada). Using a normalized key (\texttt{medicine\_id}) over raw extracts yields pairwise overlaps $|F \cap E|=428$, $|F \cap D|=949$, $|E \cap D|=594$, and a deduplicated union of \textbf{1,407 distinct medicines} (exceeding the 1,000 minimum; refined to $1{,}372$ unified clusters via graph clustering on the finalized XMLs in Section~\ref{subsec:clustering}). Exact matching misses cross-border INN/USAN spellings, salt variants, and device/formulation suffixes (Table~\ref{tab:difficult_match}).
+A medicine is identified by its \texttt{brandName} and \texttt{activeSubstances}. Contrary to initial expectations, \texttt{licenceHolder} cannot serve as an identifying key because identical medicines are frequently marketed by distinct regional subsidiaries or licensing partners across jurisdictions (for instance, \textit{Verkazia} is held by \texttt{HARROW EYE} in the US, \texttt{Santen Oy} in the EU, and \texttt{APOTEX INC} in Canada). Using normalized \texttt{brandName} and sorted \texttt{activeSubstances} keys over the raw extracts yields $1{,}407$ distinct cross-source medicines ($428$ FDA--EMA, $949$ FDA--DPD, $594$ EMA--DPD)---well above the course minimum of $1{,}000$ overlapping entities (refined to $1{,}372$ unified clusters on the finalized XMLs in Section~\ref{subsec:clustering}). Nevertheless, exact matching misses identical products whose regional INN/USAN spellings, salt modifiers, or formulation suffixes diverge across borders (Table~\ref{tab:difficult_match}).
 
 \begin{table}[htbp]
 \centering
@@ -114,25 +90,54 @@ A medicine is identified by \texttt{brandName} and \texttt{activeSubstances}; \t
 \hline
 \textbf{Dataset} & \textbf{Brand Name} & \textbf{Active Substance} \\
 \hline
-FDA / EMA / DPD & \texttt{VERKAZIA} / \texttt{Verkazia} / \texttt{VERKAZIA} & \texttt{CYCLOSPORINE} / \texttt{ciclosporin} / \texttt{CYCLOSPORINE} \\
-FDA / EMA / DPD & \texttt{SEEBRI NEOHALER} / \texttt{Seebri Breezhaler} / \texttt{SEEBRI BREEZHALER} & \texttt{GLYCOPYRROLATE} / \texttt{glycopyrronium bromide} / \texttt{GLYCOPYRRONIUM (GLYCOPYRRONIUM BROMIDE)} \\
+Drugs@FDA         & \texttt{VERKAZIA}          & \texttt{CYCLOSPORINE} \\
+EMA Medicines     & \texttt{Verkazia}          & \texttt{ciclosporin} \\
+Health Canada DPD & \texttt{VERKAZIA}          & \texttt{CYCLOSPORINE} \\
+\hline
+Drugs@FDA         & \texttt{SEEBRI NEOHALER}   & \texttt{GLYCOPYRROLATE} \\
+EMA Medicines     & \texttt{Seebri Breezhaler} & \texttt{glycopyrronium bromide} \\
+Health Canada DPD & \texttt{SEEBRI BREEZHALER} & \texttt{GLYCOPYRRONIUM (GLYCOPYRRONIUM BROMIDE)} \\
 \hline
 \end{tabularx}
 \end{table}
 
-% ============================================================
-\section{Phase I: Data Selection and Translation}
-% ============================================================
+\subsection{Consolidated Target Schema and Shared Helpers}
 
-Phase~I translates all three pharmaceutical datasets into the unified XML target schema (\texttt{medicines.xsd}) using Altova MapForce 2027, producing validated XML exports consumed by Phases~II and~III.
-
-\subsection{Target Schema and Shared Helper Functions}
-
-The target schema (\texttt{medicines.xsd}) defines one \texttt{<medicine>} record per source entity with metadata (\texttt{id}, \texttt{source}) and 16 attributes. All mappers omit missing elements rather than emitting empty tags, wrap repeating values (\texttt{activeSubstances}, \texttt{strengths}), format dates as ISO~8601 (YYYY-MM-DD), and enforce controlled vocabularies for \texttt{regulatoryStatus} (\textit{Authorised, Suspended, Pending, Withdrawn, Application withdrawn, Refused}) and \texttt{productClass} (\textit{Human, Veterinary, Disinfectant}). A shared MapForce library (\texttt{wdi\_helpers.mfd}) provides ten user-defined functions (Table~\ref{tab:udfs}) backed by lookup XML files covering 25 regulatory statuses, 227 dosage forms, 147 routes, and 202 strength units.
+The consolidated schema (\texttt{medicines.xsd}) represents one medicine entity per source record with metadata (\texttt{id}, \texttt{source}) and 16 attributes, of which 11 occur in at least two sources (Table~\ref{tab:schema}). Three design conventions ensure downstream uniformity: missing values are omitted rather than emitted as empty tags, repeating attributes (\texttt{activeSubstances}, \texttt{strengths}) use typed wrapper elements, and all dates follow ISO~8601 (YYYY-MM-DD). Controlled vocabularies restrict \texttt{regulatoryStatus} to six standardized lifecycle states (\textit{Authorised, Suspended, Pending, Withdrawn, Application withdrawn, Refused}) and \texttt{productClass} to \textit{Human, Veterinary, Disinfectant}. A shared MapForce library provides ten user-defined functions (Table~\ref{tab:udfs}) backed by lookup XML tables covering 25 regulatory statuses, 227 dosage forms, 147 routes, and 202 strength units.
 
 \begin{table}[htbp]
 \centering
-\caption{Shared MapForce UDFs (\texttt{wdi\_helpers.mfd}) and cross-source field mappings}
+\caption{Attribute intersection across the 16-attribute integrated schema}
+\label{tab:schema}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\textwidth}{|l|l|>{\raggedright\arraybackslash}X|}
+\hline
+\textbf{Attribute} & \textbf{Type} & \textbf{Datasets in which attribute is found} \\
+\hline
+\texttt{brandName}            & string             & Drugs@FDA, EMA Medicines, DPD \\
+\texttt{activeSubstances}     & list (string)      & Drugs@FDA, EMA Medicines, DPD \\
+\texttt{activeSubstanceCount} & numeric (integer)  & Drugs@FDA (derived), EMA (derived), DPD \\
+\texttt{licenceHolder}        & string             & Drugs@FDA, EMA Medicines, DPD \\
+\texttt{regulatoryStatus}     & categorical        & Drugs@FDA, EMA Medicines, DPD \\
+\texttt{productClass}         & categorical        & Drugs@FDA (derived), EMA Medicines, DPD \\
+\texttt{atcCode}              & string             & EMA Medicines, DPD \\
+\texttt{generic}              & boolean            & Drugs@FDA (derived), EMA Medicines \\
+\texttt{biosimilar}           & boolean            & EMA Medicines, DPD \\
+\texttt{orphanMedicine}       & boolean            & EMA Medicines \\
+\texttt{dosageForm}           & string             & Drugs@FDA, DPD \\
+\texttt{route}                & string             & Drugs@FDA, DPD \\
+\texttt{strengths}            & list (value, unit) & Drugs@FDA, DPD \\
+\texttt{usApprovalDate}       & date               & Drugs@FDA \\
+\texttt{euAuthorisationDate}  & date               & EMA Medicines \\
+\texttt{caStatusDate}         & date               & DPD \\
+\hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{Shared user-defined functions in the MapForce helper library}
 \label{tab:udfs}
 \scriptsize
 \setlength{\tabcolsep}{2.5pt}
@@ -154,9 +159,15 @@ The target schema (\texttt{medicines.xsd}) defines one \texttt{<medicine>} recor
 \end{tabularx}
 \end{table}
 
-\subsection{Source Mappings, Transformations, and Exclusions}
+\subsection{Source Transformations and Untransformable Data}
 
-Table~\ref{tab:field_mappings} summarizes all field correspondences across the three sources; source-specific transformations and untransformable exclusions are detailed below.
+Table~\ref{tab:field_mappings} summarizes all field correspondences across the three mappers built in Altova MapForce 2027. Each source required targeted cleaning and exclusion rules for information that could not be safely translated:
+
+\begin{itemize}
+  \item \textbf{EMA Medicines:} Because \texttt{activeSubstances} is mandatory in the target schema, 57 raw rows lacking both \texttt{Active substance} and \texttt{INN} values were excluded via a row filter; another 28 rows with blank primary fields were recovered via INN fallback while preserving multi-word biological names. Human and veterinary ATC columns are merged after stripping provisional asterisks, dropping \textit{Not yet assigned} placeholders, and fixing a known source typo (\texttt{VO4D}$\rightarrow$\texttt{V04D}). Because EMA does not publish strength, dosage form, or route fields in its register export, these three attributes remain structurally absent.
+  \item \textbf{Drugs@FDA:} Product records are joined to application metadata on \texttt{ApplNo} and grouped by normalized brand and sorted ingredients, excluding 11 orphan rows and empty-ingredient gases (e.g., \texttt{MEDICAL AIR, USP}). Composite \texttt{Form} strings (such as \texttt{"TABLET;ORAL"}) are split into separate dosage form and route components, and combination strengths (e.g., \texttt{600MG/90MG}) are pre-split before numeric parsing. Because Drugs@FDA covers only human drugs, \texttt{productClass} maps to \textit{Human}; the \texttt{generic} flag is derived from application types (\texttt{ANDA} vs.\ \texttt{NDA}/\texttt{BLA}) and omitted for mixed entities ($\sim$375 records) to avoid false assignments.
+  \item \textbf{Health Canada DPD:} Pre-consolidated from 12 relational tables into one entity-level CSV covering all 16 target attributes, DPD requires fine-grained parsing of semicolon-delimited strength strings into numeric \texttt{(value, unit)} pairs ($100{,}094$ valid pairs across $41{,}574$ medicines; unparseable tokens omitted) and resolution of multi-value historical statuses using a precedence hierarchy ($\text{Authorised} > \text{Suspended} > \cdots > \text{Refused}$).
+\end{itemize}
 
 \begin{table}[htbp]
 \centering
@@ -187,30 +198,28 @@ Table~\ref{tab:field_mappings} summarizes all field correspondences across the t
 \end{tabularx}
 \end{table}
 
-\begin{itemize}
-  \item \textbf{EMA Medicines (\texttt{ema\_medicines.xml}, 2,648 entities):} From 2,746 raw rows, 57 lacking both \texttt{Active substance} and \texttt{INN} are excluded because \texttt{activeSubstances} is mandatory; 28 rows with blank primary fields are recovered via INN fallback (preserving multi-word biological names), consolidating 2,689 usable rows into 2,648 entities. \texttt{dosageForm}, \texttt{route}, and \texttt{strengths} are structurally absent from the EMA register.
-  \item \textbf{Drugs@FDA (\texttt{fda\_medicines.xml}, 8,175 entities):} Product rows are joined to \texttt{Applications.txt} on \texttt{ApplNo} and consolidated by normalized brand and sorted substances; 11 orphan rows and empty-ingredient records (e.g., \texttt{MEDICAL AIR, USP}) are excluded. Composite \texttt{Products.Form} strings (e.g., \texttt{"TABLET;ORAL"}) are split via \texttt{fdaFormPart}/\texttt{fdaRoutePart}, combination strengths (e.g., \texttt{600MG/90MG}) are pre-split before unit extraction, and \texttt{generic} is omitted for $\sim$375 mixed \texttt{ANDA}/\texttt{NDA} entities.
-  \item \textbf{Health Canada DPD (\texttt{dpd\_medicines.xml}, 41,636 entities):} Pre-consolidated from 58,137 product rows across 12 tables, DPD covers all 16 target attributes. \texttt{splitStrengths} yields $100{,}094$ \texttt{(value, unit)} pairs across 41,574 medicines (unparseable tokens are omitted), and \texttt{standardizeRegulatoryStatus} resolves multi-status strings using $\text{Authorised} > \text{Suspended} > \cdots > \text{Refused}$.
-\end{itemize}
+\subsection{Integrated XML Validation}
 
-\subsection{Integrated XML Validation Summary}
-
-All three XML exports in \texttt{data/4\_translated\_mapforce/} passed XSD validation and duplicate checks via \texttt{check\_schema.py} (Table~\ref{tab:xml_validation}), yielding \textbf{52,459 validated medicine entities} (with zero duplicate IDs, content duplicates, or normalized entity duplicates).
+All three exported XML files passed XSD schema validation and programmatic duplicate checks (Table~\ref{tab:xml_validation}), providing \textbf{52,459 unique medicine entities} with zero schema or duplicate errors for Phase~II.
 
 \begin{table}[htbp]
 \centering
 \caption{Validation summary of translated XML datasets}
 \label{tab:xml_validation}
 \scriptsize
-\setlength{\tabcolsep}{3pt}
-\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}X|r|r|r|}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{|l|r|r|r|}
 \hline
-\textbf{Validation check} & \textbf{\texttt{dpd\_med.}} & \textbf{\texttt{ema\_med.}} & \textbf{\texttt{fda\_med.}} \\
+\textbf{Validation check} & \textbf{DPD XML} & \textbf{EMA XML} & \textbf{FDA XML} \\
 \hline
-Validated records & 41,636 & 2,648 & 8,175 \\
-XSD valid / Dup.\ (ID / content / entity) & True / 0 / 0 / 0 & True / 0 / 0 / 0 & True / 0 / 0 / 0 \\
+Validated records            & 41,636 & 2,648 & 8,175 \\
+Unique IDs                   & 41,636 & 2,648 & 8,175 \\
+XSD schema valid             & True   & True  & True  \\
+Duplicate IDs                & 0      & 0     & 0     \\
+Duplicate content (excl.\ ID)& 0      & 0     & 0     \\
+Duplicate normalized entities& 0      & 0     & 0     \\
 \hline
-\end{tabularx}
+\end{tabular}
 \end{table}
 
 
@@ -218,13 +227,13 @@ XSD valid / Dup.\ (ID / content / entity) & True / 0 / 0 / 0 & True / 0 / 0 / 0 
 \section{Phase II: Identity Resolution}
 % ============================================================
 
-Evaluating the full Cartesian product across DPD ($41{,}636$), EMA ($2{,}648$), and FDA ($8{,}175$) would require $472{,}273{,}828$ comparisons, motivating gold-standard curation, hybrid blocking, matcher benchmarking, and connected-components clustering.
+Evaluating the full Cartesian product across the three validated XML sources would require over 472 million pairwise comparisons, motivating stratified benchmark creation, hybrid blocking, matcher benchmarking, and graph-based clustering.
 
 % ------------------------------------------------------------
-\subsection{Gold-Standard Dataset Construction and Stratified Split}
+\subsection{Gold-Standard Benchmark Construction}
 % ------------------------------------------------------------
 
-Using \texttt{gold\_standard\_pair\_gen.py}, candidate pairs were sampled in two pools: an \textbf{Ordinary Pool (\texttt{hard=0})} of high-similarity brand/substance pairs and random negatives, and a \textbf{Hard Pool (\texttt{hard=1})} targeting identical brands with differing active substances, competing generics on identical substances, and regional INN/salt/suffix variants. Three annotators reviewed \textbf{3,498 unique pairs} (zero duplicates or label conflicts), labeling $\texttt{match}=1$ iff both records share the pharmacological active moiety set and commercial product lineage. Using \texttt{gold\_standard\_combine\_split.py} (seed 42), pairs were split 85\%/15\% stratified by $(\texttt{source\_pair}, \texttt{hard}, \texttt{match})$ into \textbf{2,973 development} (\texttt{gs\_pair\_train\_val.csv}) and \textbf{525 held-out test} (\texttt{gs\_pair\_test.csv}) pairs (Table~\ref{tab:gs_split}).
+Candidate pairs for manual annotation were sampled in two balanced pools: an \textbf{Ordinary Pool} of high-similarity brand and substance pairs plus random negatives, and an adversarial \textbf{Hard Pool} targeting identical brands with different active substances, competing generics sharing active ingredients, and cross-border INN/salt or suffix variants. Three annotators reviewed \textbf{3,498 unique pairs} (with zero duplicate rows or label conflicts), labeling a pair as a match if and only if both records share the pharmacological active moiety set and commercial product lineage. The unified benchmark was partitioned 85\%/15\% with fixed seed~42, stratified jointly by source pair, difficulty pool, and match label (Table~\ref{tab:gs_split}).
 
 \begin{table}[htbp]
 \centering
@@ -232,9 +241,9 @@ Using \texttt{gold\_standard\_pair\_gen.py}, candidate pairs were sampled in two
 \label{tab:gs_split}
 \scriptsize
 \setlength{\tabcolsep}{3pt}
-\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}X|r|r|r|r|r|r|}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}X|r|r|r|r|r|}
 \hline
-\textbf{Source Pair} & \textbf{Ord.\ (+/-)} & \textbf{Hard (+/-)} & \textbf{Whole} & \textbf{Train/Val} & \textbf{Test (+/-)} \\
+\textbf{Source Pair} & \textbf{Ordinary (+ / -)} & \textbf{Hard (+ / -)} & \textbf{Whole} & \textbf{Train/Val (85\%)} & \textbf{Test (15\%, + / -)} \\
 \hline
 DPD / EMA & 198 / 302 & 217 / 283 & 1,000 &   850 & 150 (63 / 87) \\
 DPD / FDA & 122 / 364 & 126 / 157 &   769 &   653 & 116 (37 / 79) \\
@@ -249,29 +258,37 @@ EMA / FDA & 282 / 670 & 292 / 485 & 1,729 & 1,470 & 259 (86 / 173) \\
 \subsection{Blocking and Candidate Generation}
 % ------------------------------------------------------------
 
-We benchmarked PyDI~\cite{pydi_framework} lexical blockers (\texttt{Brand Prefix-4}, \texttt{Brand Trigrams} capped at $1{,}000$ co-occurrences per shingle, and their union) against zero-shot dense semantic blocking using \texttt{Qwen/Qwen3-Embedding-0.6B}~\cite{qwen3_embedding} ($1{,}024$-dim encodings of normalized brand + sorted substances, top-5 cosine neighbors from smaller to larger source) on the $1{,}038$ development positives (Table~\ref{tab:blocking_development}). Lexical Prefix-4 missed $39/352$ DPD--EMA matches ($\text{PC}=88.92\%$) due to generic prefixes (e.g., \texttt{TEVA-}), while combining Prefix-4 $\cup$ Trigrams generated $1.37\text{M}$ candidates. Qwen Top-5 cut the pool to $67{,}355$ candidates ($98.36\%$ dev PC), but dropped to $92.94\%$ ($79/85$) on EMA--FDA held-out test matches, below the $\ge 97\%$ per-source target. Defining the final hybrid blocker as $\mathcal{C}_{\text{final}} = \mathcal{C}_{\text{Qwen top-5}} \cup \mathcal{C}_{\text{Prefix-4}}$ recovers all 6 missed EMA--FDA test matches (Table~\ref{tab:blocking_candidates}), achieving \textbf{98.92\% pooled test completeness} ($183/185$) and \textbf{99.9562\% reduction ratio} ($206{,}830$ candidates persisted to \texttt{data/7\_blocking\_candidates/} with SHA-256 \texttt{manifest.json}).
+We compared PyDI~\cite{pydi_framework} lexical blockers (\texttt{Brand Prefix-4}, \texttt{Brand Trigrams} capped at $1{,}000$ co-occurrences per shingle to prevent fragment explosions, and their union) against zero-shot dense semantic blocking using \texttt{Qwen/Qwen3-Embedding-0.6B}~\cite{qwen3_embedding} ($1{,}024$-dimensional encodings of normalized brand and sorted substances, retrieving top-5 cosine neighbors from smaller to larger source) on the $1{,}038$ development positives (Table~\ref{tab:blocking_development}).
+
+Lexical Prefix-4 runs in $0.30\text{ s}$ total across all three source pairs ($0.11\text{ s}$ DPD--EMA, $0.16\text{ s}$ DPD--FDA, $0.03\text{ s}$ EMA--FDA), but misses DPD--EMA matches carrying regional generic prefixes (e.g., \texttt{TEVA-}). Adding trigrams boosts completeness above $98\%$ at the cost of $1.37\text{M}$ candidates. Dense Qwen Top-5 vector search completes in $10.4\text{ s}$ total ($2.5\text{ s}$ EMA$\rightarrow$DPD, $6.8\text{ s}$ FDA$\rightarrow$DPD, $1.1\text{ s}$ EMA$\rightarrow$FDA) and narrows the shortlist to $67{,}355$ candidates with $98.36\%$ pooled development completeness, yet drops to $92.94\%$ ($79/85$) on EMA--FDA held-out test matches---below our $97\%$ per-pair target. Combining both complementary signals as $\mathcal{C}_{\text{final}} = \mathcal{C}_{\text{Qwen top-5}} \cup \mathcal{C}_{\text{Prefix-4}}$ recovers all six missed EMA--FDA test pairs (Table~\ref{tab:blocking_candidates}), yielding \textbf{206,830 candidates} ($99.96\%$ reduction ratio) and \textbf{98.92\% pooled test completeness}.
 
 \begin{table}[htbp]
 \centering
-\caption{Lexical vs.\ dense embedding blocking on the development set ($1{,}038$ positive matches; PC = pairs completeness, RR = reduction ratio)}
+\caption{Comparison of lexical and dense blocking on the development set ($1{,}038$ positive matches; PC = pairs completeness, RR = reduction ratio)}
 \label{tab:blocking_development}
 \scriptsize
-\setlength{\tabcolsep}{2pt}
-\begin{tabularx}{\textwidth}{|l|>{\raggedright\arraybackslash}X|r|r|r|r|}
+\setlength{\tabcolsep}{2.5pt}
+\begin{tabularx}{\textwidth}{|l|>{\raggedright\arraybackslash}X|r|r|r|r|r|}
 \hline
-\textbf{Pair} & \textbf{Blocking Method} & \textbf{Cand.} & \textbf{Ret./Tot.} & \textbf{PC (\%)} & \textbf{RR (\%)} \\
+\textbf{Pair} & \textbf{Blocking Method} & \textbf{Cand.} & \textbf{Matches} & \textbf{Ret.} & \textbf{PC (\%)} & \textbf{RR (\%)} \\
 \hline
-DPD--EMA & Brand Prefix-4 / Trigrams (1k) & 16,398 / 431,353 & 313 / 323 (352) & 88.9 / 91.8 & 99.99 / 99.61 \\
-DPD--EMA & Prefix-4$\cup$Tri / Qwen Top-5 & 443,207 / 13,240 & 346 / 346 (352) & 98.3 / 98.3 & 99.60 / 99.99 \\
-DPD--EMA & \textbf{Qwen Top-5 $\cup$ Prefix-4} & \textbf{27,966} & \textbf{350 / 352} & \textbf{99.43} & \textbf{99.975} \\
+DPD--EMA & Brand Prefix-4                     &  16,398 & 352 & 313 &  88.92 & 99.985 \\
+DPD--EMA & Brand Trigrams (cap 1,000)         & 431,353 & 352 & 323 &  91.76 & 99.609 \\
+DPD--EMA & Prefix-4 $\cup$ Trigrams           & 443,207 & 352 & 346 &  98.30 & 99.598 \\
+DPD--EMA & Qwen Top-5                         &  13,240 & 352 & 346 &  98.30 & 99.988 \\
+DPD--EMA & \textbf{Qwen Top-5 $\cup$ Prefix-4}& \textbf{27,966} & \textbf{352} & \textbf{350} & \textbf{99.43} & \textbf{99.975} \\
 \hline
-DPD--FDA & Brand Prefix-4 / Trigrams (1k) & 133,069 / 544,036 & 210 / 172 (211) & 99.5 / 81.5 & 99.96 / 99.84 \\
-DPD--FDA & Prefix-4$\cup$Tri / Qwen Top-5 & 663,705 / 40,875 & 210 / 210 (211) & 99.5 / 99.5 & 99.81 / 99.99 \\
-DPD--FDA & \textbf{Qwen Top-5 $\cup$ Prefix-4} & \textbf{162,930} & \textbf{211 / 211} & \textbf{100.00} & \textbf{99.952} \\
+DPD--FDA & Brand Prefix-4                     & 133,069 & 211 & 210 &  99.53 & 99.961 \\
+DPD--FDA & Brand Trigrams (cap 1,000)         & 544,036 & 211 & 172 &  81.52 & 99.840 \\
+DPD--FDA & Prefix-4 $\cup$ Trigrams           & 663,705 & 211 & 210 &  99.53 & 99.805 \\
+DPD--FDA & Qwen Top-5                         &  40,875 & 211 & 210 &  99.53 & 99.988 \\
+DPD--FDA & \textbf{Qwen Top-5 $\cup$ Prefix-4}& \textbf{162,930} & \textbf{211} & \textbf{211} & \textbf{100.00} & \textbf{99.952} \\
 \hline
-EMA--FDA & Brand Prefix-4 / Trigrams (1k) & 4,456 / 261,601 & 468 / 472 (475) & 98.5 / 99.4 & 99.98 / 98.79 \\
-EMA--FDA & Prefix-4$\cup$Tri / Qwen Top-5 & 262,625 / 13,240 & 474 / 465 (475) & 99.8 / 97.9 & 98.79 / 99.94 \\
-EMA--FDA & \textbf{Qwen Top-5 $\cup$ Prefix-4} & \textbf{15,934} & \textbf{474 / 475} & \textbf{99.79} & \textbf{99.926} \\
+EMA--FDA & Brand Prefix-4                     &   4,456 & 475 & 468 &  98.53 & 99.979 \\
+EMA--FDA & Brand Trigrams (cap 1,000)         & 261,601 & 475 & 472 &  99.37 & 98.792 \\
+EMA--FDA & Prefix-4 $\cup$ Trigrams           & 262,625 & 475 & 474 &  99.79 & 98.787 \\
+EMA--FDA & Qwen Top-5                         &  13,240 & 475 & 465 &  97.89 & 99.939 \\
+EMA--FDA & \textbf{Qwen Top-5 $\cup$ Prefix-4}& \textbf{15,934} & \textbf{475} & \textbf{474} & \textbf{99.79} & \textbf{99.926} \\
 \hline
 \end{tabularx}
 \end{table}
@@ -299,54 +316,60 @@ EMA--FDA &  21,647,400 &  15,934 & 99.9264\% & 85 & 83 &  \textbf{97.65\%} \\
 \subsection{Entity Matching Benchmarks and Error Analysis}
 % ------------------------------------------------------------
 
-We benchmarked four families of entity matchers on the identical 525 held-out test pairs (\texttt{gs\_pair\_test.csv}; Table~\ref{tab:all_matchers}):
+We evaluated four entity-matching paradigms on the identical 525 held-out test pairs (Table~\ref{tab:all_matchers}):
 
 \begin{itemize}
-  \item \textbf{Naive Exact \& Rule-Based Matchers (\texttt{manual\_matcher}):} The naive exact-key baseline achieves $0.7307$ Macro F1 ($0.6122$ Match F1, $78.29\%$ acc.) but misses $96/186$ matches ($\text{R}=48.39\%$, Ordinary $0.9310$, Hard $0.3717$). Three stricter manual rules requiring \texttt{holder\_agreement} (normalized holder overlap $\ge 0.80$ after company-suffix stripping, bypassed when missing)---\textbf{Exact}, \textbf{Salt} (base moiety sets), and \textbf{Fuzzy} (brand \texttt{SequenceMatcher} $\ge 0.80$)---reach $0.9815$--$1.0000$ precision but low recall ($0.2151$--$0.2849$; Macro F1 $0.5884$--$0.6381$, Ordinary $0.7521$) because cross-border licence holders differ.
-  \item \textbf{Supervised ML Classifiers (\texttt{ml\_features.py}):} Logistic Regression (LR), RBF-SVM, Gradient Boosting (GB), and Random Forest (RF) were trained on 2,973 dev pairs using six similarity features (normalized brand/substance ratios, salt-stripped substance Jaccard, suffix-stripped holder overlap, missing-holder flag, substance-count difference) and tuned via 5-fold stratified CV (CV Macro F1: LR $0.8760$, SVM $0.8869$, GB $0.8964$, RF $0.9023$). Tree ensembles outperform linear/kernel baselines by 3--4 points, with RF reaching \textbf{0.9054 Macro F1} ($18$ FN, $28$ FP mainly on competing generics sharing substances and brands) while scoring in milliseconds.
-  \item \textbf{Fine-Tuned DistilBERT (\texttt{notebooks/PLM\_DistilBERT/}):} Fine-tuning \texttt{distilbert-base-uncased}~\cite{sanh2019distilbert} on \texttt{[COL]}/\texttt{[VAL]}-serialized \texttt{brandName}, \texttt{activeSubstances}, and \texttt{licenceHolder} (80/20 train/val split, AdamW $2\times10^{-5}$, best epoch 16/36, val Macro F1 $0.9366$) achieves $0.9193$ test Macro F1 at cutoff $0.50$ ($159$ TP, $11$ FP, $27$ FN) and \textbf{0.9215 Macro F1} ($92.95\%$ acc., Ordinary $0.9592$) at the validation-tuned threshold $0.17$.
-  \item \textbf{Zero-Shot LLM (\texttt{llm\_zero\_shot\_matcher.py}):} Strictly blind evaluation of \texttt{gemini-3.8-flash} ($\texttt{temperature}=0.0$, structured JSON, encoding general moiety/salt, subsidiary, and dosage-form rules across four attributes without test examples) achieves the top overall score of \textbf{0.9485 Macro F1} ($0.9344$ Match F1, $95.24\%$ acc., Ordinary $0.9647$, Hard $0.9296$), reducing false negatives by $91.7\%$ vs.\ the exact baseline ($96 \rightarrow 8$).
+  \item \textbf{Deterministic \& Rule-Based Matchers:} The naive exact-key baseline matches normalized brands and substance sets, achieving moderate precision but missing over half of all true matches due to salt modifiers and brand suffixes. Three stricter conjunctive rules requiring licence-holder token overlap ($\ge 0.80$ after company-suffix removal, bypassed if missing)---\textbf{Exact}, \textbf{Salt} (base moiety sets), and \textbf{Fuzzy} (brand similarity $\ge 0.80$)---reach near-perfect precision ($0.98$--$1.00$) at low recall because legitimate cross-border licence holders often differ.
+  \item \textbf{Supervised ML Classifiers:} Logistic Regression (LR), RBF-SVM, Gradient Boosting (GB), and Random Forest (RF) were tuned via 5-fold stratified cross-validation over six lexical/salt similarity features. Tree ensembles outperform linear and kernel boundaries by 3--4 Macro F1 points, with RF reaching \textbf{0.9054 Macro F1} while fitting in under a second and scoring in milliseconds without API cost. Residual false positives mostly stem from competing generics sharing active substances and similar brand prefixes.
+  \item \textbf{Fine-Tuned DistilBERT:} Fine-tuning \texttt{distilbert-base-uncased}~\cite{sanh2019distilbert} over serialized \texttt{brandName}, \texttt{activeSubstances}, and \texttt{licenceHolder} pairs ($2{,}378$ train / $595$ val; $7.54\text{ h}$ CPU training, best checkpoint at epoch 16) yields $0.9193$ Macro F1 at default cutoff $0.50$ and \textbf{0.9215 Macro F1} at the validation-tuned threshold $0.17$, outperforming all tabular ML models.
+  \item \textbf{Zero-Shot LLM:} Prompting \texttt{gemini-3.8-flash} ($\texttt{temperature}=0.0$) with three strictly blind domain rules over four attributes (no test examples) achieves the highest overall score of \textbf{0.9485 Macro F1} ($95.24\%$ accuracy), cutting false negatives by $91.7\%$ compared to the exact baseline.
 \end{itemize}
 
 \begin{table}[htbp]
 \centering
-\caption{Unified test-set comparison of all entity matchers ($n = 525$ pairs; subgroups report Macro F1).}
+\caption{Unified test-set comparison of all entity matchers ($n = 525$ pairs; CV = 5-fold dev Macro F1; subgroups report test Macro F1)}
 \label{tab:all_matchers}
 \scriptsize
-\setlength{\tabcolsep}{1.8pt}
-\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}X|r|r|r|r|r|r|r|r|r|}
+\setlength{\tabcolsep}{1.6pt}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}X|r|r|r|r|r|r|r|r|r|r|}
 \hline
-\textbf{Matcher} & \textbf{Mac.\ F1} & \textbf{P} & \textbf{R} & \textbf{FP} & \textbf{FN} & \textbf{Hard} & \textbf{D/E} & \textbf{D/F} & \textbf{E/F} \\
+\textbf{Matcher} & \textbf{CV} & \textbf{Mac.\ F1} & \textbf{P} & \textbf{R} & \textbf{FP} & \textbf{FN} & \textbf{Hard} & \textbf{D/E} & \textbf{D/F} & \textbf{E/F} \\
 \hline
-Naive Exact Baseline   & 0.7307 & 0.8333 & 0.4839 & 18 &  96 & 0.3717 & 0.7366 & 0.6979 & 0.7408 \\
-Rule: Exact            & 0.5884 & \textbf{1.0000} & 0.2151 & \textbf{0} & 146 & 0.3717 & 0.5594 & 0.5793 & 0.6086 \\
-Rule: Salt             & 0.6166 & \textbf{1.0000} & 0.2527 & \textbf{0} & 139 & 0.4467 & 0.5962 & 0.6398 & 0.6172 \\
-Rule: Fuzzy / Comb.    & 0.6381 & 0.9815 & 0.2849 &  1 & 133 & 0.5015 & 0.6195 & 0.6507 & 0.6422 \\
+Naive Exact Baseline   & ---    & 0.7307 & 0.8333 & 0.4839 & 18 &  96 & 0.3717 & 0.7366 & 0.6979 & 0.7408 \\
+Rule: Exact            & ---    & 0.5884 & \textbf{1.0000} & 0.2151 & \textbf{0} & 146 & 0.3717 & 0.5594 & 0.5793 & 0.6086 \\
+Rule: Salt             & ---    & 0.6166 & \textbf{1.0000} & 0.2527 & \textbf{0} & 139 & 0.4467 & 0.5962 & 0.6398 & 0.6172 \\
+Rule: Fuzzy / Comb.    & ---    & 0.6381 & 0.9815 & 0.2849 &  1 & 133 & 0.5015 & 0.6195 & 0.6507 & 0.6422 \\
 \hline
-ML: Logistic Reg.      & 0.8610 & 0.9241 & 0.7204 & 11 &  52 & 0.8166 & 0.8961 & 0.8366 & 0.8433 \\
-ML: SVM (RBF)          & 0.8698 & 0.9379 & 0.7312 &  9 &  50 & 0.8349 & 0.9100 & 0.7887 & 0.8728 \\
-ML: Grad.\ Boosting    & 0.9025 & 0.8677 & 0.8817 & 25 &  22 & 0.8686 & 0.9453 & 0.8177 & 0.9124 \\
-ML: Random Forest      & 0.9054 & 0.8571 & 0.9032 & 28 &  18 & 0.8750 & 0.9522 & 0.8092 & 0.9180 \\
+ML: Logistic Reg.      & 0.8760 & 0.8610 & 0.9241 & 0.7204 & 11 &  52 & 0.8166 & 0.8961 & 0.8366 & 0.8433 \\
+ML: SVM (RBF)          & 0.8869 & 0.8698 & 0.9379 & 0.7312 &  9 &  50 & 0.8349 & 0.9100 & 0.7887 & 0.8728 \\
+ML: Grad.\ Boosting    & 0.8964 & 0.9025 & 0.8677 & 0.8817 & 25 &  22 & 0.8686 & 0.9453 & 0.8177 & 0.9124 \\
+ML: Random Forest      & \textbf{0.9023} & 0.9054 & 0.8571 & 0.9032 & 28 &  18 & 0.8750 & 0.9522 & 0.8092 & 0.9180 \\
 \hline
-PLM: DistilBERT (0.17) & 0.9215 & 0.9357 & 0.8602 & 11 &  26 & 0.8787 & 0.9246 & 0.9194 & \textbf{0.9186} \\
-Zero-Shot LLM (Gemini) & \textbf{0.9485} & 0.9128 & \textbf{0.9570} & 17 & \textbf{8} & \textbf{0.9296} & \textbf{0.9864} & \textbf{0.9704} & 0.9144 \\
+PLM: DistilBERT (0.17) & ---    & 0.9215 & 0.9357 & 0.8602 & 11 &  26 & 0.8787 & 0.9246 & 0.9194 & \textbf{0.9186} \\
+Zero-Shot LLM (Gemini) & ---    & \textbf{0.9485} & 0.9128 & \textbf{0.9570} & 17 & \textbf{8} & \textbf{0.9296} & \textbf{0.9864} & \textbf{0.9704} & 0.9144 \\
 \hline
 \end{tabularx}
 \end{table}
 
-\paragraph{Error Analysis of Best Matcher (Zero-Shot LLM).}
-Inspecting all 25 test discrepancies ($17$ FP, $8$ FN) reveals four patterns: (1)~\textbf{Cross-border licensing/acquisitions (14 FP)}, where the LLM recognized corporate lineage (\textit{Xolair} Novartis/Genentech, \textit{Tekturna} Novartis/LXO, \textit{Doptelet} SOBI/AkaRx) while surface strings differed (plus \textit{Tevimbra} BeOne annotation noise); (2)~\textbf{Formulation suffixes (3 FP, 1 FN)}, e.g., \textit{Natpar}/\textit{Natpara}, \textit{Alphagan}/\textit{Alphagan P}, \textit{Afinitor}/\textit{Afinitor Disperz} (FP) and \textit{Tobi Podhaler}/\textit{TOBI} (FN); (3)~\textbf{Co-brands, prodrugs, and co-formulations (3 FN)}, i.e., \textit{Copalia HCT}/\textit{Exforge HCT}, \textit{Ivemend}/\textit{Emend} (prodrug), and \textit{Herceptin}/\textit{Herceptin Hylecta}; and (4)~\textbf{Gold-standard label noise (4 FN)}, where the LLM correctly rejected dual vs.\ triple therapy and competing generics (\textit{Repaglinide Accord} vs.\ Aurobindo, \textit{Pemetrexed Krka} vs.\ Shilpa, \textit{Tadalafil Lilly} vs.\ Rising).
+\paragraph{Error Analysis of Best Matcher.}
+Inspecting the 25 test discrepancies ($17$ FP, $8$ FN) of the Zero-Shot LLM reveals four distinct error causes:
+\begin{enumerate}
+  \item \textbf{Cross-border licensing and acquisitions (14 FP):} The LLM used domain knowledge to link licensed originator brands across different holders (e.g., \textit{Xolair} Novartis/Genentech, \textit{Tekturna} Novartis/LXO, \textit{Doptelet} SOBI/AkaRx), whereas annotators required matching corporate names (plus one \textit{Tevimbra} label-noise pair).
+  \item \textbf{Formulation suffix variants (3 FP, 1 FN):} Minor line extensions (\textit{Natpar}/\textit{Natpara}, \textit{Alphagan}/\textit{Alphagan P}, \textit{Afinitor}/\textit{Afinitor Disperz}) were linked by the LLM against negative gold labels, while \textit{Tobi Podhaler} vs.\ \textit{TOBI} was rejected due to distinct delivery devices.
+  \item \textbf{Co-brands, prodrugs, and co-formulations (3 FN):} Distinct EU co-marketing names (\textit{Copalia HCT}/\textit{Exforge HCT}), parent-drug vs.\ prodrug pairs (\textit{Emend}/\textit{Ivemend}), and co-formulated hyaluronidase (\textit{Herceptin}/\textit{Herceptin Hylecta}) were missed.
+  \item \textbf{Gold-standard label noise (4 FN):} Clinical inspection confirmed the LLM's negative predictions were correct on dual vs.\ triple therapy and three competing generic pairs (\textit{Repaglinide Accord} vs.\ Aurobindo, \textit{Pemetrexed Krka} vs.\ Shilpa, \textit{Tadalafil Lilly} vs.\ Rising).
+\end{enumerate}
 
 % ------------------------------------------------------------
-\subsection{Tri-Dataset Connected-Components Clustering}
+\subsection{Connected-Components Clustering}
 \label{subsec:clustering}
 % ------------------------------------------------------------
 
-Transitive closure via NetworkX connected components (\texttt{clustering.py}) consolidates exact baseline matches into \textbf{1,372 cross-dataset clusters} ($283$ three-way, $3{,}027$ entities, $100\%$ duplicate-free; refining the raw exploratory estimate of $1{,}407$) alongside $49{,}432$ unmatched singletons ($k=1$, where no slot filling is possible), yielding $50{,}804$ total groups across $52{,}459$ input records. Running the hierarchical matcher with salt normalization and greedy $1{:}1$ conflict resolution (\texttt{--enforce-one-to-one}) over the $206{,}830$ hybrid-blocker candidates expands yield to \textbf{2,343 multi-source clusters} ($+70.8\%$, covering $5{,}194$ entities) and \textbf{502 three-way clusters} ($+77.4\%$, $47{,}265$ singletons, $49{,}608$ total groups; Table~\ref{tab:clustering_profile}), leaving $99.79\%$ of multi-source clusters strictly single-entry-per-source ($k \le 3$). Auditing all 5 clusters with $k > 3$ confirms legitimate upstream intra-source duplicates rather than matching errors: \texttt{CLUSTER\_00001} ($k=5$, \textit{Irbesartan/HCTZ}: dual EMA BMS/Teva + dual FDA ANDAs), \texttt{CLUSTER\_00002} ($k=4$, \textit{Temozolomide}: two DPD DINs), \texttt{CLUSTER\_00003} ($k=4$, \textit{Sitagliptin/Metformin}: Apo vs.\ Reddy DPD DINs), \texttt{CLUSTER\_00004} ($k=4$, \textit{Emtricitabine/Tenofovir}: Jamp vs.\ Mylan DPD DINs), and \texttt{CLUSTER\_00005} ($k=4$, \textit{Koselugo}: FDA base vs.\ sulfate records).
+Applying NetworkX connected components consolidates exact normalized matches into \textbf{1,372 multi-source clusters} ($100\%$ duplicate-free) alongside $49{,}432$ unmatched singletons where no slot filling is possible (Table~\ref{tab:clustering_profile}). Running our hierarchical salt-aware matcher with greedy $1{:}1$ conflict resolution across the $206{,}830$ hybrid-blocker candidates increases cross-dataset yield by $+70.8\%$ to \textbf{2,343 multi-source clusters} (including \textbf{502 three-way clusters}, $+77.4\%$), with $99.79\%$ of multi-source clusters containing at most one record per jurisdiction ($k \le 3$). Auditing all five clusters with $k > 3$ (\texttt{CLUSTER\_00001}--\texttt{00005}: \textit{Irbesartan/HCTZ}, \textit{Temozolomide}, \textit{Sitagliptin/Metformin}, \textit{Emtricitabine/Tenofovir}, and \textit{Koselugo}) confirms legitimate upstream intra-source generic duplicates or salt-vs.-base records rather than false-positive matching errors.
 
 \begin{table}[htbp]
 \centering
-\caption{Connected-components clustering profile: full group size distribution (incl.\ singletons $k=1$) and jurisdictional overlap (Share = share of multi-source clusters $k \ge 2$)}
+\caption{Connected-components clustering profile: full group size distribution (including singletons $k=1$) and jurisdictional overlap (Share = percentage of multi-source clusters $k \ge 2$)}
 \label{tab:clustering_profile}
 \scriptsize
 \setlength{\tabcolsep}{3pt}
@@ -354,15 +377,24 @@ Transitive closure via NetworkX connected components (\texttt{clustering.py}) co
 \hline
 \textbf{Metric / Category} & \textbf{Exact Base.} & \textbf{Share} & \textbf{Cand.\ Match} & \textbf{Share} \\
 \hline
-Singletons ($k = 1$, no cross-source overlap) & 49,432 & --- & 47,265 & --- \\
-Pairwise ($k = 2$) / Tri-Jurisdictional ($k = 3$) & 1,089 / 283 & 79.4\% / 20.6\% & 1,841 / 497 & 78.6\% / 21.2\% \\
-Intra-source variations ($k = 4$ / $k = 5$) & 0 / 0 & 0.0\% & 4 / 1 & 0.21\% \\
+\multicolumn{5}{|l|}{\textit{\textbf{Group Size Distribution ($k$)}}} \\
 \hline
-All 3 Sources (\texttt{DPD + EMA + FDA}) & 283 & 20.63\% & 502 & 21.43\% \\
-\texttt{DPD + FDA} / \texttt{DPD + EMA} / \texttt{EMA + FDA} & 629 / 311 / 149 & 45.8 / 22.7 / 10.9\% & 1,388 / 314 / 139 & 59.2 / 13.4 / 5.9\% \\
+Singletons ($k = 1$, no overlap)  & 49,432 & ---     & 47,265 & --- \\
+Pairwise ($k = 2$)               &  1,089 & 79.37\% &  1,841 & 78.57\% \\
+Tri-Jurisdictional ($k = 3$)     &    283 & 20.63\% &    497 & 21.21\% \\
+Size $k = 4$ (intra-source dup.) &      0 &  0.00\% &      4 &  0.17\% \\
+Size $k = 5$ (intra-source dup.) &      0 &  0.00\% &      1 &  0.04\% \\
 \hline
-\textbf{Multi-Source Clusters ($k \ge 2$, Entities)} & \textbf{1,372 (3,027)} & \textbf{100.00\%} & \textbf{2,343 (5,194)} & \textbf{100.00\%} \\
-\textbf{Total Groups incl.\ Singletons ($52{,}459$ in)} & \textbf{50,804} & --- & \textbf{49,608} & --- \\
+\multicolumn{5}{|l|}{\textit{\textbf{Jurisdictional Overlap Breakdown ($k \ge 2$)}}} \\
+\hline
+All 3 Sources (\texttt{DPD + EMA + FDA}) & 283 & 20.63\% &   502 & 21.43\% \\
+Canada \& US Only (\texttt{DPD + FDA})   & 629 & 45.85\% & 1,388 & 59.24\% \\
+Canada \& EU Only (\texttt{DPD + EMA})   & 311 & 22.67\% &   314 & 13.40\% \\
+EU \& US Only (\texttt{EMA + FDA})       & 149 & 10.86\% &   139 &  5.93\% \\
+\hline
+\textbf{Multi-Source Clusters ($k \ge 2$)} & \textbf{1,372} & \textbf{100.00\%} & \textbf{2,343} & \textbf{100.00\%} \\
+Total Entities Clustered ($k \ge 2$)       & 3,027 & --- & 5,194 & --- \\
+\textbf{Total Groups incl.\ Singletons}    & \textbf{50,804} & --- & \textbf{49,608} & --- \\
 \hline
 \end{tabularx}
 \end{table}
@@ -372,19 +404,19 @@ All 3 Sources (\texttt{DPD + EMA + FDA}) & 283 & 20.63\% & 502 & 21.43\% \\
 \label{sec:data_fusion}
 % ============================================================
 
-Phase~III integrates attributes across clustered entities, resolves conflicting values, and measures the quality profile of the consolidated dataset using PyDI~\cite{pydi_framework}. Below we document the implemented data-loading pipeline, provenance setup, evaluation benchmark, and initial baseline fusion experiments on the evaluation sample (\texttt{notebooks/data\_fusion\_skeleton/}).
+Phase~III consolidates attributes across clustered entities, resolves data conflicts, and evaluates the quality of the integrated pharmaceutical dataset using PyDI~\cite{pydi_framework}. Below we report the data-loading and provenance setup, sample-level density and consistency measurements, the ground-truth evaluation benchmark, and baseline fusion results.
 
 \subsection{Provenance Tracking}
-The ingestion scripts (\texttt{loader.py} and \texttt{correspondence\_prep.py} in \texttt{src/data\_fusion/}) parse all three XSD-validated XML exports into PyDI DataFrames totaling \textbf{52,459 records and 18 columns} (DPD $41{,}636$, EMA $2{,}648$, FDA $8{,}175$), verifying all $944{,}262$ field values and types against \texttt{medicines.xsd} and project vocabularies. Each source DataFrame carries provenance metadata (\texttt{trust\_score = 1.0} and \texttt{dataset\_score = 1.0} as an explicit equal-weight baseline; \texttt{dataset\_date = None}, keeping record-level approval/status dates separate). Pairwise correspondences are converted into \texttt{id1,id2,similarity} tuples and passed to \texttt{DataFusionEngine} with \texttt{include\_singletons=True} to retain unmatched records alongside transitive entity clusters.
+All three XSD-validated XML exports are loaded into PyDI DataFrames totaling \textbf{52,459 records} with schema-verified types and project-controlled vocabularies. In the current baseline configuration, each source receives equal provenance weight (\texttt{trust\_score = 1.0}, \texttt{dataset\_score = 1.0}) while preserving original source identifiers and record-level regulatory dates. Pairwise match correspondences are passed to PyDI's \texttt{DataFusionEngine} with singletons retained so that unmatched single-jurisdiction medicines remain part of the integrated output.
 
 \subsection{Dataset Density and Consistency Assessment}
-Table~\ref{tab:fusion_density_consistency} reports attribute density and pre-fusion cross-source consistency across the 36-cluster evaluation sample ($28$ DPD, $28$ EMA, and $28$ FDA records) and its fused output across the 10 evaluated attributes. Core identifying and classification attributes (\texttt{brandName}, \texttt{activeSubstances}, \texttt{activeSubstanceCount}, \texttt{licenceHolder}, \texttt{productClass}) have $1.000$ density in all three sources, whereas complementary regulatory coverage appears in \texttt{atcCode} (absent in FDA), \texttt{dosageForm}/\texttt{route}/\texttt{strengths} (absent in EMA), and \texttt{biosimilar} (absent in FDA). Merging raises mean sample attribute density from $0.700$ (EMA) and $0.761$ (FDA)---versus $0.996$ (DPD)---to \textbf{0.989} overall.
+Table~\ref{tab:fusion_density_consistency} compares pre-fusion source density, fused density, and cross-source consistency across the 10 evaluated attributes on the 36-cluster evaluation sample. Core identifying and structural fields are fully populated across all three sources, whereas regulatory coverage is complementary: EMA lacks dosage forms, routes, and strengths, while Drugs@FDA lacks ATC codes and biosimilar flags. Merging fills these gaps and increases mean sample density from $0.700$ (EMA) and $0.761$ (FDA) to \textbf{0.989} overall.
 
-Pre-fusion cross-source consistency (fraction of multi-source groups with agreeing values) is $1.000$ for \texttt{activeSubstanceCount}, \texttt{productClass}, and \texttt{biosimilar}, and high for \texttt{atcCode} ($0.914$), \texttt{brandName} ($0.806$), \texttt{route} ($0.800$), and \texttt{activeSubstances} ($0.778$). Lower consistency occurs in \texttt{dosageForm} ($0.676$) and \texttt{strengths} ($0.528$) due to unit/granularity differences, and drops to $0.000$ for \texttt{licenceHolder} because every sampled medicine is marketed by different regional affiliates or licensees across jurisdictions.
+Pre-fusion cross-source consistency reveals where conflict resolution is most critical. Substance counts, product classes, and biosimilar flags agree completely across jurisdictions, whereas dosage forms, strengths, and active substances diverge due to differing unit conventions, form granularities, and salt modifiers. \texttt{licenceHolder} exhibits zero cross-source agreement because every sampled medicine is marketed by different regional subsidiaries or licensing partners.
 
 \begin{table}[htbp]
 \centering
-\caption{Pre-fusion vs.\ fused attribute density, cross-source consistency, and \texttt{Simple rules} baseline accuracy on the 36-cluster Phase~III evaluation sample.}
+\caption{Pre-fusion vs.\ fused attribute density, cross-source consistency, and \texttt{Simple rules} baseline accuracy on the 36-cluster Phase~III evaluation sample}
 \label{tab:fusion_density_consistency}
 \scriptsize
 \setlength{\tabcolsep}{2.5pt}
@@ -409,34 +441,30 @@ Pre-fusion cross-source consistency (fraction of multi-source groups with agreei
 \end{table}
 
 \subsection{Fusion Evaluation Benchmark Set}
-To evaluate fusion accuracy without ambiguities (\texttt{sample\_eval\_set.py} and \texttt{data/8\_fusion\_eval/fusion\_eval\_worksheet.csv}), we filtered the $2{,}343$ multi-source clusters down to $2{,}247$ eligible duplicate-free human-medicine clusters (excluding the 5 clusters with intra-source duplicates and veterinary/disinfectant products). Using stratified sampling (seed 42), we selected \textbf{36 clusters}: \textbf{12} three-way (\texttt{DPD+EMA+FDA}) and \textbf{8} each of \texttt{DPD+FDA}, \texttt{DPD+EMA}, and \texttt{EMA+FDA}. Each cluster is identified unambiguously by a single source record ID (\texttt{eval\_id}) using reference priority $\text{FDA} > \text{EMA} > \text{DPD}$.
+To evaluate fusion accuracy without ambiguities, we filtered the $2{,}343$ multi-source clusters to $2{,}247$ duplicate-free human-medicine clusters and drew a stratified sample of \textbf{36 clusters} (12 three-way and 8 from each pairwise jurisdiction combination, seed~42). Each entity is mapped to a single unambiguous source identifier using reference priority $\text{FDA} > \text{EMA} > \text{DPD}$ and annotated across 10 conflicting attributes (excluding single-source dates and jurisdiction-specific status, generic, and orphan flags). Ground-truth values are sourced exclusively from primary regulatory monographs and labels (FDA/DailyMed~\cite{fda_drugsatfda}, EMA EPARs~\cite{ema_medicines}, Health Canada DPD~\cite{healthcanada_dpd}, and the WHO ATC/DDD Index~\cite{whocc_atc}); rows 1--5 are human-verified and rows 6--36 contain evidence-linked drafts awaiting final human sign-off.
 
-Each entity is annotated across \textbf{10 conflicting attributes}; single-source regional dates and jurisdiction-specific \texttt{regulatoryStatus}, \texttt{generic}, and \texttt{orphanMedicine} flags are excluded. Ground-truth values are sourced exclusively from primary regulatory monographs and labels (FDA/DailyMed~\cite{fda_drugsatfda}, EMA EPARs~\cite{ema_medicines}, Health Canada DPD~\cite{healthcanada_dpd}, and the WHO ATC/DDD Index~\cite{whocc_atc}): rows 1--5 are human-verified and rows 6--36 are populated with official evidence URLs pending final human sign-off.
-
-\subsection{Conflict Resolution Functions and Custom Rules}
-As an initial PyDI baseline (\texttt{Simple rules} in Table~\ref{tab:fusion_density_consistency}), we assign \texttt{longest\_string} to free text (\texttt{brandName}, \texttt{licenceHolder}), \texttt{voting} to categorical/count fields (\texttt{activeSubstanceCount}, \texttt{productClass}, \texttt{biosimilar}), and \texttt{union} to multi-valued attributes (\texttt{activeSubstances}, \texttt{atcCode}, \texttt{dosageForm}, \texttt{route}, \texttt{strengths}). Ongoing Phase~III work extends this skeleton with provenance-aware strategies (\texttt{favour\_sources}, \texttt{prefer\_higher\_trust}) and custom domain resolvers (salt-stripping INN voting for \texttt{activeSubstances}, deepest 7-character ATC selection, and unit-normalized strength merging) across the full 52,459-record dataset.
-
-\subsection{Conflict Resolution Accuracy Comparison}
-Evaluated against the 36-entity benchmark ($360$ attribute cells) using tokenized word-set matching for text/lists and exact matching for \texttt{atcCode}, \texttt{activeSubstanceCount}, \texttt{productClass}, and \texttt{biosimilar}, the \texttt{Simple rules} baseline achieves \textbf{67.50\% overall accuracy} ($243/360$ correct; Table~\ref{tab:fusion_density_consistency}). It reaches $100\%$ on \texttt{activeSubstanceCount}, \texttt{productClass}, and \texttt{biosimilar}, and $72.2\%$--$80.6\%$ on \texttt{brandName}, \texttt{atcCode}, and \texttt{route}, but degrades sharply on \texttt{dosageForm} ($41.7\%$), \texttt{strengths} ($33.3\%$), and \texttt{licenceHolder} ($2.8\%$).
+\subsection{Conflict Resolution Functions and Baseline Accuracy}
+As an initial PyDI baseline (\texttt{Simple rules} in Table~\ref{tab:fusion_density_consistency}), we assign \texttt{longest\_string} to free-text fields, \texttt{voting} to categorical and count fields, and \texttt{union} to multi-valued attributes. Evaluated against the 36-entity benchmark using tokenized word-set matching for text/lists and exact matching for codes, counts, classes, and booleans, this baseline achieves \textbf{67.50\% overall accuracy} ($243/360$ correct cells). While categorical attributes reach $100\%$ accuracy, performance drops sharply on dosage forms, strengths, and regional licence holders. Ongoing Phase~III experiments extend this skeleton with provenance-aware strategies (\texttt{favour\_sources}, \texttt{prefer\_higher\_trust}) and custom domain resolvers across the full dataset.
 
 \subsection{Remaining Error Analysis}
-Inspecting all \textbf{117 baseline errors} (\texttt{fusion\_errors.csv}) reveals clear target areas for provenance and custom rules:
+Auditing all \textbf{117 discrepancies} produced by the baseline rules identifies four clear targets for provenance-aware and custom resolution functions:
 \begin{itemize}
-  \item \textbf{Regional Licence Holders (35 errors):} \texttt{longest\_string} selects verbose Canadian/EU affiliate strings (e.g., \texttt{GLAXOSMITHKLINE INC}) rather than the reference FDA applicant, explaining the $2.8\%$ accuracy on \texttt{licenceHolder}; \texttt{favour\_sources} aligned with reference priority directly targets this.
-  \item \textbf{Strengths \& Dosage Forms (24 and 21 errors):} Naive \texttt{union} mixes per-vial quantities and concentrations (e.g., \texttt{200 U} vs.\ \texttt{200 U/vial} for \textit{Elelyso}) and combines differing regulatory form granularities (DPD \texttt{Solution} vs.\ FDA \texttt{Injection}).
-  \item \textbf{Salt Forms, Routes, ATC Prefixes, and Regional Brands (12, 10, 8, and 7 errors):} \texttt{union} retains both base and salt names (\texttt{bosutinib} alongside \texttt{bosutinib monohydrate}), merges generic FDA \texttt{Injection} with specific \texttt{Intravenous}/\texttt{Subcutaneous} routes, keeps truncated 3-character EMA ATC prefixes (\texttt{A16} alongside \texttt{A16AB14}), and picks longer EU trade variants (e.g., \textit{Cinqaero} vs.\ \textit{Cinqair}).
+  \item \textbf{Regional licence holders (35 errors):} Picking the longest string favors verbose Canadian or European affiliates (e.g., \texttt{GLAXOSMITHKLINE INC}) over the reference FDA applicant; aligning \texttt{favour\_sources} with reference priority directly resolves this gap.
+  \item \textbf{Strengths and dosage forms (24 and 21 errors):} Unfiltered \texttt{union} mixes per-vial amounts with concentrations (e.g., \texttt{200 U} vs.\ \texttt{200 U/vial} for \textit{Elelyso}) and combines differing regulatory form granularities (DPD \texttt{Solution} vs.\ FDA \texttt{Injection}).
+  \item \textbf{Active substances and ATC granularity (12 and 8 errors):} Naive \texttt{union} preserves salt variants alongside base INNs (\texttt{bosutinib} and \texttt{bosutinib monohydrate}) and retains truncated 3-character EMA ATC prefixes (\texttt{A16}) alongside complete 7-character WHO codes (\texttt{A16AB14}).
+  \item \textbf{Routes and regional brands (10 and 7 errors):} Generic FDA route strings (\texttt{Injection}) pollute specific routes (\texttt{Intravenous}/\texttt{Subcutaneous}), while \texttt{longest\_string} occasionally selects longer EU trade variants (e.g., \textit{Cinqaero} over \textit{Cinqair}).
 \end{itemize}
 
 % ============================================================
-\section{Conclusion}
+\section{Summary of Overall Results}
 \label{sec:conclusion}
 % ============================================================
 
-In accordance with the project report requirements, the overall integration results are summarized by addressing three core evaluation questions:
+In accordance with the project report guidelines, the final integration results will conclude by answering three overall evaluation questions once the full-dataset Phase~III experiments are completed:
 \begin{enumerate}
-  \item \textbf{Additional Entities Added:} The total number of unique medicine entities gained beyond the largest individual input dataset (Health Canada DPD with $41{,}636$ entities), quantifying the expanded international coverage achieved through tri-dataset alignment.
-  \item \textbf{Data Density Increase:} The net increase in attribute density achieved in the fused dataset relative to the highest-density input source, demonstrating the complementary informational yield of multi-jurisdiction merging.
-  \item \textbf{Overall Dataset Accuracy:} The end-to-end accuracy of the final fused dataset as measured against the independent ground-truth evaluation benchmark.
+  \item \textbf{Additional Entities Added:} Total unique medicine entities gained beyond the largest input dataset (Health Canada DPD with $41{,}636$ entities), quantifying the expanded international coverage achieved through tri-dataset alignment.
+  \item \textbf{Data Density Increase:} Net attribute density gain in the final fused dataset relative to the highest-density input source, measuring the informational yield of slot filling across jurisdictions.
+  \item \textbf{Overall Dataset Accuracy:} End-to-end accuracy of the winning fusion strategy across all evaluated attributes on the verified ground-truth benchmark.
 \end{enumerate}
 
 
