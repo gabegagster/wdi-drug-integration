@@ -233,8 +233,11 @@ data/1_raw/US Drug/
 data/1_raw/EU Drug.csv
 data/3_fused/*
 
-# Keep the ignored fused-data directory itself.
+# Keep the ignored fused-data directory and published Phase II correspondences/clusters.
 !data/3_fused/.gitkeep
+!data/3_fused/candidate_matches.csv
+!data/3_fused/candidate_medicine_clusters.csv
+!data/3_fused/candidate_correspondences_1to1.csv
 
 # macOS
 .DS_Store
