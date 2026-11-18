@@ -90,9 +90,7 @@ The worksheet shows all source values side by side (`src_<attr>`) next to the ha
 
    **One substance, several ATC codes.** WHO gives a substance one code per therapeutic use, so pick the code that matches the product's form, route and indication: Durezol (difluprednate eye emulsion) is S01BA16, not the dermatological D07AC19; Kesimpta (low-strength ofatumumab for MS) is L04AG12, not the oncology code L01FA used for high-strength CLL products.
 4. Set `verified_by` and `verified_on`.
-
-Rows 1–5 were drafted with Claude-assisted web lookups and are marked "to be reviewed by Trang". They are not final until a human has opened the evidence links.
-
+   
 ## 4. Findings so far (rows 1–5)
 
 **Typical source conflicts the fusion must resolve:**
