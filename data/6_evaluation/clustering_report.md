@@ -24,13 +24,3 @@
 - **Pure 1:1 / 1:1:1 Correspondences:** 100.00%
 
 All clusters satisfy the duplicate-free constraint. Once the full-dataset correspondences from blocking and the best matcher are exported, `src/identity_resolution/clustering.py` can be re-run directly on those CSVs to generate the final Phase III entity clusters.
-
-## Cluster-size distribution
-
-| Records per cluster | Clusters |
-|---|---:|
-| 2 | 1,089 |
-| 3 | 283 |
-| >3 | 0 |
-
-The denominator is 1,372 matched groups; unmatched records are excluded.
