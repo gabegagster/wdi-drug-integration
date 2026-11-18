@@ -8,8 +8,8 @@ import pandas as pd
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 RAW_DATA_DIR = REPO_ROOT / "data" / "1_raw"
-OUTPUT_DIR = REPO_ROOT / "data" / "2_translated"
-ENTITY_COUNT_DIR = OUTPUT_DIR / "entity count"
+PROCESSED_DIR = REPO_ROOT / "data" / "2_processed"
+ENTITY_COUNT_DIR = REPO_ROOT / "data" / "3_profiling" / "entity_count"
 
 # Remove strengths such as 20 MG, 5 MG/ML, 10%, and 1:100000.
 STRENGTH_PATTERN = re.compile(
@@ -90,18 +90,18 @@ def main():
     ENTITY_COUNT_DIR.mkdir(parents=True, exist_ok=True)
 
     fda = pd.read_csv(
-        str(RAW_DATA_DIR / "US Drug" / "Products.txt"),
+        str(RAW_DATA_DIR / "01_us_drugs_at_fda" / "Products.txt"),
         sep="\t",
         dtype="string",
         encoding="utf-8-sig",
     )[["DrugName", "ActiveIngredient"]]
     ema = pd.read_csv(
-        str(RAW_DATA_DIR / "EU Drug.csv"),
+        str(RAW_DATA_DIR / "02_eu_ema_medicines" / "ema_medicines.csv"),
         dtype="string",
         encoding="utf-8-sig",
     )[["Name of medicine", "Active substance"]]
     dpd = pd.read_csv(
-        str(OUTPUT_DIR / "dpd_medicines.csv"),
+        str(PROCESSED_DIR / "dpd_medicines.csv"),
         dtype="string",
         encoding="utf-8-sig",
     )[["brand_name", "active_substances"]]
@@ -157,7 +157,7 @@ def main():
         f"Total: {len(in_at_least_two):,}",
         "",
         "NORMALIZED ENTITY CSV FILES",
-        *[str(path.relative_to(REPO_ROOT)) for path in csv_paths],
+        *[path.relative_to(REPO_ROOT).as_posix() for path in csv_paths],
     ]
 
     report_path = ENTITY_COUNT_DIR / "entity_count_results.txt"

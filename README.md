@@ -58,6 +58,17 @@ Active data-loading, evaluation-set curation, and baseline PyDI fusion experimen
 * **Fusion evaluation set:** Stratified 36-cluster worksheet in `data/8_fusion_eval/fusion_eval_worksheet.csv` (`src/data_fusion/sample_eval_set.py`, [Role 2 guide](src/data_fusion/role2_eval_set.md)).
 * **Fusion experiments:** Baseline PyDI experiment skeleton in `notebooks/data_fusion_skeleton/`.
 
+### Verification and ILIAS packaging
+
+Run the non-destructive clean-run verification and ILIAS submission bundler from the repository root:
+
+```bash
+python3 src/package_submission.py
+python3 src/package_submission.py --package
+```
+
+This checks all Phase I to III schemas, splits, correspondences, and cached evaluation metrics, prints full-dataset entity expansion and density summaries, and writes a curated submission bundle and zip archive under `dist/`.
+
 ## Reports and code guides
 
 | Area | Results report | Code guide |
@@ -109,7 +120,7 @@ wdi-drug-integration/
 │   ├── 3_profiling/                        # Profiling and overlap analysis
 │   │   ├── entity_count/                   # Medicine-entity counts and overlap estimates
 │   │   └── ingredient_cleaning/            # Ingredient-cleaning artifacts
-│   ├── 3_fused/                            # Phase II clusters & Phase III fused outputs (git-ignored)
+│   ├── 3_fused/                            # Versioned Phase II correspondences/clusters; fused outputs git-ignored
 │   ├── 4_translated_mapforce/              # Integrated XML exports and validation report
 │   ├── 5_golden_standard_pair/             # Reviewed pairs, PyDI exports, and pair report
 │   │   ├── dpd_ema/                        # DPD/EMA review batches and exports

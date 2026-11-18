@@ -3,34 +3,40 @@ from pathlib import Path
 import pandas as pd
 
 repo_root = Path(__file__).resolve().parents[2]
-translated_data_dir = repo_root / "data" / "2_translated"
+translated_data_dir = repo_root / "data" / "1_raw" / "_archives" / "obsolete_openfda"
 input_file = translated_data_dir / "openfda_ndc_products.csv"
 
-translated_data_dir.mkdir(parents=True, exist_ok=True)
 
-df = pd.read_csv(input_file)
+def main():
+    translated_data_dir.mkdir(parents=True, exist_ok=True)
 
-# Check missing
-missing = pd.DataFrame({
-    "missing_count": df.isna().sum(),
-    "missing_percent": (df.isna().mean() * 100).round(2),
-})
+    df = pd.read_csv(input_file)
 
-print(missing)
+    # Check missing
+    missing = pd.DataFrame({
+        "missing_count": df.isna().sum(),
+        "missing_percent": (df.isna().mean() * 100).round(2),
+    })
 
-ingredients = set()
+    print(missing)
 
-for value in df["active_ingredients"].dropna():
-    for item in value.split(";"):
-        name = item.split(" (", 1)[0].strip()
-        if name:
-            ingredients.add(name)
+    ingredients = set()
 
-ingredient_list = sorted(ingredients, key=str.casefold)
+    for value in df["active_ingredients"].dropna():
+        for item in value.split(";"):
+            name = item.split(" (", 1)[0].strip()
+            if name:
+                ingredients.add(name)
 
-print(f"Unique active ingredients: {len(ingredient_list)}")
+    ingredient_list = sorted(ingredients, key=str.casefold)
 
-output_file = translated_data_dir / "openfda_active_ingredients.txt"
-output_file.write_text("\n".join(ingredient_list), encoding="utf-8")
+    print(f"Unique active ingredients: {len(ingredient_list)}")
 
-print(f"Ingredient list saved to: {output_file}")
+    output_file = translated_data_dir / "openfda_active_ingredients.txt"
+    output_file.write_text("\n".join(ingredient_list), encoding="utf-8")
+
+    print(f"Ingredient list saved to: {output_file}")
+
+
+if __name__ == "__main__":
+    main()

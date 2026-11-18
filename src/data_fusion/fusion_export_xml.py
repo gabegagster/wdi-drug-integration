@@ -6,8 +6,8 @@ from lxml import etree
 import pandas as pd
 
 
-def fusion_export_xml(df: pd.DataFrame) -> Path:
-    """Write fused medicines to fused_medicines.xml in the current folder.
+def fusion_export_xml(df: pd.DataFrame, output_path: Path | str | None = None) -> Path:
+    """Write fused medicines to XML (defaulting to fused_medicines.xml in cwd).
 
     Parameters
     ----------
@@ -15,6 +15,8 @@ def fusion_export_xml(df: pd.DataFrame) -> Path:
         PyDI fusion output with medicine fields, ``_id``, and
         ``_fusion_source_datasets``. Ingredients are lists of names;
         strengths are lists of (value, unit) pairs.
+    output_path : pathlib.Path | str | None, optional
+        Optional target XML path. Defaults to ``Path.cwd() / 'fused_medicines.xml'``.
 
     Returns
     -------
@@ -70,9 +72,14 @@ def fusion_export_xml(df: pd.DataFrame) -> Path:
                 element.text = str(value)
 
     # Write XML
-    output_path = Path.cwd() / 'fused_medicines.xml'
+    target = (
+        Path(output_path).resolve()
+        if output_path is not None
+        else (Path.cwd() / 'fused_medicines.xml').resolve()
+    )
+    target.parent.mkdir(parents=True, exist_ok=True)
     etree.ElementTree(root).write(
-        str(output_path), encoding='UTF-8', xml_declaration=True,
+        str(target), encoding='UTF-8', xml_declaration=True,
         pretty_print=True,
     )
-    return output_path
+    return target

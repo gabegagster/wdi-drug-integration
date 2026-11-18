@@ -256,3 +256,7 @@ data/3_fused/*
 
 # Local planning notes
 docs/phase3_role_split.md
+
+# MapForce temporary files & packaging output
+~mf*.tmp
+dist/

@@ -21,6 +21,6 @@ UNIQUE MEDICINES FOUND IN AT LEAST TWO DATASETS
 Total: 1,407
 
 NORMALIZED ENTITY CSV FILES
-data\2_translated\entity count\fda_normalized_entities.csv
-data\2_translated\entity count\ema_normalized_entities.csv
-data\2_translated\entity count\dpd_normalized_entities.csv
+data/3_profiling/entity_count/fda_normalized_entities.csv
+data/3_profiling/entity_count/ema_normalized_entities.csv
+data/3_profiling/entity_count/dpd_normalized_entities.csv

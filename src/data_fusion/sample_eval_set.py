@@ -26,7 +26,7 @@ from pathlib import Path
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[2]
-CLUSTERS = ROOT / "data/3_fused/medicine_clusters.csv"
+CLUSTERS = ROOT / "data/3_fused/candidate_medicine_clusters.csv"
 XML_DIR = ROOT / "data/4_translated_mapforce"
 OUT_DIR = ROOT / "data/8_fusion_eval"
 

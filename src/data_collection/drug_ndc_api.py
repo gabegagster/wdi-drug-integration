@@ -8,69 +8,75 @@ import requests
 
 repo_root = Path(__file__).resolve().parents[2]
 raw_data_dir = repo_root / "data" / "1_raw"
-translated_data_dir = repo_root / "data" / "2_translated"
-download_dir = raw_data_dir / "openfda_ndc_downloads"
+translated_data_dir = raw_data_dir / "_archives" / "obsolete_openfda"
+download_dir = raw_data_dir / "_archives" / "openfda_ndc_downloads"
 
-download_dir.mkdir(parents=True, exist_ok=True)
-translated_data_dir.mkdir(parents=True, exist_ok=True)
 
-manifest_url = "https://api.fda.gov/download.json"
+def main():
+    download_dir.mkdir(parents=True, exist_ok=True)
+    translated_data_dir.mkdir(parents=True, exist_ok=True)
 
-manifest_response = requests.get(manifest_url, timeout=60)
-manifest_response.raise_for_status()
-manifest = manifest_response.json()
+    manifest_url = "https://api.fda.gov/download.json"
 
-# Find all downloadable parts for the NDC dataset
-partitions = manifest["results"]["drug"]["ndc"]["partitions"]
-print(f"{len(partitions)} NDC file(s).")
+    manifest_response = requests.get(manifest_url, timeout=60)
+    manifest_response.raise_for_status()
+    manifest = manifest_response.json()
 
-products = []
+    # Find all downloadable parts for the NDC dataset
+    partitions = manifest["results"]["drug"]["ndc"]["partitions"]
+    print(f"{len(partitions)} NDC file(s).")
 
-for number, partition in enumerate(partitions, start=1):
-    url = partition["file"]
-    zip_path = download_dir / f"ndc_part_{number}.json.zip"
+    products = []
 
-    print(f"Download file {number} of {len(partitions)}...")
-    response = requests.get(url, timeout=180)
-    response.raise_for_status()
-    zip_path.write_bytes(response.content)
+    for number, partition in enumerate(partitions, start=1):
+        url = partition["file"]
+        zip_path = download_dir / f"ndc_part_{number}.json.zip"
 
-    # Read the JSON file inside the ZIP
-    with zipfile.ZipFile(io.BytesIO(response.content)) as zipped_file:
-        json_filename = zipped_file.namelist()[0]
-        with zipped_file.open(json_filename) as json_file:
-            data = json.load(json_file)
+        print(f"Download file {number} of {len(partitions)}...")
+        response = requests.get(url, timeout=180)
+        response.raise_for_status()
+        zip_path.write_bytes(response.content)
 
-    products.extend(data.get("results", []))
+        # Read the JSON file inside the ZIP
+        with zipfile.ZipFile(io.BytesIO(response.content)) as zipped_file:
+            json_filename = zipped_file.namelist()[0]
+            with zipped_file.open(json_filename) as json_file:
+                data = json.load(json_file)
 
-print(f"Downloaded {len(products)} product records.")
+        products.extend(data.get("results", []))
 
-# Keep useful fields and turn lists into readable text
-rows = []
+    print(f"Downloaded {len(products)} product records.")
 
-for product in products:
-    openfda = product.get("openfda", {})
+    # Keep useful fields and turn lists into readable text
+    rows = []
 
-    ingredients = product.get("active_ingredients", [])
-    ingredient_text = "; ".join(
-        f"{item.get('name', '')} ({item.get('strength', '')})".strip()
-        for item in ingredients
-    )
+    for product in products:
+        openfda = product.get("openfda", {})
 
-    rows.append({
-        "product_ndc": product.get("product_ndc"),
-        "brand_name": product.get("brand_name"),
-        "generic_name": product.get("generic_name"),
-        "active_ingredients": ingredient_text,
-        "manufacturer": "; ".join(openfda.get("manufacturer_name", [])),
-        "dosage_form": product.get("dosage_form"),
-        "route": "; ".join(product.get("route", [])),
-        "marketing_start_date": product.get("marketing_start_date"),
-        "marketing_category": product.get("marketing_category"),
-        "application_number": product.get("application_number"),
-    })
+        ingredients = product.get("active_ingredients", [])
+        ingredient_text = "; ".join(
+            f"{item.get('name', '')} ({item.get('strength', '')})".strip()
+            for item in ingredients
+        )
 
-output_path = translated_data_dir / "openfda_ndc_products.csv"
-pd.DataFrame(rows).to_csv(output_path, index=False, encoding="utf-8-sig")
+        rows.append({
+            "product_ndc": product.get("product_ndc"),
+            "brand_name": product.get("brand_name"),
+            "generic_name": product.get("generic_name"),
+            "active_ingredients": ingredient_text,
+            "manufacturer": "; ".join(openfda.get("manufacturer_name", [])),
+            "dosage_form": product.get("dosage_form"),
+            "route": "; ".join(product.get("route", [])),
+            "marketing_start_date": product.get("marketing_start_date"),
+            "marketing_category": product.get("marketing_category"),
+            "application_number": product.get("application_number"),
+        })
 
-print(f"Saved CSV to: {output_path}")
+    output_path = translated_data_dir / "openfda_ndc_products.csv"
+    pd.DataFrame(rows).to_csv(output_path, index=False, encoding="utf-8-sig")
+
+    print(f"Saved CSV to: {output_path}")
+
+
+if __name__ == "__main__":
+    main()
