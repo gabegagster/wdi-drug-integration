@@ -20,9 +20,8 @@ Prepare source records, consolidate products into medicine entities, and
 translate them into the shared medicine schema. Integrated XML exports for
 DPD, EMA, and FDA are available in `data/4_translated_mapforce/`.
 
-The repository includes DPD and EMA MapForce mappings, shared helper libraries,
+The repository includes DPD, EMA, and FDA MapForce mappings, shared helper libraries,
 lookup tables, XML/JSON schemas, and schema and duplicate validation.
-The FDA XML export is available; its MapForce mapping file is currently absent.
 See the [MapForce code guide](src/mapforce/README.md) for preparation and translation instructions.
 
 #### Team & Work Split (Phase I)
@@ -45,10 +44,19 @@ See the [gold-standard code guide](src/golden_standard/README.md) for generation
 label checks, selection, exports, and the shared split. Dataset files and reports
 under `data/5_golden_standard_pair/` are versioned.
 
+#### Blocking, matching, and clustering
+
+* **Blocking:** Hybrid semantic + lexical blocking (`notebooks/blocking_experiment.ipynb`, outputs in `data/7_blocking_candidates/`).
+* **Matchers:** Rule-based (`notebooks/manual_matcher_experiment/`), supervised ML (`src/identity_resolution/ml_features.py`, `notebooks/ml_classifier_experiment/`, `notebooks/ml_tree_classifier_experiment/`), fine-tuned DistilBERT (`notebooks/PLM_DistilBERT/`), and zero-shot LLM (`src/identity_resolution/llm_zero_shot_matcher.py`).
+* **Clustering:** Connected-components clustering (`src/identity_resolution/clustering.py`, reports in `data/6_evaluation/`).
+
 ### Phase III: Data fusion
 
-Planned consolidation of matched medicines into shared records.
-`src/data_fusion/` and `data/3_fused/` are placeholders.
+Active data-loading, evaluation-set curation, and baseline PyDI fusion experiments:
+
+* **Ingestion & correspondence prep:** `src/data_fusion/loader.py`, `correspondence_prep.py`, `fusion_export_xml.py` (see [handoff guide](src/data_fusion/HANDOFF.md)).
+* **Fusion evaluation set:** Stratified 36-cluster worksheet in `data/8_fusion_eval/fusion_eval_worksheet.csv` (`src/data_fusion/sample_eval_set.py`, [Role 2 guide](src/data_fusion/role2_eval_set.md)).
+* **Fusion experiments:** Baseline PyDI experiment skeleton in `notebooks/data_fusion_skeleton/`.
 
 ## Reports and code guides
 
@@ -101,13 +109,16 @@ wdi-drug-integration/
 │   ├── 3_profiling/                        # Profiling and overlap analysis
 │   │   ├── entity_count/                   # Medicine-entity counts and overlap estimates
 │   │   └── ingredient_cleaning/            # Ingredient-cleaning artifacts
-│   ├── 3_fused/                            # Placeholder for fused outputs
+│   ├── 3_fused/                            # Phase II clusters & Phase III fused outputs (git-ignored)
 │   ├── 4_translated_mapforce/              # Integrated XML exports and validation report
-│   └── 5_golden_standard_pair/             # Reviewed pairs, PyDI exports, and pair report
-│       ├── dpd_ema/                        # DPD/EMA review batches and exports
-│       ├── dpd_fda/                        # DPD/FDA review batches and exports
-│       ├── ema_fda/                        # EMA/FDA review batches and exports
-│       └── golden_standard_pair_complete/  # Shared whole, train/validation, and test CSVs
+│   ├── 5_golden_standard_pair/             # Reviewed pairs, PyDI exports, and pair report
+│   │   ├── dpd_ema/                        # DPD/EMA review batches and exports
+│   │   ├── dpd_fda/                        # DPD/FDA review batches and exports
+│   │   ├── ema_fda/                        # EMA/FDA review batches and exports
+│   │   └── golden_standard_pair_complete/  # Shared whole, train/validation, and test CSVs
+│   ├── 6_evaluation/                       # LLM/ML evaluation reports, metrics, and MapForce HTML docs
+│   ├── 7_blocking_candidates/              # Hybrid blocking candidate exports & manifest
+│   └── 8_fusion_eval/                      # Phase III fusion evaluation worksheet
 ├── src/
 │   ├── data_collection/                    # Extraction, consolidation, and profiling scripts
 │   ├── mapforce/                           # Source-to-schema mappings and code guide
@@ -115,12 +126,13 @@ wdi-drug-integration/
 │   │   ├── lookups/                        # Controlled vocabularies and lookup builder
 │   │   └── helpers/                        # Shared mapping libraries and helper checks
 │   ├── golden_standard/                    # Pair generation, review statistics, and split scripts
-│   ├── identity_resolution/                # PyDI environment smoke check
-│   └── data_fusion/                        # Placeholder for data-fusion code
-├── notebooks/                              # Experiments with matchers
+│   ├── identity_resolution/                # Blocking utils, ML features, LLM matcher, and clustering
+│   └── data_fusion/                        # XML loader, correspondence prep, eval sampler, and XML export
+├── notebooks/                              # Blocking, matcher, DistilBERT, and fusion experiments
 ├── docs/
 │   ├── outline/                            # Project outline
-│   └── final_report/                       # Final-report materials
+│   ├── slides/                             # Course lecture and exercise slides
+│   └── final_report/                       # Final-report materials (Springer LNCS)
 ├── .gitignore                              # Local environments, caches, and generated-file exclusions
 ├── .python-version                         # Python 3.12 environment version
 ├── requirements.txt                        # Python dependencies
