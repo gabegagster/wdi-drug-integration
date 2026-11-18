@@ -1,0 +1,8 @@
+rule,derived_count_accuracy
+Union,0.8387096774193549
+Intersection,0.8387096774193549
+Intersection k=2,0.9032258064516129
+Voting,1.0
+FDA priority,1.0
+EMA priority,1.0
+DPD priority,1.0

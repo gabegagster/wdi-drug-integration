@@ -1,0 +1,559 @@
+attribute,rule,eval_id,fusion_inputs,fused_value,gold_value
+brandName,Shortest,FDA_AGENERASE|AMPRENAVIR,"{'DPD': ['agenerase'], 'EMA': ['agenerase'], 'FDA': ['agenerase']}",agenerase,agenerase
+brandName,Shortest,FDA_BOSULIF|BOSUTINIB MONOHYDRATE,"{'DPD': ['bosulif'], 'EMA': ['bosulif'], 'FDA': ['bosulif']}",bosulif,bosulif
+brandName,Shortest,FDA_CINQAIR|RESLIZUMAB,"{'DPD': ['cinqair'], 'EMA': ['cinqaero'], 'FDA': ['cinqair']}",cinqair,cinqair
+brandName,Shortest,FDA_ELELYSO|TALIGLUCERASE ALFA,"{'DPD': ['elelyso'], 'EMA': ['elelyso'], 'FDA': ['elelyso']}",elelyso,elelyso
+brandName,Shortest,FDA_HEMLIBRA|EMICIZUMAB,"{'DPD': ['hemlibra'], 'EMA': ['hemlibra'], 'FDA': ['hemlibra']}",hemlibra,hemlibra
+brandName,Shortest,FDA_INVANZ|ERTAPENEM SODIUM,"{'DPD': ['invanz'], 'EMA': ['invanz'], 'FDA': ['invanz']}",invanz,invanz
+brandName,Shortest,FDA_KANUMA|SEBELIPASE ALFA,"{'DPD': ['kanuma'], 'EMA': ['kanuma'], 'FDA': ['kanuma']}",kanuma,kanuma
+brandName,Shortest,FDA_KESIMPTA|OFATUMUMAB,"{'DPD': ['kesimpta'], 'EMA': ['kesimpta'], 'FDA': ['kesimpta']}",kesimpta,kesimpta
+brandName,Shortest,FDA_PRAXBIND|IDARUCIZUMAB,"{'DPD': ['praxbind'], 'EMA': ['praxbind'], 'FDA': ['praxbind']}",praxbind,praxbind
+brandName,Shortest,FDA_QUVIVIQ|DARIDOREXANT HYDROCHLORIDE,"{'DPD': ['quviviq'], 'EMA': ['quviviq'], 'FDA': ['quviviq']}",quviviq,quviviq
+brandName,Shortest,FDA_REPATHA|EVOLOCUMAB,"{'DPD': ['repatha'], 'EMA': ['repatha'], 'FDA': ['repatha']}",repatha,repatha
+brandName,Shortest,FDA_WEGOVY|SEMAGLUTIDE,"{'DPD': ['wegovy'], 'EMA': ['wegovy'], 'FDA': ['wegovy']}",wegovy,wegovy
+brandName,Shortest,FDA_DUREZOL|DIFLUPREDNATE,"{'DPD': ['durezol'], 'EMA': [], 'FDA': ['durezol']}",durezol,durezol
+brandName,Shortest,FDA_FROVA|FROVATRIPTAN SUCCINATE,"{'DPD': ['frova'], 'EMA': [], 'FDA': ['frova']}",frova,frova
+brandName,Shortest,FDA_MOUNJARO KWIKPEN|TIRZEPATIDE,"{'DPD': ['mounjaro kwikpen'], 'EMA': [], 'FDA': ['mounjaro kwikpen']}",mounjaro kwikpen,mounjaro kwikpen
+brandName,Shortest,FDA_SEPTRA|SULFAMETHOXAZOLE; TRIMETHOPRIM,"{'DPD': ['septra'], 'EMA': [], 'FDA': ['septra']}",septra,septra
+brandName,Shortest,EMA_ADVAGRAF|TACROLIMUS,"{'DPD': ['advagraf'], 'EMA': ['advagraf'], 'FDA': []}",advagraf,advagraf
+brandName,Shortest,EMA_KOMBOGLYZE|METFORMIN HYDROCHLORIDE; SAXAGLIPTIN HYDROCHLORIDE,"{'DPD': ['komboglyze'], 'EMA': ['komboglyze'], 'FDA': []}",komboglyze,komboglyze
+brandName,Shortest,EMA_LEQEMBI|LECANEMAB,"{'DPD': ['leqembi'], 'EMA': ['leqembi'], 'FDA': []}",leqembi,leqembi
+brandName,Shortest,EMA_PREHEVBRI|HEPATITIS B SURFACE ANTIGEN,"{'DPD': ['prehevbrio'], 'EMA': ['prehevbri'], 'FDA': []}",prehevbri,prehevbri
+brandName,Shortest,EMA_RASILEZ|ALISKIREN,"{'DPD': ['rasilez'], 'EMA': ['rasilez'], 'FDA': []}",rasilez,rasilez
+brandName,Shortest,EMA_RIXIMYO|RITUXIMAB,"{'DPD': ['riximyo'], 'EMA': ['riximyo'], 'FDA': []}",riximyo,riximyo
+brandName,Shortest,EMA_SOGROYA|SOMAPACITAN,"{'DPD': ['sogroya'], 'EMA': ['sogroya'], 'FDA': []}",sogroya,sogroya
+brandName,Shortest,EMA_XENPOZYME|OLIPUDASE ALFA,"{'DPD': ['xenpozyme'], 'EMA': ['xenpozyme'], 'FDA': []}",xenpozyme,xenpozyme
+brandName,Shortest,FDA_EPIVIR|LAMIVUDINE,"{'DPD': [], 'EMA': ['epivir'], 'FDA': ['epivir']}",epivir,epivir
+brandName,Shortest,FDA_FINTEPLA|FENFLURAMINE HYDROCHLORIDE,"{'DPD': [], 'EMA': ['fintepla'], 'FDA': ['fintepla']}",fintepla,fintepla
+brandName,Shortest,FDA_IONSYS|FENTANYL HYDROCHLORIDE,"{'DPD': [], 'EMA': ['ionsys'], 'FDA': ['ionsys']}",ionsys,ionsys
+brandName,Shortest,FDA_MIPLYFFA|ARIMOCLOMOL CITRATE,"{'DPD': [], 'EMA': ['miplyffa'], 'FDA': ['miplyffa']}",miplyffa,miplyffa
+brandName,Shortest,FDA_MYCAPSSA|OCTREOTIDE ACETATE,"{'DPD': [], 'EMA': ['mycapssa'], 'FDA': ['mycapssa']}",mycapssa,mycapssa
+brandName,Shortest,FDA_VIJOICE|ALPELISIB,"{'DPD': [], 'EMA': ['vijoice'], 'FDA': ['vijoice']}",vijoice,vijoice
+brandName,Shortest,FDA_ZONEGRAN|ZONISAMIDE,"{'DPD': [], 'EMA': ['zonegran'], 'FDA': ['zonegran']}",zonegran,zonegran
+brandName,FDA priority,FDA_AGENERASE|AMPRENAVIR,"{'DPD': ['agenerase'], 'EMA': ['agenerase'], 'FDA': ['agenerase']}",agenerase,agenerase
+brandName,FDA priority,FDA_BOSULIF|BOSUTINIB MONOHYDRATE,"{'DPD': ['bosulif'], 'EMA': ['bosulif'], 'FDA': ['bosulif']}",bosulif,bosulif
+brandName,FDA priority,FDA_CINQAIR|RESLIZUMAB,"{'DPD': ['cinqair'], 'EMA': ['cinqaero'], 'FDA': ['cinqair']}",cinqair,cinqair
+brandName,FDA priority,FDA_ELELYSO|TALIGLUCERASE ALFA,"{'DPD': ['elelyso'], 'EMA': ['elelyso'], 'FDA': ['elelyso']}",elelyso,elelyso
+brandName,FDA priority,FDA_HEMLIBRA|EMICIZUMAB,"{'DPD': ['hemlibra'], 'EMA': ['hemlibra'], 'FDA': ['hemlibra']}",hemlibra,hemlibra
+brandName,FDA priority,FDA_INVANZ|ERTAPENEM SODIUM,"{'DPD': ['invanz'], 'EMA': ['invanz'], 'FDA': ['invanz']}",invanz,invanz
+brandName,FDA priority,FDA_KANUMA|SEBELIPASE ALFA,"{'DPD': ['kanuma'], 'EMA': ['kanuma'], 'FDA': ['kanuma']}",kanuma,kanuma
+brandName,FDA priority,FDA_KESIMPTA|OFATUMUMAB,"{'DPD': ['kesimpta'], 'EMA': ['kesimpta'], 'FDA': ['kesimpta']}",kesimpta,kesimpta
+brandName,FDA priority,FDA_PRAXBIND|IDARUCIZUMAB,"{'DPD': ['praxbind'], 'EMA': ['praxbind'], 'FDA': ['praxbind']}",praxbind,praxbind
+brandName,FDA priority,FDA_QUVIVIQ|DARIDOREXANT HYDROCHLORIDE,"{'DPD': ['quviviq'], 'EMA': ['quviviq'], 'FDA': ['quviviq']}",quviviq,quviviq
+brandName,FDA priority,FDA_REPATHA|EVOLOCUMAB,"{'DPD': ['repatha'], 'EMA': ['repatha'], 'FDA': ['repatha']}",repatha,repatha
+brandName,FDA priority,FDA_WEGOVY|SEMAGLUTIDE,"{'DPD': ['wegovy'], 'EMA': ['wegovy'], 'FDA': ['wegovy']}",wegovy,wegovy
+brandName,FDA priority,FDA_DUREZOL|DIFLUPREDNATE,"{'DPD': ['durezol'], 'EMA': [], 'FDA': ['durezol']}",durezol,durezol
+brandName,FDA priority,FDA_FROVA|FROVATRIPTAN SUCCINATE,"{'DPD': ['frova'], 'EMA': [], 'FDA': ['frova']}",frova,frova
+brandName,FDA priority,FDA_MOUNJARO KWIKPEN|TIRZEPATIDE,"{'DPD': ['mounjaro kwikpen'], 'EMA': [], 'FDA': ['mounjaro kwikpen']}",mounjaro kwikpen,mounjaro kwikpen
+brandName,FDA priority,FDA_SEPTRA|SULFAMETHOXAZOLE; TRIMETHOPRIM,"{'DPD': ['septra'], 'EMA': [], 'FDA': ['septra']}",septra,septra
+brandName,FDA priority,EMA_ADVAGRAF|TACROLIMUS,"{'DPD': ['advagraf'], 'EMA': ['advagraf'], 'FDA': []}",advagraf,advagraf
+brandName,FDA priority,EMA_KOMBOGLYZE|METFORMIN HYDROCHLORIDE; SAXAGLIPTIN HYDROCHLORIDE,"{'DPD': ['komboglyze'], 'EMA': ['komboglyze'], 'FDA': []}",komboglyze,komboglyze
+brandName,FDA priority,EMA_LEQEMBI|LECANEMAB,"{'DPD': ['leqembi'], 'EMA': ['leqembi'], 'FDA': []}",leqembi,leqembi
+brandName,FDA priority,EMA_PREHEVBRI|HEPATITIS B SURFACE ANTIGEN,"{'DPD': ['prehevbrio'], 'EMA': ['prehevbri'], 'FDA': []}",prehevbri,prehevbri
+brandName,FDA priority,EMA_RASILEZ|ALISKIREN,"{'DPD': ['rasilez'], 'EMA': ['rasilez'], 'FDA': []}",rasilez,rasilez
+brandName,FDA priority,EMA_RIXIMYO|RITUXIMAB,"{'DPD': ['riximyo'], 'EMA': ['riximyo'], 'FDA': []}",riximyo,riximyo
+brandName,FDA priority,EMA_SOGROYA|SOMAPACITAN,"{'DPD': ['sogroya'], 'EMA': ['sogroya'], 'FDA': []}",sogroya,sogroya
+brandName,FDA priority,EMA_XENPOZYME|OLIPUDASE ALFA,"{'DPD': ['xenpozyme'], 'EMA': ['xenpozyme'], 'FDA': []}",xenpozyme,xenpozyme
+brandName,FDA priority,FDA_EPIVIR|LAMIVUDINE,"{'DPD': [], 'EMA': ['epivir'], 'FDA': ['epivir']}",epivir,epivir
+brandName,FDA priority,FDA_FINTEPLA|FENFLURAMINE HYDROCHLORIDE,"{'DPD': [], 'EMA': ['fintepla'], 'FDA': ['fintepla']}",fintepla,fintepla
+brandName,FDA priority,FDA_IONSYS|FENTANYL HYDROCHLORIDE,"{'DPD': [], 'EMA': ['ionsys'], 'FDA': ['ionsys']}",ionsys,ionsys
+brandName,FDA priority,FDA_MIPLYFFA|ARIMOCLOMOL CITRATE,"{'DPD': [], 'EMA': ['miplyffa'], 'FDA': ['miplyffa']}",miplyffa,miplyffa
+brandName,FDA priority,FDA_MYCAPSSA|OCTREOTIDE ACETATE,"{'DPD': [], 'EMA': ['mycapssa'], 'FDA': ['mycapssa']}",mycapssa,mycapssa
+brandName,FDA priority,FDA_VIJOICE|ALPELISIB,"{'DPD': [], 'EMA': ['vijoice'], 'FDA': ['vijoice']}",vijoice,vijoice
+brandName,FDA priority,FDA_ZONEGRAN|ZONISAMIDE,"{'DPD': [], 'EMA': ['zonegran'], 'FDA': ['zonegran']}",zonegran,zonegran
+productClass,Voting,FDA_AGENERASE|AMPRENAVIR,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,Voting,FDA_BOSULIF|BOSUTINIB MONOHYDRATE,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,Voting,FDA_CINQAIR|RESLIZUMAB,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,Voting,FDA_ELELYSO|TALIGLUCERASE ALFA,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,Voting,FDA_HEMLIBRA|EMICIZUMAB,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,Voting,FDA_INVANZ|ERTAPENEM SODIUM,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,Voting,FDA_KANUMA|SEBELIPASE ALFA,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,Voting,FDA_KESIMPTA|OFATUMUMAB,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,Voting,FDA_PRAXBIND|IDARUCIZUMAB,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,Voting,FDA_QUVIVIQ|DARIDOREXANT HYDROCHLORIDE,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,Voting,FDA_REPATHA|EVOLOCUMAB,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,Voting,FDA_WEGOVY|SEMAGLUTIDE,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,Voting,FDA_DUREZOL|DIFLUPREDNATE,"{'DPD': ['human'], 'EMA': [], 'FDA': ['human']}",human,human
+productClass,Voting,FDA_FROVA|FROVATRIPTAN SUCCINATE,"{'DPD': ['human'], 'EMA': [], 'FDA': ['human']}",human,human
+productClass,Voting,FDA_MOUNJARO KWIKPEN|TIRZEPATIDE,"{'DPD': ['human'], 'EMA': [], 'FDA': ['human']}",human,human
+productClass,Voting,FDA_SEPTRA|SULFAMETHOXAZOLE; TRIMETHOPRIM,"{'DPD': ['human'], 'EMA': [], 'FDA': ['human']}",human,human
+productClass,Voting,EMA_ADVAGRAF|TACROLIMUS,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': []}",human,human
+productClass,Voting,EMA_KOMBOGLYZE|METFORMIN HYDROCHLORIDE; SAXAGLIPTIN HYDROCHLORIDE,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': []}",human,human
+productClass,Voting,EMA_LEQEMBI|LECANEMAB,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': []}",human,human
+productClass,Voting,EMA_PREHEVBRI|HEPATITIS B SURFACE ANTIGEN,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': []}",human,human
+productClass,Voting,EMA_RASILEZ|ALISKIREN,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': []}",human,human
+productClass,Voting,EMA_RIXIMYO|RITUXIMAB,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': []}",human,human
+productClass,Voting,EMA_SOGROYA|SOMAPACITAN,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': []}",human,human
+productClass,Voting,EMA_XENPOZYME|OLIPUDASE ALFA,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': []}",human,human
+productClass,Voting,FDA_EPIVIR|LAMIVUDINE,"{'DPD': [], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,Voting,FDA_FINTEPLA|FENFLURAMINE HYDROCHLORIDE,"{'DPD': [], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,Voting,FDA_IONSYS|FENTANYL HYDROCHLORIDE,"{'DPD': [], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,Voting,FDA_MIPLYFFA|ARIMOCLOMOL CITRATE,"{'DPD': [], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,Voting,FDA_MYCAPSSA|OCTREOTIDE ACETATE,"{'DPD': [], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,Voting,FDA_VIJOICE|ALPELISIB,"{'DPD': [], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,Voting,FDA_ZONEGRAN|ZONISAMIDE,"{'DPD': [], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,FDA priority,FDA_AGENERASE|AMPRENAVIR,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,FDA priority,FDA_BOSULIF|BOSUTINIB MONOHYDRATE,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,FDA priority,FDA_CINQAIR|RESLIZUMAB,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,FDA priority,FDA_ELELYSO|TALIGLUCERASE ALFA,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,FDA priority,FDA_HEMLIBRA|EMICIZUMAB,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,FDA priority,FDA_INVANZ|ERTAPENEM SODIUM,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,FDA priority,FDA_KANUMA|SEBELIPASE ALFA,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,FDA priority,FDA_KESIMPTA|OFATUMUMAB,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,FDA priority,FDA_PRAXBIND|IDARUCIZUMAB,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,FDA priority,FDA_QUVIVIQ|DARIDOREXANT HYDROCHLORIDE,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,FDA priority,FDA_REPATHA|EVOLOCUMAB,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,FDA priority,FDA_WEGOVY|SEMAGLUTIDE,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,FDA priority,FDA_DUREZOL|DIFLUPREDNATE,"{'DPD': ['human'], 'EMA': [], 'FDA': ['human']}",human,human
+productClass,FDA priority,FDA_FROVA|FROVATRIPTAN SUCCINATE,"{'DPD': ['human'], 'EMA': [], 'FDA': ['human']}",human,human
+productClass,FDA priority,FDA_MOUNJARO KWIKPEN|TIRZEPATIDE,"{'DPD': ['human'], 'EMA': [], 'FDA': ['human']}",human,human
+productClass,FDA priority,FDA_SEPTRA|SULFAMETHOXAZOLE; TRIMETHOPRIM,"{'DPD': ['human'], 'EMA': [], 'FDA': ['human']}",human,human
+productClass,FDA priority,EMA_ADVAGRAF|TACROLIMUS,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': []}",human,human
+productClass,FDA priority,EMA_KOMBOGLYZE|METFORMIN HYDROCHLORIDE; SAXAGLIPTIN HYDROCHLORIDE,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': []}",human,human
+productClass,FDA priority,EMA_LEQEMBI|LECANEMAB,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': []}",human,human
+productClass,FDA priority,EMA_PREHEVBRI|HEPATITIS B SURFACE ANTIGEN,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': []}",human,human
+productClass,FDA priority,EMA_RASILEZ|ALISKIREN,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': []}",human,human
+productClass,FDA priority,EMA_RIXIMYO|RITUXIMAB,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': []}",human,human
+productClass,FDA priority,EMA_SOGROYA|SOMAPACITAN,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': []}",human,human
+productClass,FDA priority,EMA_XENPOZYME|OLIPUDASE ALFA,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': []}",human,human
+productClass,FDA priority,FDA_EPIVIR|LAMIVUDINE,"{'DPD': [], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,FDA priority,FDA_FINTEPLA|FENFLURAMINE HYDROCHLORIDE,"{'DPD': [], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,FDA priority,FDA_IONSYS|FENTANYL HYDROCHLORIDE,"{'DPD': [], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,FDA priority,FDA_MIPLYFFA|ARIMOCLOMOL CITRATE,"{'DPD': [], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,FDA priority,FDA_MYCAPSSA|OCTREOTIDE ACETATE,"{'DPD': [], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,FDA priority,FDA_VIJOICE|ALPELISIB,"{'DPD': [], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,FDA priority,FDA_ZONEGRAN|ZONISAMIDE,"{'DPD': [], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,EMA priority,FDA_AGENERASE|AMPRENAVIR,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,EMA priority,FDA_BOSULIF|BOSUTINIB MONOHYDRATE,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,EMA priority,FDA_CINQAIR|RESLIZUMAB,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,EMA priority,FDA_ELELYSO|TALIGLUCERASE ALFA,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,EMA priority,FDA_HEMLIBRA|EMICIZUMAB,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,EMA priority,FDA_INVANZ|ERTAPENEM SODIUM,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,EMA priority,FDA_KANUMA|SEBELIPASE ALFA,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,EMA priority,FDA_KESIMPTA|OFATUMUMAB,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,EMA priority,FDA_PRAXBIND|IDARUCIZUMAB,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,EMA priority,FDA_QUVIVIQ|DARIDOREXANT HYDROCHLORIDE,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,EMA priority,FDA_REPATHA|EVOLOCUMAB,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,EMA priority,FDA_WEGOVY|SEMAGLUTIDE,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,EMA priority,FDA_DUREZOL|DIFLUPREDNATE,"{'DPD': ['human'], 'EMA': [], 'FDA': ['human']}",human,human
+productClass,EMA priority,FDA_FROVA|FROVATRIPTAN SUCCINATE,"{'DPD': ['human'], 'EMA': [], 'FDA': ['human']}",human,human
+productClass,EMA priority,FDA_MOUNJARO KWIKPEN|TIRZEPATIDE,"{'DPD': ['human'], 'EMA': [], 'FDA': ['human']}",human,human
+productClass,EMA priority,FDA_SEPTRA|SULFAMETHOXAZOLE; TRIMETHOPRIM,"{'DPD': ['human'], 'EMA': [], 'FDA': ['human']}",human,human
+productClass,EMA priority,EMA_ADVAGRAF|TACROLIMUS,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': []}",human,human
+productClass,EMA priority,EMA_KOMBOGLYZE|METFORMIN HYDROCHLORIDE; SAXAGLIPTIN HYDROCHLORIDE,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': []}",human,human
+productClass,EMA priority,EMA_LEQEMBI|LECANEMAB,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': []}",human,human
+productClass,EMA priority,EMA_PREHEVBRI|HEPATITIS B SURFACE ANTIGEN,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': []}",human,human
+productClass,EMA priority,EMA_RASILEZ|ALISKIREN,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': []}",human,human
+productClass,EMA priority,EMA_RIXIMYO|RITUXIMAB,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': []}",human,human
+productClass,EMA priority,EMA_SOGROYA|SOMAPACITAN,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': []}",human,human
+productClass,EMA priority,EMA_XENPOZYME|OLIPUDASE ALFA,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': []}",human,human
+productClass,EMA priority,FDA_EPIVIR|LAMIVUDINE,"{'DPD': [], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,EMA priority,FDA_FINTEPLA|FENFLURAMINE HYDROCHLORIDE,"{'DPD': [], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,EMA priority,FDA_IONSYS|FENTANYL HYDROCHLORIDE,"{'DPD': [], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,EMA priority,FDA_MIPLYFFA|ARIMOCLOMOL CITRATE,"{'DPD': [], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,EMA priority,FDA_MYCAPSSA|OCTREOTIDE ACETATE,"{'DPD': [], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,EMA priority,FDA_VIJOICE|ALPELISIB,"{'DPD': [], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,EMA priority,FDA_ZONEGRAN|ZONISAMIDE,"{'DPD': [], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,DPD priority,FDA_AGENERASE|AMPRENAVIR,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,DPD priority,FDA_BOSULIF|BOSUTINIB MONOHYDRATE,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,DPD priority,FDA_CINQAIR|RESLIZUMAB,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,DPD priority,FDA_ELELYSO|TALIGLUCERASE ALFA,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,DPD priority,FDA_HEMLIBRA|EMICIZUMAB,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,DPD priority,FDA_INVANZ|ERTAPENEM SODIUM,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,DPD priority,FDA_KANUMA|SEBELIPASE ALFA,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,DPD priority,FDA_KESIMPTA|OFATUMUMAB,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,DPD priority,FDA_PRAXBIND|IDARUCIZUMAB,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,DPD priority,FDA_QUVIVIQ|DARIDOREXANT HYDROCHLORIDE,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,DPD priority,FDA_REPATHA|EVOLOCUMAB,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,DPD priority,FDA_WEGOVY|SEMAGLUTIDE,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,DPD priority,FDA_DUREZOL|DIFLUPREDNATE,"{'DPD': ['human'], 'EMA': [], 'FDA': ['human']}",human,human
+productClass,DPD priority,FDA_FROVA|FROVATRIPTAN SUCCINATE,"{'DPD': ['human'], 'EMA': [], 'FDA': ['human']}",human,human
+productClass,DPD priority,FDA_MOUNJARO KWIKPEN|TIRZEPATIDE,"{'DPD': ['human'], 'EMA': [], 'FDA': ['human']}",human,human
+productClass,DPD priority,FDA_SEPTRA|SULFAMETHOXAZOLE; TRIMETHOPRIM,"{'DPD': ['human'], 'EMA': [], 'FDA': ['human']}",human,human
+productClass,DPD priority,EMA_ADVAGRAF|TACROLIMUS,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': []}",human,human
+productClass,DPD priority,EMA_KOMBOGLYZE|METFORMIN HYDROCHLORIDE; SAXAGLIPTIN HYDROCHLORIDE,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': []}",human,human
+productClass,DPD priority,EMA_LEQEMBI|LECANEMAB,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': []}",human,human
+productClass,DPD priority,EMA_PREHEVBRI|HEPATITIS B SURFACE ANTIGEN,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': []}",human,human
+productClass,DPD priority,EMA_RASILEZ|ALISKIREN,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': []}",human,human
+productClass,DPD priority,EMA_RIXIMYO|RITUXIMAB,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': []}",human,human
+productClass,DPD priority,EMA_SOGROYA|SOMAPACITAN,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': []}",human,human
+productClass,DPD priority,EMA_XENPOZYME|OLIPUDASE ALFA,"{'DPD': ['human'], 'EMA': ['human'], 'FDA': []}",human,human
+productClass,DPD priority,FDA_EPIVIR|LAMIVUDINE,"{'DPD': [], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,DPD priority,FDA_FINTEPLA|FENFLURAMINE HYDROCHLORIDE,"{'DPD': [], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,DPD priority,FDA_IONSYS|FENTANYL HYDROCHLORIDE,"{'DPD': [], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,DPD priority,FDA_MIPLYFFA|ARIMOCLOMOL CITRATE,"{'DPD': [], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,DPD priority,FDA_MYCAPSSA|OCTREOTIDE ACETATE,"{'DPD': [], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,DPD priority,FDA_VIJOICE|ALPELISIB,"{'DPD': [], 'EMA': ['human'], 'FDA': ['human']}",human,human
+productClass,DPD priority,FDA_ZONEGRAN|ZONISAMIDE,"{'DPD': [], 'EMA': ['human'], 'FDA': ['human']}",human,human
+atcCode,Voting,FDA_AGENERASE|AMPRENAVIR,"{'DPD': [['j05ae05']], 'EMA': [['j05ae05']], 'FDA': [None]}","('j05ae05',)",['j05ae05']
+atcCode,Voting,FDA_BOSULIF|BOSUTINIB MONOHYDRATE,"{'DPD': [['l01ea04']], 'EMA': [['l01ea04']], 'FDA': [None]}","('l01ea04',)",['l01ea04']
+atcCode,Voting,FDA_CINQAIR|RESLIZUMAB,"{'DPD': [['r03dx08']], 'EMA': [['r03dx08']], 'FDA': [None]}","('r03dx08',)",['r03dx08']
+atcCode,Voting,FDA_ELELYSO|TALIGLUCERASE ALFA,"{'DPD': [['a16ab11']], 'EMA': [['a16ab11']], 'FDA': [None]}","('a16ab11',)",['a16ab11']
+atcCode,Voting,FDA_HEMLIBRA|EMICIZUMAB,"{'DPD': [['b02bx06']], 'EMA': [['b02bx06']], 'FDA': [None]}","('b02bx06',)",['b02bx06']
+atcCode,Voting,FDA_INVANZ|ERTAPENEM SODIUM,"{'DPD': [['j01dh03']], 'EMA': [['j01dh03']], 'FDA': [None]}","('j01dh03',)",['j01dh03']
+atcCode,Voting,FDA_KANUMA|SEBELIPASE ALFA,"{'DPD': [['a16ab14']], 'EMA': [['a16']], 'FDA': [None]}","('a16ab14',)",['a16ab14']
+atcCode,Voting,FDA_KESIMPTA|OFATUMUMAB,"{'DPD': [['l04ag12']], 'EMA': [['l04aa52']], 'FDA': [None]}","('l04ag12',)",['l04ag12']
+atcCode,Voting,FDA_PRAXBIND|IDARUCIZUMAB,"{'DPD': [['v03ab37']], 'EMA': [['v03ab']], 'FDA': [None]}","('v03ab37',)",['v03ab37']
+atcCode,Voting,FDA_QUVIVIQ|DARIDOREXANT HYDROCHLORIDE,"{'DPD': [['n05cj03']], 'EMA': [['n05cj03']], 'FDA': [None]}","('n05cj03',)",['n05cj03']
+atcCode,Voting,FDA_REPATHA|EVOLOCUMAB,"{'DPD': [['c10ax13']], 'EMA': [['c10ax13']], 'FDA': [None]}","('c10ax13',)",['c10ax13']
+atcCode,Voting,FDA_WEGOVY|SEMAGLUTIDE,"{'DPD': [['a10bj06']], 'EMA': [['a10bj06']], 'FDA': [None]}","('a10bj06',)",['a10bj06']
+atcCode,Voting,FDA_DUREZOL|DIFLUPREDNATE,"{'DPD': [['s01ba']], 'EMA': [], 'FDA': [None]}","('s01ba',)",['s01ba16']
+atcCode,Voting,FDA_FROVA|FROVATRIPTAN SUCCINATE,"{'DPD': [['n02cc07']], 'EMA': [], 'FDA': [None]}","('n02cc07',)",['n02cc07']
+atcCode,Voting,FDA_MOUNJARO KWIKPEN|TIRZEPATIDE,"{'DPD': [['a10bx16']], 'EMA': [], 'FDA': [None]}","('a10bx16',)",['a10bx16']
+atcCode,Voting,FDA_SEPTRA|SULFAMETHOXAZOLE; TRIMETHOPRIM,"{'DPD': [['j01ee01']], 'EMA': [], 'FDA': [None]}","('j01ee01',)",['j01ee01']
+atcCode,Voting,EMA_ADVAGRAF|TACROLIMUS,"{'DPD': [['l04ad02']], 'EMA': [['l04ad02']], 'FDA': []}","('l04ad02',)",['l04ad02']
+atcCode,Voting,EMA_KOMBOGLYZE|METFORMIN HYDROCHLORIDE; SAXAGLIPTIN HYDROCHLORIDE,"{'DPD': [['a10bd10']], 'EMA': [['a10bd10']], 'FDA': []}","('a10bd10',)",['a10bd10']
+atcCode,Voting,EMA_LEQEMBI|LECANEMAB,"{'DPD': [['n06dx04']], 'EMA': [['n06dx04']], 'FDA': []}","('n06dx04',)",['n06dx04']
+atcCode,Voting,EMA_PREHEVBRI|HEPATITIS B SURFACE ANTIGEN,"{'DPD': [['j07bc01']], 'EMA': [['j07bc01']], 'FDA': []}","('j07bc01',)",['j07bc01']
+atcCode,Voting,EMA_RASILEZ|ALISKIREN,"{'DPD': [['c09xa02']], 'EMA': [['c09xa02']], 'FDA': []}","('c09xa02',)",['c09xa02']
+atcCode,Voting,EMA_RIXIMYO|RITUXIMAB,"{'DPD': [['l01fa01']], 'EMA': [['l01fa01']], 'FDA': []}","('l01fa01',)",['l01fa01']
+atcCode,Voting,EMA_SOGROYA|SOMAPACITAN,"{'DPD': [['h01ac07']], 'EMA': [['h01ac07']], 'FDA': []}","('h01ac07',)",['h01ac07']
+atcCode,Voting,EMA_XENPOZYME|OLIPUDASE ALFA,"{'DPD': [['a16ab25']], 'EMA': [['a16ab25']], 'FDA': []}","('a16ab25',)",['a16ab25']
+atcCode,Voting,FDA_EPIVIR|LAMIVUDINE,"{'DPD': [], 'EMA': [['j05af05']], 'FDA': [None]}","('j05af05',)",['j05af05']
+atcCode,Voting,FDA_FINTEPLA|FENFLURAMINE HYDROCHLORIDE,"{'DPD': [], 'EMA': [['n03']], 'FDA': [None]}","('n03',)",['n03ax26']
+atcCode,Voting,FDA_IONSYS|FENTANYL HYDROCHLORIDE,"{'DPD': [], 'EMA': [['n02ab03']], 'FDA': [None]}","('n02ab03',)",['n02ab03']
+atcCode,Voting,FDA_MIPLYFFA|ARIMOCLOMOL CITRATE,"{'DPD': [], 'EMA': [['n07']], 'FDA': [None]}","('n07',)",['n07xx17']
+atcCode,Voting,FDA_MYCAPSSA|OCTREOTIDE ACETATE,"{'DPD': [], 'EMA': [['h01cb02']], 'FDA': [None]}","('h01cb02',)",['h01cb02']
+atcCode,Voting,FDA_VIJOICE|ALPELISIB,"{'DPD': [], 'EMA': [['l01em03']], 'FDA': [None]}","('l01em03',)",['l01em03']
+atcCode,Voting,FDA_ZONEGRAN|ZONISAMIDE,"{'DPD': [], 'EMA': [['n03ax15']], 'FDA': [None]}","('n03ax15',)",['n03ax15']
+atcCode,DPD priority,FDA_AGENERASE|AMPRENAVIR,"{'DPD': [['j05ae05']], 'EMA': [['j05ae05']], 'FDA': [None]}",['j05ae05'],['j05ae05']
+atcCode,DPD priority,FDA_BOSULIF|BOSUTINIB MONOHYDRATE,"{'DPD': [['l01ea04']], 'EMA': [['l01ea04']], 'FDA': [None]}",['l01ea04'],['l01ea04']
+atcCode,DPD priority,FDA_CINQAIR|RESLIZUMAB,"{'DPD': [['r03dx08']], 'EMA': [['r03dx08']], 'FDA': [None]}",['r03dx08'],['r03dx08']
+atcCode,DPD priority,FDA_ELELYSO|TALIGLUCERASE ALFA,"{'DPD': [['a16ab11']], 'EMA': [['a16ab11']], 'FDA': [None]}",['a16ab11'],['a16ab11']
+atcCode,DPD priority,FDA_HEMLIBRA|EMICIZUMAB,"{'DPD': [['b02bx06']], 'EMA': [['b02bx06']], 'FDA': [None]}",['b02bx06'],['b02bx06']
+atcCode,DPD priority,FDA_INVANZ|ERTAPENEM SODIUM,"{'DPD': [['j01dh03']], 'EMA': [['j01dh03']], 'FDA': [None]}",['j01dh03'],['j01dh03']
+atcCode,DPD priority,FDA_KANUMA|SEBELIPASE ALFA,"{'DPD': [['a16ab14']], 'EMA': [['a16']], 'FDA': [None]}",['a16ab14'],['a16ab14']
+atcCode,DPD priority,FDA_KESIMPTA|OFATUMUMAB,"{'DPD': [['l04ag12']], 'EMA': [['l04aa52']], 'FDA': [None]}",['l04ag12'],['l04ag12']
+atcCode,DPD priority,FDA_PRAXBIND|IDARUCIZUMAB,"{'DPD': [['v03ab37']], 'EMA': [['v03ab']], 'FDA': [None]}",['v03ab37'],['v03ab37']
+atcCode,DPD priority,FDA_QUVIVIQ|DARIDOREXANT HYDROCHLORIDE,"{'DPD': [['n05cj03']], 'EMA': [['n05cj03']], 'FDA': [None]}",['n05cj03'],['n05cj03']
+atcCode,DPD priority,FDA_REPATHA|EVOLOCUMAB,"{'DPD': [['c10ax13']], 'EMA': [['c10ax13']], 'FDA': [None]}",['c10ax13'],['c10ax13']
+atcCode,DPD priority,FDA_WEGOVY|SEMAGLUTIDE,"{'DPD': [['a10bj06']], 'EMA': [['a10bj06']], 'FDA': [None]}",['a10bj06'],['a10bj06']
+atcCode,DPD priority,FDA_DUREZOL|DIFLUPREDNATE,"{'DPD': [['s01ba']], 'EMA': [], 'FDA': [None]}",['s01ba'],['s01ba16']
+atcCode,DPD priority,FDA_FROVA|FROVATRIPTAN SUCCINATE,"{'DPD': [['n02cc07']], 'EMA': [], 'FDA': [None]}",['n02cc07'],['n02cc07']
+atcCode,DPD priority,FDA_MOUNJARO KWIKPEN|TIRZEPATIDE,"{'DPD': [['a10bx16']], 'EMA': [], 'FDA': [None]}",['a10bx16'],['a10bx16']
+atcCode,DPD priority,FDA_SEPTRA|SULFAMETHOXAZOLE; TRIMETHOPRIM,"{'DPD': [['j01ee01']], 'EMA': [], 'FDA': [None]}",['j01ee01'],['j01ee01']
+atcCode,DPD priority,EMA_ADVAGRAF|TACROLIMUS,"{'DPD': [['l04ad02']], 'EMA': [['l04ad02']], 'FDA': []}",['l04ad02'],['l04ad02']
+atcCode,DPD priority,EMA_KOMBOGLYZE|METFORMIN HYDROCHLORIDE; SAXAGLIPTIN HYDROCHLORIDE,"{'DPD': [['a10bd10']], 'EMA': [['a10bd10']], 'FDA': []}",['a10bd10'],['a10bd10']
+atcCode,DPD priority,EMA_LEQEMBI|LECANEMAB,"{'DPD': [['n06dx04']], 'EMA': [['n06dx04']], 'FDA': []}",['n06dx04'],['n06dx04']
+atcCode,DPD priority,EMA_PREHEVBRI|HEPATITIS B SURFACE ANTIGEN,"{'DPD': [['j07bc01']], 'EMA': [['j07bc01']], 'FDA': []}",['j07bc01'],['j07bc01']
+atcCode,DPD priority,EMA_RASILEZ|ALISKIREN,"{'DPD': [['c09xa02']], 'EMA': [['c09xa02']], 'FDA': []}",['c09xa02'],['c09xa02']
+atcCode,DPD priority,EMA_RIXIMYO|RITUXIMAB,"{'DPD': [['l01fa01']], 'EMA': [['l01fa01']], 'FDA': []}",['l01fa01'],['l01fa01']
+atcCode,DPD priority,EMA_SOGROYA|SOMAPACITAN,"{'DPD': [['h01ac07']], 'EMA': [['h01ac07']], 'FDA': []}",['h01ac07'],['h01ac07']
+atcCode,DPD priority,EMA_XENPOZYME|OLIPUDASE ALFA,"{'DPD': [['a16ab25']], 'EMA': [['a16ab25']], 'FDA': []}",['a16ab25'],['a16ab25']
+atcCode,DPD priority,FDA_EPIVIR|LAMIVUDINE,"{'DPD': [], 'EMA': [['j05af05']], 'FDA': [None]}",['j05af05'],['j05af05']
+atcCode,DPD priority,FDA_FINTEPLA|FENFLURAMINE HYDROCHLORIDE,"{'DPD': [], 'EMA': [['n03']], 'FDA': [None]}",['n03'],['n03ax26']
+atcCode,DPD priority,FDA_IONSYS|FENTANYL HYDROCHLORIDE,"{'DPD': [], 'EMA': [['n02ab03']], 'FDA': [None]}",['n02ab03'],['n02ab03']
+atcCode,DPD priority,FDA_MIPLYFFA|ARIMOCLOMOL CITRATE,"{'DPD': [], 'EMA': [['n07']], 'FDA': [None]}",['n07'],['n07xx17']
+atcCode,DPD priority,FDA_MYCAPSSA|OCTREOTIDE ACETATE,"{'DPD': [], 'EMA': [['h01cb02']], 'FDA': [None]}",['h01cb02'],['h01cb02']
+atcCode,DPD priority,FDA_VIJOICE|ALPELISIB,"{'DPD': [], 'EMA': [['l01em03']], 'FDA': [None]}",['l01em03'],['l01em03']
+atcCode,DPD priority,FDA_ZONEGRAN|ZONISAMIDE,"{'DPD': [], 'EMA': [['n03ax15']], 'FDA': [None]}",['n03ax15'],['n03ax15']
+dosageForm,FDA priority,FDA_AGENERASE|AMPRENAVIR,"{'DPD': [['capsule', 'liquid']], 'EMA': [None], 'FDA': [['capsule', 'solution']]}","['capsule', 'solution']","['capsule', 'solution']"
+dosageForm,FDA priority,FDA_BOSULIF|BOSUTINIB MONOHYDRATE,"{'DPD': [['tablet']], 'EMA': [None], 'FDA': [['capsule', 'tablet']]}","['capsule', 'tablet']","['capsule', 'tablet']"
+dosageForm,FDA priority,FDA_CINQAIR|RESLIZUMAB,"{'DPD': [['solution']], 'EMA': [None], 'FDA': [['injection']]}",['injection'],['injection']
+dosageForm,FDA priority,FDA_ELELYSO|TALIGLUCERASE ALFA,"{'DPD': [['powder for solution']], 'EMA': [None], 'FDA': [['powder']]}",['powder'],['powder for solution']
+dosageForm,FDA priority,FDA_HEMLIBRA|EMICIZUMAB,"{'DPD': [['solution']], 'EMA': [None], 'FDA': [['injection']]}",['injection'],['injection']
+dosageForm,FDA priority,FDA_INVANZ|ERTAPENEM SODIUM,"{'DPD': [['powder for solution']], 'EMA': [None], 'FDA': [['injection']]}",['injection'],['powder for solution']
+dosageForm,FDA priority,FDA_KANUMA|SEBELIPASE ALFA,"{'DPD': [['solution']], 'EMA': [None], 'FDA': [['injection']]}",['injection'],['injection']
+dosageForm,FDA priority,FDA_KESIMPTA|OFATUMUMAB,"{'DPD': [['solution']], 'EMA': [None], 'FDA': [['solution']]}",['solution'],['injection']
+dosageForm,FDA priority,FDA_PRAXBIND|IDARUCIZUMAB,"{'DPD': [['solution']], 'EMA': [None], 'FDA': [['injection']]}",['injection'],['injection']
+dosageForm,FDA priority,FDA_QUVIVIQ|DARIDOREXANT HYDROCHLORIDE,"{'DPD': [['tablet']], 'EMA': [None], 'FDA': [['tablet']]}",['tablet'],['tablet']
+dosageForm,FDA priority,FDA_REPATHA|EVOLOCUMAB,"{'DPD': [['solution']], 'EMA': [None], 'FDA': [['injection']]}",['injection'],['injection']
+dosageForm,FDA priority,FDA_WEGOVY|SEMAGLUTIDE,"{'DPD': [['solution']], 'EMA': [None], 'FDA': [['solution', 'tablet']]}","['solution', 'tablet']","['injection', 'tablet']"
+dosageForm,FDA priority,FDA_DUREZOL|DIFLUPREDNATE,"{'DPD': [['emulsion']], 'EMA': [], 'FDA': [['emulsion']]}",['emulsion'],['emulsion']
+dosageForm,FDA priority,FDA_FROVA|FROVATRIPTAN SUCCINATE,"{'DPD': [['tablet']], 'EMA': [], 'FDA': [['tablet']]}",['tablet'],['tablet']
+dosageForm,FDA priority,FDA_MOUNJARO KWIKPEN|TIRZEPATIDE,"{'DPD': [['solution']], 'EMA': [], 'FDA': [['solution']]}",['solution'],['injection']
+dosageForm,FDA priority,FDA_SEPTRA|SULFAMETHOXAZOLE; TRIMETHOPRIM,"{'DPD': [['tablet']], 'EMA': [], 'FDA': [None]}",['tablet'],"['injection', 'suspension', 'tablet']"
+dosageForm,FDA priority,EMA_ADVAGRAF|TACROLIMUS,"{'DPD': [['capsule, extended-release']], 'EMA': [None], 'FDA': []}","['capsule, extended-release']","['capsule, extended-release']"
+dosageForm,FDA priority,EMA_KOMBOGLYZE|METFORMIN HYDROCHLORIDE; SAXAGLIPTIN HYDROCHLORIDE,"{'DPD': [['tablet']], 'EMA': [None], 'FDA': []}",['tablet'],['tablet']
+dosageForm,FDA priority,EMA_LEQEMBI|LECANEMAB,"{'DPD': [['solution']], 'EMA': [None], 'FDA': []}",['solution'],['concentrate']
+dosageForm,FDA priority,EMA_PREHEVBRI|HEPATITIS B SURFACE ANTIGEN,"{'DPD': [['suspension']], 'EMA': [None], 'FDA': []}",['suspension'],['suspension']
+dosageForm,FDA priority,EMA_RASILEZ|ALISKIREN,"{'DPD': [['tablet']], 'EMA': [None], 'FDA': []}",['tablet'],['tablet']
+dosageForm,FDA priority,EMA_RIXIMYO|RITUXIMAB,"{'DPD': [['solution']], 'EMA': [None], 'FDA': []}",['solution'],['concentrate']
+dosageForm,FDA priority,EMA_SOGROYA|SOMAPACITAN,"{'DPD': [['solution']], 'EMA': [None], 'FDA': []}",['solution'],['injection']
+dosageForm,FDA priority,EMA_XENPOZYME|OLIPUDASE ALFA,"{'DPD': [['powder for solution']], 'EMA': [None], 'FDA': []}",['powder for solution'],['powder for solution']
+dosageForm,FDA priority,FDA_EPIVIR|LAMIVUDINE,"{'DPD': [], 'EMA': [None], 'FDA': [['solution', 'tablet']]}","['solution', 'tablet']","['solution', 'tablet']"
+dosageForm,FDA priority,FDA_FINTEPLA|FENFLURAMINE HYDROCHLORIDE,"{'DPD': [], 'EMA': [None], 'FDA': [['solution']]}",['solution'],['solution']
+dosageForm,FDA priority,FDA_IONSYS|FENTANYL HYDROCHLORIDE,"{'DPD': [], 'EMA': [None], 'FDA': [['transdermal patch']]}",['transdermal patch'],['transdermal patch']
+dosageForm,FDA priority,FDA_MIPLYFFA|ARIMOCLOMOL CITRATE,"{'DPD': [], 'EMA': [None], 'FDA': [['capsule']]}",['capsule'],['capsule']
+dosageForm,FDA priority,FDA_MYCAPSSA|OCTREOTIDE ACETATE,"{'DPD': [], 'EMA': [None], 'FDA': [['capsule, delayed-release']]}","['capsule, delayed-release']","['capsule, delayed-release']"
+dosageForm,FDA priority,FDA_VIJOICE|ALPELISIB,"{'DPD': [], 'EMA': [None], 'FDA': [None]}",,"['granules', 'tablet']"
+dosageForm,FDA priority,FDA_ZONEGRAN|ZONISAMIDE,"{'DPD': [], 'EMA': [None], 'FDA': [['capsule']]}",['capsule'],['capsule']
+dosageForm,EMA priority,FDA_AGENERASE|AMPRENAVIR,"{'DPD': [['capsule', 'liquid']], 'EMA': [None], 'FDA': [['capsule', 'solution']]}","['capsule', 'solution']","['capsule', 'solution']"
+dosageForm,EMA priority,FDA_BOSULIF|BOSUTINIB MONOHYDRATE,"{'DPD': [['tablet']], 'EMA': [None], 'FDA': [['capsule', 'tablet']]}","['capsule', 'tablet']","['capsule', 'tablet']"
+dosageForm,EMA priority,FDA_CINQAIR|RESLIZUMAB,"{'DPD': [['solution']], 'EMA': [None], 'FDA': [['injection']]}",['injection'],['injection']
+dosageForm,EMA priority,FDA_ELELYSO|TALIGLUCERASE ALFA,"{'DPD': [['powder for solution']], 'EMA': [None], 'FDA': [['powder']]}",['powder'],['powder for solution']
+dosageForm,EMA priority,FDA_HEMLIBRA|EMICIZUMAB,"{'DPD': [['solution']], 'EMA': [None], 'FDA': [['injection']]}",['injection'],['injection']
+dosageForm,EMA priority,FDA_INVANZ|ERTAPENEM SODIUM,"{'DPD': [['powder for solution']], 'EMA': [None], 'FDA': [['injection']]}",['injection'],['powder for solution']
+dosageForm,EMA priority,FDA_KANUMA|SEBELIPASE ALFA,"{'DPD': [['solution']], 'EMA': [None], 'FDA': [['injection']]}",['injection'],['injection']
+dosageForm,EMA priority,FDA_KESIMPTA|OFATUMUMAB,"{'DPD': [['solution']], 'EMA': [None], 'FDA': [['solution']]}",['solution'],['injection']
+dosageForm,EMA priority,FDA_PRAXBIND|IDARUCIZUMAB,"{'DPD': [['solution']], 'EMA': [None], 'FDA': [['injection']]}",['injection'],['injection']
+dosageForm,EMA priority,FDA_QUVIVIQ|DARIDOREXANT HYDROCHLORIDE,"{'DPD': [['tablet']], 'EMA': [None], 'FDA': [['tablet']]}",['tablet'],['tablet']
+dosageForm,EMA priority,FDA_REPATHA|EVOLOCUMAB,"{'DPD': [['solution']], 'EMA': [None], 'FDA': [['injection']]}",['injection'],['injection']
+dosageForm,EMA priority,FDA_WEGOVY|SEMAGLUTIDE,"{'DPD': [['solution']], 'EMA': [None], 'FDA': [['solution', 'tablet']]}","['solution', 'tablet']","['injection', 'tablet']"
+dosageForm,EMA priority,FDA_DUREZOL|DIFLUPREDNATE,"{'DPD': [['emulsion']], 'EMA': [], 'FDA': [['emulsion']]}",['emulsion'],['emulsion']
+dosageForm,EMA priority,FDA_FROVA|FROVATRIPTAN SUCCINATE,"{'DPD': [['tablet']], 'EMA': [], 'FDA': [['tablet']]}",['tablet'],['tablet']
+dosageForm,EMA priority,FDA_MOUNJARO KWIKPEN|TIRZEPATIDE,"{'DPD': [['solution']], 'EMA': [], 'FDA': [['solution']]}",['solution'],['injection']
+dosageForm,EMA priority,FDA_SEPTRA|SULFAMETHOXAZOLE; TRIMETHOPRIM,"{'DPD': [['tablet']], 'EMA': [], 'FDA': [None]}",['tablet'],"['injection', 'suspension', 'tablet']"
+dosageForm,EMA priority,EMA_ADVAGRAF|TACROLIMUS,"{'DPD': [['capsule, extended-release']], 'EMA': [None], 'FDA': []}","['capsule, extended-release']","['capsule, extended-release']"
+dosageForm,EMA priority,EMA_KOMBOGLYZE|METFORMIN HYDROCHLORIDE; SAXAGLIPTIN HYDROCHLORIDE,"{'DPD': [['tablet']], 'EMA': [None], 'FDA': []}",['tablet'],['tablet']
+dosageForm,EMA priority,EMA_LEQEMBI|LECANEMAB,"{'DPD': [['solution']], 'EMA': [None], 'FDA': []}",['solution'],['concentrate']
+dosageForm,EMA priority,EMA_PREHEVBRI|HEPATITIS B SURFACE ANTIGEN,"{'DPD': [['suspension']], 'EMA': [None], 'FDA': []}",['suspension'],['suspension']
+dosageForm,EMA priority,EMA_RASILEZ|ALISKIREN,"{'DPD': [['tablet']], 'EMA': [None], 'FDA': []}",['tablet'],['tablet']
+dosageForm,EMA priority,EMA_RIXIMYO|RITUXIMAB,"{'DPD': [['solution']], 'EMA': [None], 'FDA': []}",['solution'],['concentrate']
+dosageForm,EMA priority,EMA_SOGROYA|SOMAPACITAN,"{'DPD': [['solution']], 'EMA': [None], 'FDA': []}",['solution'],['injection']
+dosageForm,EMA priority,EMA_XENPOZYME|OLIPUDASE ALFA,"{'DPD': [['powder for solution']], 'EMA': [None], 'FDA': []}",['powder for solution'],['powder for solution']
+dosageForm,EMA priority,FDA_EPIVIR|LAMIVUDINE,"{'DPD': [], 'EMA': [None], 'FDA': [['solution', 'tablet']]}","['solution', 'tablet']","['solution', 'tablet']"
+dosageForm,EMA priority,FDA_FINTEPLA|FENFLURAMINE HYDROCHLORIDE,"{'DPD': [], 'EMA': [None], 'FDA': [['solution']]}",['solution'],['solution']
+dosageForm,EMA priority,FDA_IONSYS|FENTANYL HYDROCHLORIDE,"{'DPD': [], 'EMA': [None], 'FDA': [['transdermal patch']]}",['transdermal patch'],['transdermal patch']
+dosageForm,EMA priority,FDA_MIPLYFFA|ARIMOCLOMOL CITRATE,"{'DPD': [], 'EMA': [None], 'FDA': [['capsule']]}",['capsule'],['capsule']
+dosageForm,EMA priority,FDA_MYCAPSSA|OCTREOTIDE ACETATE,"{'DPD': [], 'EMA': [None], 'FDA': [['capsule, delayed-release']]}","['capsule, delayed-release']","['capsule, delayed-release']"
+dosageForm,EMA priority,FDA_VIJOICE|ALPELISIB,"{'DPD': [], 'EMA': [None], 'FDA': [None]}",,"['granules', 'tablet']"
+dosageForm,EMA priority,FDA_ZONEGRAN|ZONISAMIDE,"{'DPD': [], 'EMA': [None], 'FDA': [['capsule']]}",['capsule'],['capsule']
+route,Voting,FDA_AGENERASE|AMPRENAVIR,"{'DPD': [['oral']], 'EMA': [None], 'FDA': [['oral']]}","('oral',)",['oral']
+route,Voting,FDA_BOSULIF|BOSUTINIB MONOHYDRATE,"{'DPD': [['oral']], 'EMA': [None], 'FDA': [['oral']]}","('oral',)",['oral']
+route,Voting,FDA_CINQAIR|RESLIZUMAB,"{'DPD': [['intravenous']], 'EMA': [None], 'FDA': [['injection']]}","('intravenous',)",['intravenous']
+route,Voting,FDA_ELELYSO|TALIGLUCERASE ALFA,"{'DPD': [['intravenous']], 'EMA': [None], 'FDA': [['intravenous']]}","('intravenous',)",['intravenous']
+route,Voting,FDA_HEMLIBRA|EMICIZUMAB,"{'DPD': [['subcutaneous']], 'EMA': [None], 'FDA': [['injection']]}","('subcutaneous',)",['subcutaneous']
+route,Voting,FDA_INVANZ|ERTAPENEM SODIUM,"{'DPD': [['intramuscular', 'intravenous']], 'EMA': [None], 'FDA': [['intramuscular', 'intravenous']]}","('intramuscular', 'intravenous')","['intramuscular', 'intravenous']"
+route,Voting,FDA_KANUMA|SEBELIPASE ALFA,"{'DPD': [['intravenous']], 'EMA': [None], 'FDA': [['injection']]}","('intravenous',)",['intravenous']
+route,Voting,FDA_KESIMPTA|OFATUMUMAB,"{'DPD': [['subcutaneous']], 'EMA': [None], 'FDA': [['subcutaneous']]}","('subcutaneous',)",['subcutaneous']
+route,Voting,FDA_PRAXBIND|IDARUCIZUMAB,"{'DPD': [['intravenous']], 'EMA': [None], 'FDA': [['injection']]}","('intravenous',)",['intravenous']
+route,Voting,FDA_QUVIVIQ|DARIDOREXANT HYDROCHLORIDE,"{'DPD': [['oral']], 'EMA': [None], 'FDA': [['oral']]}","('oral',)",['oral']
+route,Voting,FDA_REPATHA|EVOLOCUMAB,"{'DPD': [['subcutaneous']], 'EMA': [None], 'FDA': [['injection']]}","('subcutaneous',)",['subcutaneous']
+route,Voting,FDA_WEGOVY|SEMAGLUTIDE,"{'DPD': [['subcutaneous']], 'EMA': [None], 'FDA': [['oral', 'subcutaneous']]}","('subcutaneous',)","['oral', 'subcutaneous']"
+route,Voting,FDA_DUREZOL|DIFLUPREDNATE,"{'DPD': [['ophthalmic']], 'EMA': [], 'FDA': [['ophthalmic']]}","('ophthalmic',)",['ophthalmic']
+route,Voting,FDA_FROVA|FROVATRIPTAN SUCCINATE,"{'DPD': [['oral']], 'EMA': [], 'FDA': [['oral']]}","('oral',)",['oral']
+route,Voting,FDA_MOUNJARO KWIKPEN|TIRZEPATIDE,"{'DPD': [['subcutaneous']], 'EMA': [], 'FDA': [['subcutaneous']]}","('subcutaneous',)",['subcutaneous']
+route,Voting,FDA_SEPTRA|SULFAMETHOXAZOLE; TRIMETHOPRIM,"{'DPD': [['oral']], 'EMA': [], 'FDA': [None]}","('oral',)","['intravenous', 'oral']"
+route,Voting,EMA_ADVAGRAF|TACROLIMUS,"{'DPD': [['oral']], 'EMA': [None], 'FDA': []}","('oral',)",['oral']
+route,Voting,EMA_KOMBOGLYZE|METFORMIN HYDROCHLORIDE; SAXAGLIPTIN HYDROCHLORIDE,"{'DPD': [['oral']], 'EMA': [None], 'FDA': []}","('oral',)",['oral']
+route,Voting,EMA_LEQEMBI|LECANEMAB,"{'DPD': [['intravenous']], 'EMA': [None], 'FDA': []}","('intravenous',)",['intravenous']
+route,Voting,EMA_PREHEVBRI|HEPATITIS B SURFACE ANTIGEN,"{'DPD': [['intramuscular']], 'EMA': [None], 'FDA': []}","('intramuscular',)",['intramuscular']
+route,Voting,EMA_RASILEZ|ALISKIREN,"{'DPD': [['oral']], 'EMA': [None], 'FDA': []}","('oral',)",['oral']
+route,Voting,EMA_RIXIMYO|RITUXIMAB,"{'DPD': [['intravenous']], 'EMA': [None], 'FDA': []}","('intravenous',)",['intravenous']
+route,Voting,EMA_SOGROYA|SOMAPACITAN,"{'DPD': [['subcutaneous']], 'EMA': [None], 'FDA': []}","('subcutaneous',)",['subcutaneous']
+route,Voting,EMA_XENPOZYME|OLIPUDASE ALFA,"{'DPD': [['intravenous']], 'EMA': [None], 'FDA': []}","('intravenous',)",['intravenous']
+route,Voting,FDA_EPIVIR|LAMIVUDINE,"{'DPD': [], 'EMA': [None], 'FDA': [['oral']]}","('oral',)",['oral']
+route,Voting,FDA_FINTEPLA|FENFLURAMINE HYDROCHLORIDE,"{'DPD': [], 'EMA': [None], 'FDA': [['oral']]}","('oral',)",['oral']
+route,Voting,FDA_IONSYS|FENTANYL HYDROCHLORIDE,"{'DPD': [], 'EMA': [None], 'FDA': [['iontophoresis', 'transdermal']]}","('iontophoresis', 'transdermal')","['iontophoresis', 'transdermal']"
+route,Voting,FDA_MIPLYFFA|ARIMOCLOMOL CITRATE,"{'DPD': [], 'EMA': [None], 'FDA': [['oral']]}","('oral',)",['oral']
+route,Voting,FDA_MYCAPSSA|OCTREOTIDE ACETATE,"{'DPD': [], 'EMA': [None], 'FDA': [['oral']]}","('oral',)",['oral']
+route,Voting,FDA_VIJOICE|ALPELISIB,"{'DPD': [], 'EMA': [None], 'FDA': [['oral']]}","('oral',)",['oral']
+route,Voting,FDA_ZONEGRAN|ZONISAMIDE,"{'DPD': [], 'EMA': [None], 'FDA': [['oral']]}","('oral',)",['oral']
+route,DPD priority,FDA_AGENERASE|AMPRENAVIR,"{'DPD': [['oral']], 'EMA': [None], 'FDA': [['oral']]}",['oral'],['oral']
+route,DPD priority,FDA_BOSULIF|BOSUTINIB MONOHYDRATE,"{'DPD': [['oral']], 'EMA': [None], 'FDA': [['oral']]}",['oral'],['oral']
+route,DPD priority,FDA_CINQAIR|RESLIZUMAB,"{'DPD': [['intravenous']], 'EMA': [None], 'FDA': [['injection']]}",['intravenous'],['intravenous']
+route,DPD priority,FDA_ELELYSO|TALIGLUCERASE ALFA,"{'DPD': [['intravenous']], 'EMA': [None], 'FDA': [['intravenous']]}",['intravenous'],['intravenous']
+route,DPD priority,FDA_HEMLIBRA|EMICIZUMAB,"{'DPD': [['subcutaneous']], 'EMA': [None], 'FDA': [['injection']]}",['subcutaneous'],['subcutaneous']
+route,DPD priority,FDA_INVANZ|ERTAPENEM SODIUM,"{'DPD': [['intramuscular', 'intravenous']], 'EMA': [None], 'FDA': [['intramuscular', 'intravenous']]}","['intramuscular', 'intravenous']","['intramuscular', 'intravenous']"
+route,DPD priority,FDA_KANUMA|SEBELIPASE ALFA,"{'DPD': [['intravenous']], 'EMA': [None], 'FDA': [['injection']]}",['intravenous'],['intravenous']
+route,DPD priority,FDA_KESIMPTA|OFATUMUMAB,"{'DPD': [['subcutaneous']], 'EMA': [None], 'FDA': [['subcutaneous']]}",['subcutaneous'],['subcutaneous']
+route,DPD priority,FDA_PRAXBIND|IDARUCIZUMAB,"{'DPD': [['intravenous']], 'EMA': [None], 'FDA': [['injection']]}",['intravenous'],['intravenous']
+route,DPD priority,FDA_QUVIVIQ|DARIDOREXANT HYDROCHLORIDE,"{'DPD': [['oral']], 'EMA': [None], 'FDA': [['oral']]}",['oral'],['oral']
+route,DPD priority,FDA_REPATHA|EVOLOCUMAB,"{'DPD': [['subcutaneous']], 'EMA': [None], 'FDA': [['injection']]}",['subcutaneous'],['subcutaneous']
+route,DPD priority,FDA_WEGOVY|SEMAGLUTIDE,"{'DPD': [['subcutaneous']], 'EMA': [None], 'FDA': [['oral', 'subcutaneous']]}",['subcutaneous'],"['oral', 'subcutaneous']"
+route,DPD priority,FDA_DUREZOL|DIFLUPREDNATE,"{'DPD': [['ophthalmic']], 'EMA': [], 'FDA': [['ophthalmic']]}",['ophthalmic'],['ophthalmic']
+route,DPD priority,FDA_FROVA|FROVATRIPTAN SUCCINATE,"{'DPD': [['oral']], 'EMA': [], 'FDA': [['oral']]}",['oral'],['oral']
+route,DPD priority,FDA_MOUNJARO KWIKPEN|TIRZEPATIDE,"{'DPD': [['subcutaneous']], 'EMA': [], 'FDA': [['subcutaneous']]}",['subcutaneous'],['subcutaneous']
+route,DPD priority,FDA_SEPTRA|SULFAMETHOXAZOLE; TRIMETHOPRIM,"{'DPD': [['oral']], 'EMA': [], 'FDA': [None]}",['oral'],"['intravenous', 'oral']"
+route,DPD priority,EMA_ADVAGRAF|TACROLIMUS,"{'DPD': [['oral']], 'EMA': [None], 'FDA': []}",['oral'],['oral']
+route,DPD priority,EMA_KOMBOGLYZE|METFORMIN HYDROCHLORIDE; SAXAGLIPTIN HYDROCHLORIDE,"{'DPD': [['oral']], 'EMA': [None], 'FDA': []}",['oral'],['oral']
+route,DPD priority,EMA_LEQEMBI|LECANEMAB,"{'DPD': [['intravenous']], 'EMA': [None], 'FDA': []}",['intravenous'],['intravenous']
+route,DPD priority,EMA_PREHEVBRI|HEPATITIS B SURFACE ANTIGEN,"{'DPD': [['intramuscular']], 'EMA': [None], 'FDA': []}",['intramuscular'],['intramuscular']
+route,DPD priority,EMA_RASILEZ|ALISKIREN,"{'DPD': [['oral']], 'EMA': [None], 'FDA': []}",['oral'],['oral']
+route,DPD priority,EMA_RIXIMYO|RITUXIMAB,"{'DPD': [['intravenous']], 'EMA': [None], 'FDA': []}",['intravenous'],['intravenous']
+route,DPD priority,EMA_SOGROYA|SOMAPACITAN,"{'DPD': [['subcutaneous']], 'EMA': [None], 'FDA': []}",['subcutaneous'],['subcutaneous']
+route,DPD priority,EMA_XENPOZYME|OLIPUDASE ALFA,"{'DPD': [['intravenous']], 'EMA': [None], 'FDA': []}",['intravenous'],['intravenous']
+route,DPD priority,FDA_EPIVIR|LAMIVUDINE,"{'DPD': [], 'EMA': [None], 'FDA': [['oral']]}",['oral'],['oral']
+route,DPD priority,FDA_FINTEPLA|FENFLURAMINE HYDROCHLORIDE,"{'DPD': [], 'EMA': [None], 'FDA': [['oral']]}",['oral'],['oral']
+route,DPD priority,FDA_IONSYS|FENTANYL HYDROCHLORIDE,"{'DPD': [], 'EMA': [None], 'FDA': [['iontophoresis', 'transdermal']]}","['iontophoresis', 'transdermal']","['iontophoresis', 'transdermal']"
+route,DPD priority,FDA_MIPLYFFA|ARIMOCLOMOL CITRATE,"{'DPD': [], 'EMA': [None], 'FDA': [['oral']]}",['oral'],['oral']
+route,DPD priority,FDA_MYCAPSSA|OCTREOTIDE ACETATE,"{'DPD': [], 'EMA': [None], 'FDA': [['oral']]}",['oral'],['oral']
+route,DPD priority,FDA_VIJOICE|ALPELISIB,"{'DPD': [], 'EMA': [None], 'FDA': [['oral']]}",['oral'],['oral']
+route,DPD priority,FDA_ZONEGRAN|ZONISAMIDE,"{'DPD': [], 'EMA': [None], 'FDA': [['oral']]}",['oral'],['oral']
+strengths,FDA priority,FDA_AGENERASE|AMPRENAVIR,"{'DPD': [[('50', 'mg'), ('150', 'mg'), ('15', 'mg')]], 'EMA': [None], 'FDA': [[('150', 'mg'), ('15', 'mg/mL'), ('50', 'mg')]]}","[('150', 'mg'), ('15', 'mg/mL'), ('50', 'mg')]","[('50', 'mg'), ('150', 'mg'), ('15', 'mg/mL')]"
+strengths,FDA priority,FDA_BOSULIF|BOSUTINIB MONOHYDRATE,"{'DPD': [[('100', 'mg'), ('500', 'mg'), ('400', 'mg')]], 'EMA': [None], 'FDA': [[('100', 'mg'), ('400', 'mg'), ('500', 'mg'), ('50', 'mg')]]}","[('100', 'mg'), ('400', 'mg'), ('500', 'mg'), ('50', 'mg')]","[('50', 'mg'), ('100', 'mg'), ('400', 'mg'), ('500', 'mg')]"
+strengths,FDA priority,FDA_CINQAIR|RESLIZUMAB,"{'DPD': [[('10', 'mg')]], 'EMA': [None], 'FDA': [[('10', 'mg/mL')]]}","[('10', 'mg/mL')]","[('10', 'mg/mL')]"
+strengths,FDA priority,FDA_ELELYSO|TALIGLUCERASE ALFA,"{'DPD': [[('200', 'U')]], 'EMA': [None], 'FDA': [[('200', 'U/vial')]]}","[('200', 'U/vial')]","[('200', 'U')]"
+strengths,FDA priority,FDA_HEMLIBRA|EMICIZUMAB,"{'DPD': [[('30', 'mg'), ('60', 'mg'), ('105', 'mg'), ('150', 'mg'), ('12', 'mg'), ('300', 'mg')]], 'EMA': [None], 'FDA': [[('150', 'mg/mL'), ('150', 'mg'), ('30', 'mg/mL'), ('150', 'mg/mL')]]}","[('150', 'mg/mL'), ('150', 'mg'), ('30', 'mg/mL'), ('150', 'mg/mL')]","[('30', 'mg/mL'), ('150', 'mg/mL')]"
+strengths,FDA priority,FDA_INVANZ|ERTAPENEM SODIUM,"{'DPD': [[('1', 'g')]], 'EMA': [None], 'FDA': [[('1', 'g/vial')]]}","[('1', 'g/vial')]","[('1', 'g')]"
+strengths,FDA priority,FDA_KANUMA|SEBELIPASE ALFA,"{'DPD': [[('2', 'mg')]], 'EMA': [None], 'FDA': [[('2', 'mg/mL')]]}","[('2', 'mg/mL')]","[('2', 'mg/mL')]"
+strengths,FDA priority,FDA_KESIMPTA|OFATUMUMAB,"{'DPD': [[('20', 'mg')]], 'EMA': [None], 'FDA': [[('50', 'mg/mL')]]}","[('50', 'mg/mL')]","[('50', 'mg/mL')]"
+strengths,FDA priority,FDA_PRAXBIND|IDARUCIZUMAB,"{'DPD': [[('50', 'mg')]], 'EMA': [None], 'FDA': [[('0.05', 'g/mL')]]}","[('0.05', 'g/mL')]","[('50', 'mg/mL')]"
+strengths,FDA priority,FDA_QUVIVIQ|DARIDOREXANT HYDROCHLORIDE,"{'DPD': [[('50', 'mg'), ('25', 'mg')]], 'EMA': [None], 'FDA': [[('25', 'mg'), ('50', 'mg')]]}","[('25', 'mg'), ('50', 'mg')]","[('25', 'mg'), ('50', 'mg')]"
+strengths,FDA priority,FDA_REPATHA|EVOLOCUMAB,"{'DPD': [[('140', 'mg'), ('120', 'mg')]], 'EMA': [None], 'FDA': [[('140', 'mg/mL')]]}","[('140', 'mg/mL')]","[('140', 'mg/mL')]"
+strengths,FDA priority,FDA_WEGOVY|SEMAGLUTIDE,"{'DPD': [[('1', 'mg'), ('2', 'mg'), ('4', 'mg'), ('6.8', 'mg'), ('9.6', 'mg'), ('0.25', 'mg'), ('0.5', 'mg'), ('1.7', 'mg'), ('2.4', 'mg')]], 'EMA': [None], 'FDA': [[('0.5', 'mg/mL'), ('1', 'mg/mL'), ('1.5', 'mg'), ('2.266667', 'mg/mL'), ('2', 'mg/mL'), ('3.2', 'mg/mL'), ('25', 'mg'), ('4', 'mg'), ('9', 'mg')]]}","[('0.5', 'mg/mL'), ('1', 'mg/mL'), ('1.5', 'mg'), ('2.266667', 'mg/mL'), ('2', 'mg/mL'), ('3.2', 'mg/mL'), ('25', 'mg'), ('4', 'mg'), ('9', 'mg')]","[('0.5', 'mg/mL'), ('1', 'mg/mL'), ('2', 'mg/mL'), ('2.27', 'mg/mL'), ('3.2', 'mg/mL'), ('1.5', 'mg'), ('4', 'mg'), ('9', 'mg'), ('25', 'mg')]"
+strengths,FDA priority,FDA_DUREZOL|DIFLUPREDNATE,"{'DPD': [[('0.05', '%')]], 'EMA': [], 'FDA': [[('0.05', '%')]]}","[('0.05', '%')]","[('0.05', '%')]"
+strengths,FDA priority,FDA_FROVA|FROVATRIPTAN SUCCINATE,"{'DPD': [[('2.5', 'mg')]], 'EMA': [], 'FDA': [[('2.5', 'mg')]]}","[('2.5', 'mg')]","[('2.5', 'mg')]"
+strengths,FDA priority,FDA_MOUNJARO KWIKPEN|TIRZEPATIDE,"{'DPD': [[('2.5', 'mg'), ('5', 'mg'), ('7.5', 'mg'), ('10', 'mg'), ('12.5', 'mg'), ('15', 'mg')]], 'EMA': [], 'FDA': [[('4.166667', 'mg/mL'), ('8.333333', 'mg/mL'), ('12.5', 'mg/mL'), ('16.666667', 'mg/mL'), ('20.833333', 'mg/mL'), ('25', 'mg/mL')]]}","[('4.166667', 'mg/mL'), ('8.333333', 'mg/mL'), ('12.5', 'mg/mL'), ('16.666667', 'mg/mL'), ('20.833333', 'mg/mL'), ('25', 'mg/mL')]","[('4.17', 'mg/mL'), ('8.33', 'mg/mL'), ('12.5', 'mg/mL'), ('16.7', 'mg/mL'), ('20.8', 'mg/mL'), ('25', 'mg/mL')]"
+strengths,FDA priority,FDA_SEPTRA|SULFAMETHOXAZOLE; TRIMETHOPRIM,"{'DPD': [[('80', 'mg'), ('400', 'mg')]], 'EMA': [], 'FDA': [[('16', 'mg/mL'), ('40', 'mg/mL'), ('400', 'mg'), ('8', 'mg/mL'), ('80', 'mg'), ('80', 'mg/mL')]]}","[('16', 'mg/mL'), ('40', 'mg/mL'), ('400', 'mg'), ('8', 'mg/mL'), ('80', 'mg'), ('80', 'mg/mL')]","[('80', 'mg'), ('400', 'mg'), ('8', 'mg/mL'), ('40', 'mg/mL'), ('16', 'mg/mL'), ('80', 'mg/mL')]"
+strengths,FDA priority,EMA_ADVAGRAF|TACROLIMUS,"{'DPD': [[('0.5', 'mg'), ('1', 'mg'), ('5', 'mg'), ('3', 'mg')]], 'EMA': [None], 'FDA': []}","[('0.5', 'mg'), ('1', 'mg'), ('5', 'mg'), ('3', 'mg')]","[('0.5', 'mg'), ('1', 'mg'), ('3', 'mg'), ('5', 'mg')]"
+strengths,FDA priority,EMA_KOMBOGLYZE|METFORMIN HYDROCHLORIDE; SAXAGLIPTIN HYDROCHLORIDE,"{'DPD': [[('2.5', 'mg'), ('500', 'mg'), ('850', 'mg'), ('1000', 'mg')]], 'EMA': [None], 'FDA': []}","[('2.5', 'mg'), ('500', 'mg'), ('850', 'mg'), ('1000', 'mg')]","[('2.5', 'mg'), ('850', 'mg'), ('1000', 'mg')]"
+strengths,FDA priority,EMA_LEQEMBI|LECANEMAB,"{'DPD': [[('100', 'mg')]], 'EMA': [None], 'FDA': []}","[('100', 'mg')]","[('100', 'mg/mL')]"
+strengths,FDA priority,EMA_PREHEVBRI|HEPATITIS B SURFACE ANTIGEN,"{'DPD': [[('10', 'mcg')]], 'EMA': [None], 'FDA': []}","[('10', 'mcg')]","[('10', 'mcg/mL')]"
+strengths,FDA priority,EMA_RASILEZ|ALISKIREN,"{'DPD': [[('150', 'mg'), ('300', 'mg')]], 'EMA': [None], 'FDA': []}","[('150', 'mg'), ('300', 'mg')]","[('150', 'mg'), ('300', 'mg')]"
+strengths,FDA priority,EMA_RIXIMYO|RITUXIMAB,"{'DPD': [[('10', 'mg')]], 'EMA': [None], 'FDA': []}","[('10', 'mg')]","[('10', 'mg/mL')]"
+strengths,FDA priority,EMA_SOGROYA|SOMAPACITAN,"{'DPD': [[('5', 'mg'), ('10', 'mg'), ('15', 'mg')]], 'EMA': [None], 'FDA': []}","[('5', 'mg'), ('10', 'mg'), ('15', 'mg')]","[('3.3', 'mg/mL'), ('6.7', 'mg/mL'), ('10', 'mg/mL')]"
+strengths,FDA priority,EMA_XENPOZYME|OLIPUDASE ALFA,"{'DPD': [[('20', 'mg'), ('4', 'mg')]], 'EMA': [None], 'FDA': []}","[('20', 'mg'), ('4', 'mg')]","[('4', 'mg'), ('20', 'mg')]"
+strengths,FDA priority,FDA_EPIVIR|LAMIVUDINE,"{'DPD': [], 'EMA': [None], 'FDA': [[('10', 'mg/mL'), ('150', 'mg'), ('300', 'mg')]]}","[('10', 'mg/mL'), ('150', 'mg'), ('300', 'mg')]","[('10', 'mg/mL'), ('150', 'mg'), ('300', 'mg')]"
+strengths,FDA priority,FDA_FINTEPLA|FENFLURAMINE HYDROCHLORIDE,"{'DPD': [], 'EMA': [None], 'FDA': [[('2.2', 'mg/mL')]]}","[('2.2', 'mg/mL')]","[('2.2', 'mg/mL')]"
+strengths,FDA priority,FDA_IONSYS|FENTANYL HYDROCHLORIDE,"{'DPD': [], 'EMA': [None], 'FDA': [[('40', 'mcg/actuation')]]}","[('40', 'mcg/actuation')]","[('40', 'mcg/actuation')]"
+strengths,FDA priority,FDA_MIPLYFFA|ARIMOCLOMOL CITRATE,"{'DPD': [], 'EMA': [None], 'FDA': [[('124', 'mg'), ('47', 'mg'), ('62', 'mg'), ('93', 'mg')]]}","[('124', 'mg'), ('47', 'mg'), ('62', 'mg'), ('93', 'mg')]","[('47', 'mg'), ('62', 'mg'), ('93', 'mg'), ('124', 'mg')]"
+strengths,FDA priority,FDA_MYCAPSSA|OCTREOTIDE ACETATE,"{'DPD': [], 'EMA': [None], 'FDA': [[('20', 'mg')]]}","[('20', 'mg')]","[('20', 'mg')]"
+strengths,FDA priority,FDA_VIJOICE|ALPELISIB,"{'DPD': [], 'EMA': [None], 'FDA': [[('125', 'mg'), ('200', 'mg'), ('50', 'mg'), ('50', 'mg/packet')]]}","[('125', 'mg'), ('200', 'mg'), ('50', 'mg'), ('50', 'mg/packet')]","[('50', 'mg'), ('125', 'mg'), ('200', 'mg')]"
+strengths,FDA priority,FDA_ZONEGRAN|ZONISAMIDE,"{'DPD': [], 'EMA': [None], 'FDA': [[('100', 'mg'), ('25', 'mg'), ('50', 'mg')]]}","[('100', 'mg'), ('25', 'mg'), ('50', 'mg')]","[('25', 'mg'), ('50', 'mg'), ('100', 'mg')]"
+strengths,EMA priority,FDA_AGENERASE|AMPRENAVIR,"{'DPD': [[('50', 'mg'), ('150', 'mg'), ('15', 'mg')]], 'EMA': [None], 'FDA': [[('150', 'mg'), ('15', 'mg/mL'), ('50', 'mg')]]}","[('150', 'mg'), ('15', 'mg/mL'), ('50', 'mg')]","[('50', 'mg'), ('150', 'mg'), ('15', 'mg/mL')]"
+strengths,EMA priority,FDA_BOSULIF|BOSUTINIB MONOHYDRATE,"{'DPD': [[('100', 'mg'), ('500', 'mg'), ('400', 'mg')]], 'EMA': [None], 'FDA': [[('100', 'mg'), ('400', 'mg'), ('500', 'mg'), ('50', 'mg')]]}","[('100', 'mg'), ('400', 'mg'), ('500', 'mg'), ('50', 'mg')]","[('50', 'mg'), ('100', 'mg'), ('400', 'mg'), ('500', 'mg')]"
+strengths,EMA priority,FDA_CINQAIR|RESLIZUMAB,"{'DPD': [[('10', 'mg')]], 'EMA': [None], 'FDA': [[('10', 'mg/mL')]]}","[('10', 'mg/mL')]","[('10', 'mg/mL')]"
+strengths,EMA priority,FDA_ELELYSO|TALIGLUCERASE ALFA,"{'DPD': [[('200', 'U')]], 'EMA': [None], 'FDA': [[('200', 'U/vial')]]}","[('200', 'U/vial')]","[('200', 'U')]"
+strengths,EMA priority,FDA_HEMLIBRA|EMICIZUMAB,"{'DPD': [[('30', 'mg'), ('60', 'mg'), ('105', 'mg'), ('150', 'mg'), ('12', 'mg'), ('300', 'mg')]], 'EMA': [None], 'FDA': [[('150', 'mg/mL'), ('150', 'mg'), ('30', 'mg/mL'), ('150', 'mg/mL')]]}","[('150', 'mg/mL'), ('150', 'mg'), ('30', 'mg/mL'), ('150', 'mg/mL')]","[('30', 'mg/mL'), ('150', 'mg/mL')]"
+strengths,EMA priority,FDA_INVANZ|ERTAPENEM SODIUM,"{'DPD': [[('1', 'g')]], 'EMA': [None], 'FDA': [[('1', 'g/vial')]]}","[('1', 'g/vial')]","[('1', 'g')]"
+strengths,EMA priority,FDA_KANUMA|SEBELIPASE ALFA,"{'DPD': [[('2', 'mg')]], 'EMA': [None], 'FDA': [[('2', 'mg/mL')]]}","[('2', 'mg/mL')]","[('2', 'mg/mL')]"
+strengths,EMA priority,FDA_KESIMPTA|OFATUMUMAB,"{'DPD': [[('20', 'mg')]], 'EMA': [None], 'FDA': [[('50', 'mg/mL')]]}","[('50', 'mg/mL')]","[('50', 'mg/mL')]"
+strengths,EMA priority,FDA_PRAXBIND|IDARUCIZUMAB,"{'DPD': [[('50', 'mg')]], 'EMA': [None], 'FDA': [[('0.05', 'g/mL')]]}","[('0.05', 'g/mL')]","[('50', 'mg/mL')]"
+strengths,EMA priority,FDA_QUVIVIQ|DARIDOREXANT HYDROCHLORIDE,"{'DPD': [[('50', 'mg'), ('25', 'mg')]], 'EMA': [None], 'FDA': [[('25', 'mg'), ('50', 'mg')]]}","[('25', 'mg'), ('50', 'mg')]","[('25', 'mg'), ('50', 'mg')]"
+strengths,EMA priority,FDA_REPATHA|EVOLOCUMAB,"{'DPD': [[('140', 'mg'), ('120', 'mg')]], 'EMA': [None], 'FDA': [[('140', 'mg/mL')]]}","[('140', 'mg/mL')]","[('140', 'mg/mL')]"
+strengths,EMA priority,FDA_WEGOVY|SEMAGLUTIDE,"{'DPD': [[('1', 'mg'), ('2', 'mg'), ('4', 'mg'), ('6.8', 'mg'), ('9.6', 'mg'), ('0.25', 'mg'), ('0.5', 'mg'), ('1.7', 'mg'), ('2.4', 'mg')]], 'EMA': [None], 'FDA': [[('0.5', 'mg/mL'), ('1', 'mg/mL'), ('1.5', 'mg'), ('2.266667', 'mg/mL'), ('2', 'mg/mL'), ('3.2', 'mg/mL'), ('25', 'mg'), ('4', 'mg'), ('9', 'mg')]]}","[('0.5', 'mg/mL'), ('1', 'mg/mL'), ('1.5', 'mg'), ('2.266667', 'mg/mL'), ('2', 'mg/mL'), ('3.2', 'mg/mL'), ('25', 'mg'), ('4', 'mg'), ('9', 'mg')]","[('0.5', 'mg/mL'), ('1', 'mg/mL'), ('2', 'mg/mL'), ('2.27', 'mg/mL'), ('3.2', 'mg/mL'), ('1.5', 'mg'), ('4', 'mg'), ('9', 'mg'), ('25', 'mg')]"
+strengths,EMA priority,FDA_DUREZOL|DIFLUPREDNATE,"{'DPD': [[('0.05', '%')]], 'EMA': [], 'FDA': [[('0.05', '%')]]}","[('0.05', '%')]","[('0.05', '%')]"
+strengths,EMA priority,FDA_FROVA|FROVATRIPTAN SUCCINATE,"{'DPD': [[('2.5', 'mg')]], 'EMA': [], 'FDA': [[('2.5', 'mg')]]}","[('2.5', 'mg')]","[('2.5', 'mg')]"
+strengths,EMA priority,FDA_MOUNJARO KWIKPEN|TIRZEPATIDE,"{'DPD': [[('2.5', 'mg'), ('5', 'mg'), ('7.5', 'mg'), ('10', 'mg'), ('12.5', 'mg'), ('15', 'mg')]], 'EMA': [], 'FDA': [[('4.166667', 'mg/mL'), ('8.333333', 'mg/mL'), ('12.5', 'mg/mL'), ('16.666667', 'mg/mL'), ('20.833333', 'mg/mL'), ('25', 'mg/mL')]]}","[('4.166667', 'mg/mL'), ('8.333333', 'mg/mL'), ('12.5', 'mg/mL'), ('16.666667', 'mg/mL'), ('20.833333', 'mg/mL'), ('25', 'mg/mL')]","[('4.17', 'mg/mL'), ('8.33', 'mg/mL'), ('12.5', 'mg/mL'), ('16.7', 'mg/mL'), ('20.8', 'mg/mL'), ('25', 'mg/mL')]"
+strengths,EMA priority,FDA_SEPTRA|SULFAMETHOXAZOLE; TRIMETHOPRIM,"{'DPD': [[('80', 'mg'), ('400', 'mg')]], 'EMA': [], 'FDA': [[('16', 'mg/mL'), ('40', 'mg/mL'), ('400', 'mg'), ('8', 'mg/mL'), ('80', 'mg'), ('80', 'mg/mL')]]}","[('16', 'mg/mL'), ('40', 'mg/mL'), ('400', 'mg'), ('8', 'mg/mL'), ('80', 'mg'), ('80', 'mg/mL')]","[('80', 'mg'), ('400', 'mg'), ('8', 'mg/mL'), ('40', 'mg/mL'), ('16', 'mg/mL'), ('80', 'mg/mL')]"
+strengths,EMA priority,EMA_ADVAGRAF|TACROLIMUS,"{'DPD': [[('0.5', 'mg'), ('1', 'mg'), ('5', 'mg'), ('3', 'mg')]], 'EMA': [None], 'FDA': []}","[('0.5', 'mg'), ('1', 'mg'), ('5', 'mg'), ('3', 'mg')]","[('0.5', 'mg'), ('1', 'mg'), ('3', 'mg'), ('5', 'mg')]"
+strengths,EMA priority,EMA_KOMBOGLYZE|METFORMIN HYDROCHLORIDE; SAXAGLIPTIN HYDROCHLORIDE,"{'DPD': [[('2.5', 'mg'), ('500', 'mg'), ('850', 'mg'), ('1000', 'mg')]], 'EMA': [None], 'FDA': []}","[('2.5', 'mg'), ('500', 'mg'), ('850', 'mg'), ('1000', 'mg')]","[('2.5', 'mg'), ('850', 'mg'), ('1000', 'mg')]"
+strengths,EMA priority,EMA_LEQEMBI|LECANEMAB,"{'DPD': [[('100', 'mg')]], 'EMA': [None], 'FDA': []}","[('100', 'mg')]","[('100', 'mg/mL')]"
+strengths,EMA priority,EMA_PREHEVBRI|HEPATITIS B SURFACE ANTIGEN,"{'DPD': [[('10', 'mcg')]], 'EMA': [None], 'FDA': []}","[('10', 'mcg')]","[('10', 'mcg/mL')]"
+strengths,EMA priority,EMA_RASILEZ|ALISKIREN,"{'DPD': [[('150', 'mg'), ('300', 'mg')]], 'EMA': [None], 'FDA': []}","[('150', 'mg'), ('300', 'mg')]","[('150', 'mg'), ('300', 'mg')]"
+strengths,EMA priority,EMA_RIXIMYO|RITUXIMAB,"{'DPD': [[('10', 'mg')]], 'EMA': [None], 'FDA': []}","[('10', 'mg')]","[('10', 'mg/mL')]"
+strengths,EMA priority,EMA_SOGROYA|SOMAPACITAN,"{'DPD': [[('5', 'mg'), ('10', 'mg'), ('15', 'mg')]], 'EMA': [None], 'FDA': []}","[('5', 'mg'), ('10', 'mg'), ('15', 'mg')]","[('3.3', 'mg/mL'), ('6.7', 'mg/mL'), ('10', 'mg/mL')]"
+strengths,EMA priority,EMA_XENPOZYME|OLIPUDASE ALFA,"{'DPD': [[('20', 'mg'), ('4', 'mg')]], 'EMA': [None], 'FDA': []}","[('20', 'mg'), ('4', 'mg')]","[('4', 'mg'), ('20', 'mg')]"
+strengths,EMA priority,FDA_EPIVIR|LAMIVUDINE,"{'DPD': [], 'EMA': [None], 'FDA': [[('10', 'mg/mL'), ('150', 'mg'), ('300', 'mg')]]}","[('10', 'mg/mL'), ('150', 'mg'), ('300', 'mg')]","[('10', 'mg/mL'), ('150', 'mg'), ('300', 'mg')]"
+strengths,EMA priority,FDA_FINTEPLA|FENFLURAMINE HYDROCHLORIDE,"{'DPD': [], 'EMA': [None], 'FDA': [[('2.2', 'mg/mL')]]}","[('2.2', 'mg/mL')]","[('2.2', 'mg/mL')]"
+strengths,EMA priority,FDA_IONSYS|FENTANYL HYDROCHLORIDE,"{'DPD': [], 'EMA': [None], 'FDA': [[('40', 'mcg/actuation')]]}","[('40', 'mcg/actuation')]","[('40', 'mcg/actuation')]"
+strengths,EMA priority,FDA_MIPLYFFA|ARIMOCLOMOL CITRATE,"{'DPD': [], 'EMA': [None], 'FDA': [[('124', 'mg'), ('47', 'mg'), ('62', 'mg'), ('93', 'mg')]]}","[('124', 'mg'), ('47', 'mg'), ('62', 'mg'), ('93', 'mg')]","[('47', 'mg'), ('62', 'mg'), ('93', 'mg'), ('124', 'mg')]"
+strengths,EMA priority,FDA_MYCAPSSA|OCTREOTIDE ACETATE,"{'DPD': [], 'EMA': [None], 'FDA': [[('20', 'mg')]]}","[('20', 'mg')]","[('20', 'mg')]"
+strengths,EMA priority,FDA_VIJOICE|ALPELISIB,"{'DPD': [], 'EMA': [None], 'FDA': [[('125', 'mg'), ('200', 'mg'), ('50', 'mg'), ('50', 'mg/packet')]]}","[('125', 'mg'), ('200', 'mg'), ('50', 'mg'), ('50', 'mg/packet')]","[('50', 'mg'), ('125', 'mg'), ('200', 'mg')]"
+strengths,EMA priority,FDA_ZONEGRAN|ZONISAMIDE,"{'DPD': [], 'EMA': [None], 'FDA': [[('100', 'mg'), ('25', 'mg'), ('50', 'mg')]]}","[('100', 'mg'), ('25', 'mg'), ('50', 'mg')]","[('25', 'mg'), ('50', 'mg'), ('100', 'mg')]"
+biosimilar,Voting,FDA_AGENERASE|AMPRENAVIR,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,Voting,FDA_BOSULIF|BOSUTINIB MONOHYDRATE,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,Voting,FDA_CINQAIR|RESLIZUMAB,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,Voting,FDA_ELELYSO|TALIGLUCERASE ALFA,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,Voting,FDA_HEMLIBRA|EMICIZUMAB,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,Voting,FDA_INVANZ|ERTAPENEM SODIUM,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,Voting,FDA_KANUMA|SEBELIPASE ALFA,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,Voting,FDA_KESIMPTA|OFATUMUMAB,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,Voting,FDA_PRAXBIND|IDARUCIZUMAB,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,Voting,FDA_QUVIVIQ|DARIDOREXANT HYDROCHLORIDE,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,Voting,FDA_REPATHA|EVOLOCUMAB,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,Voting,FDA_WEGOVY|SEMAGLUTIDE,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,Voting,FDA_DUREZOL|DIFLUPREDNATE,"{'DPD': [False], 'EMA': [], 'FDA': [None]}",False,False
+biosimilar,Voting,FDA_FROVA|FROVATRIPTAN SUCCINATE,"{'DPD': [False], 'EMA': [], 'FDA': [None]}",False,False
+biosimilar,Voting,FDA_MOUNJARO KWIKPEN|TIRZEPATIDE,"{'DPD': [False], 'EMA': [], 'FDA': [None]}",False,False
+biosimilar,Voting,FDA_SEPTRA|SULFAMETHOXAZOLE; TRIMETHOPRIM,"{'DPD': [False], 'EMA': [], 'FDA': [None]}",False,False
+biosimilar,Voting,EMA_ADVAGRAF|TACROLIMUS,"{'DPD': [False], 'EMA': [False], 'FDA': []}",False,False
+biosimilar,Voting,EMA_KOMBOGLYZE|METFORMIN HYDROCHLORIDE; SAXAGLIPTIN HYDROCHLORIDE,"{'DPD': [False], 'EMA': [False], 'FDA': []}",False,False
+biosimilar,Voting,EMA_LEQEMBI|LECANEMAB,"{'DPD': [False], 'EMA': [False], 'FDA': []}",False,False
+biosimilar,Voting,EMA_PREHEVBRI|HEPATITIS B SURFACE ANTIGEN,"{'DPD': [False], 'EMA': [False], 'FDA': []}",False,False
+biosimilar,Voting,EMA_RASILEZ|ALISKIREN,"{'DPD': [False], 'EMA': [False], 'FDA': []}",False,False
+biosimilar,Voting,EMA_RIXIMYO|RITUXIMAB,"{'DPD': [True], 'EMA': [True], 'FDA': []}",True,True
+biosimilar,Voting,EMA_SOGROYA|SOMAPACITAN,"{'DPD': [False], 'EMA': [False], 'FDA': []}",False,False
+biosimilar,Voting,EMA_XENPOZYME|OLIPUDASE ALFA,"{'DPD': [False], 'EMA': [False], 'FDA': []}",False,False
+biosimilar,Voting,FDA_EPIVIR|LAMIVUDINE,"{'DPD': [], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,Voting,FDA_FINTEPLA|FENFLURAMINE HYDROCHLORIDE,"{'DPD': [], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,Voting,FDA_IONSYS|FENTANYL HYDROCHLORIDE,"{'DPD': [], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,Voting,FDA_MIPLYFFA|ARIMOCLOMOL CITRATE,"{'DPD': [], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,Voting,FDA_MYCAPSSA|OCTREOTIDE ACETATE,"{'DPD': [], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,Voting,FDA_VIJOICE|ALPELISIB,"{'DPD': [], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,Voting,FDA_ZONEGRAN|ZONISAMIDE,"{'DPD': [], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,FDA priority,FDA_AGENERASE|AMPRENAVIR,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,FDA priority,FDA_BOSULIF|BOSUTINIB MONOHYDRATE,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,FDA priority,FDA_CINQAIR|RESLIZUMAB,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,FDA priority,FDA_ELELYSO|TALIGLUCERASE ALFA,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,FDA priority,FDA_HEMLIBRA|EMICIZUMAB,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,FDA priority,FDA_INVANZ|ERTAPENEM SODIUM,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,FDA priority,FDA_KANUMA|SEBELIPASE ALFA,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,FDA priority,FDA_KESIMPTA|OFATUMUMAB,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,FDA priority,FDA_PRAXBIND|IDARUCIZUMAB,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,FDA priority,FDA_QUVIVIQ|DARIDOREXANT HYDROCHLORIDE,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,FDA priority,FDA_REPATHA|EVOLOCUMAB,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,FDA priority,FDA_WEGOVY|SEMAGLUTIDE,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,FDA priority,FDA_DUREZOL|DIFLUPREDNATE,"{'DPD': [False], 'EMA': [], 'FDA': [None]}",False,False
+biosimilar,FDA priority,FDA_FROVA|FROVATRIPTAN SUCCINATE,"{'DPD': [False], 'EMA': [], 'FDA': [None]}",False,False
+biosimilar,FDA priority,FDA_MOUNJARO KWIKPEN|TIRZEPATIDE,"{'DPD': [False], 'EMA': [], 'FDA': [None]}",False,False
+biosimilar,FDA priority,FDA_SEPTRA|SULFAMETHOXAZOLE; TRIMETHOPRIM,"{'DPD': [False], 'EMA': [], 'FDA': [None]}",False,False
+biosimilar,FDA priority,EMA_ADVAGRAF|TACROLIMUS,"{'DPD': [False], 'EMA': [False], 'FDA': []}",False,False
+biosimilar,FDA priority,EMA_KOMBOGLYZE|METFORMIN HYDROCHLORIDE; SAXAGLIPTIN HYDROCHLORIDE,"{'DPD': [False], 'EMA': [False], 'FDA': []}",False,False
+biosimilar,FDA priority,EMA_LEQEMBI|LECANEMAB,"{'DPD': [False], 'EMA': [False], 'FDA': []}",False,False
+biosimilar,FDA priority,EMA_PREHEVBRI|HEPATITIS B SURFACE ANTIGEN,"{'DPD': [False], 'EMA': [False], 'FDA': []}",False,False
+biosimilar,FDA priority,EMA_RASILEZ|ALISKIREN,"{'DPD': [False], 'EMA': [False], 'FDA': []}",False,False
+biosimilar,FDA priority,EMA_RIXIMYO|RITUXIMAB,"{'DPD': [True], 'EMA': [True], 'FDA': []}",True,True
+biosimilar,FDA priority,EMA_SOGROYA|SOMAPACITAN,"{'DPD': [False], 'EMA': [False], 'FDA': []}",False,False
+biosimilar,FDA priority,EMA_XENPOZYME|OLIPUDASE ALFA,"{'DPD': [False], 'EMA': [False], 'FDA': []}",False,False
+biosimilar,FDA priority,FDA_EPIVIR|LAMIVUDINE,"{'DPD': [], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,FDA priority,FDA_FINTEPLA|FENFLURAMINE HYDROCHLORIDE,"{'DPD': [], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,FDA priority,FDA_IONSYS|FENTANYL HYDROCHLORIDE,"{'DPD': [], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,FDA priority,FDA_MIPLYFFA|ARIMOCLOMOL CITRATE,"{'DPD': [], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,FDA priority,FDA_MYCAPSSA|OCTREOTIDE ACETATE,"{'DPD': [], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,FDA priority,FDA_VIJOICE|ALPELISIB,"{'DPD': [], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,FDA priority,FDA_ZONEGRAN|ZONISAMIDE,"{'DPD': [], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,EMA priority,FDA_AGENERASE|AMPRENAVIR,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,EMA priority,FDA_BOSULIF|BOSUTINIB MONOHYDRATE,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,EMA priority,FDA_CINQAIR|RESLIZUMAB,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,EMA priority,FDA_ELELYSO|TALIGLUCERASE ALFA,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,EMA priority,FDA_HEMLIBRA|EMICIZUMAB,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,EMA priority,FDA_INVANZ|ERTAPENEM SODIUM,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,EMA priority,FDA_KANUMA|SEBELIPASE ALFA,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,EMA priority,FDA_KESIMPTA|OFATUMUMAB,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,EMA priority,FDA_PRAXBIND|IDARUCIZUMAB,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,EMA priority,FDA_QUVIVIQ|DARIDOREXANT HYDROCHLORIDE,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,EMA priority,FDA_REPATHA|EVOLOCUMAB,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,EMA priority,FDA_WEGOVY|SEMAGLUTIDE,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,EMA priority,FDA_DUREZOL|DIFLUPREDNATE,"{'DPD': [False], 'EMA': [], 'FDA': [None]}",False,False
+biosimilar,EMA priority,FDA_FROVA|FROVATRIPTAN SUCCINATE,"{'DPD': [False], 'EMA': [], 'FDA': [None]}",False,False
+biosimilar,EMA priority,FDA_MOUNJARO KWIKPEN|TIRZEPATIDE,"{'DPD': [False], 'EMA': [], 'FDA': [None]}",False,False
+biosimilar,EMA priority,FDA_SEPTRA|SULFAMETHOXAZOLE; TRIMETHOPRIM,"{'DPD': [False], 'EMA': [], 'FDA': [None]}",False,False
+biosimilar,EMA priority,EMA_ADVAGRAF|TACROLIMUS,"{'DPD': [False], 'EMA': [False], 'FDA': []}",False,False
+biosimilar,EMA priority,EMA_KOMBOGLYZE|METFORMIN HYDROCHLORIDE; SAXAGLIPTIN HYDROCHLORIDE,"{'DPD': [False], 'EMA': [False], 'FDA': []}",False,False
+biosimilar,EMA priority,EMA_LEQEMBI|LECANEMAB,"{'DPD': [False], 'EMA': [False], 'FDA': []}",False,False
+biosimilar,EMA priority,EMA_PREHEVBRI|HEPATITIS B SURFACE ANTIGEN,"{'DPD': [False], 'EMA': [False], 'FDA': []}",False,False
+biosimilar,EMA priority,EMA_RASILEZ|ALISKIREN,"{'DPD': [False], 'EMA': [False], 'FDA': []}",False,False
+biosimilar,EMA priority,EMA_RIXIMYO|RITUXIMAB,"{'DPD': [True], 'EMA': [True], 'FDA': []}",True,True
+biosimilar,EMA priority,EMA_SOGROYA|SOMAPACITAN,"{'DPD': [False], 'EMA': [False], 'FDA': []}",False,False
+biosimilar,EMA priority,EMA_XENPOZYME|OLIPUDASE ALFA,"{'DPD': [False], 'EMA': [False], 'FDA': []}",False,False
+biosimilar,EMA priority,FDA_EPIVIR|LAMIVUDINE,"{'DPD': [], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,EMA priority,FDA_FINTEPLA|FENFLURAMINE HYDROCHLORIDE,"{'DPD': [], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,EMA priority,FDA_IONSYS|FENTANYL HYDROCHLORIDE,"{'DPD': [], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,EMA priority,FDA_MIPLYFFA|ARIMOCLOMOL CITRATE,"{'DPD': [], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,EMA priority,FDA_MYCAPSSA|OCTREOTIDE ACETATE,"{'DPD': [], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,EMA priority,FDA_VIJOICE|ALPELISIB,"{'DPD': [], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,EMA priority,FDA_ZONEGRAN|ZONISAMIDE,"{'DPD': [], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,DPD priority,FDA_AGENERASE|AMPRENAVIR,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,DPD priority,FDA_BOSULIF|BOSUTINIB MONOHYDRATE,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,DPD priority,FDA_CINQAIR|RESLIZUMAB,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,DPD priority,FDA_ELELYSO|TALIGLUCERASE ALFA,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,DPD priority,FDA_HEMLIBRA|EMICIZUMAB,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,DPD priority,FDA_INVANZ|ERTAPENEM SODIUM,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,DPD priority,FDA_KANUMA|SEBELIPASE ALFA,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,DPD priority,FDA_KESIMPTA|OFATUMUMAB,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,DPD priority,FDA_PRAXBIND|IDARUCIZUMAB,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,DPD priority,FDA_QUVIVIQ|DARIDOREXANT HYDROCHLORIDE,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,DPD priority,FDA_REPATHA|EVOLOCUMAB,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,DPD priority,FDA_WEGOVY|SEMAGLUTIDE,"{'DPD': [False], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,DPD priority,FDA_DUREZOL|DIFLUPREDNATE,"{'DPD': [False], 'EMA': [], 'FDA': [None]}",False,False
+biosimilar,DPD priority,FDA_FROVA|FROVATRIPTAN SUCCINATE,"{'DPD': [False], 'EMA': [], 'FDA': [None]}",False,False
+biosimilar,DPD priority,FDA_MOUNJARO KWIKPEN|TIRZEPATIDE,"{'DPD': [False], 'EMA': [], 'FDA': [None]}",False,False
+biosimilar,DPD priority,FDA_SEPTRA|SULFAMETHOXAZOLE; TRIMETHOPRIM,"{'DPD': [False], 'EMA': [], 'FDA': [None]}",False,False
+biosimilar,DPD priority,EMA_ADVAGRAF|TACROLIMUS,"{'DPD': [False], 'EMA': [False], 'FDA': []}",False,False
+biosimilar,DPD priority,EMA_KOMBOGLYZE|METFORMIN HYDROCHLORIDE; SAXAGLIPTIN HYDROCHLORIDE,"{'DPD': [False], 'EMA': [False], 'FDA': []}",False,False
+biosimilar,DPD priority,EMA_LEQEMBI|LECANEMAB,"{'DPD': [False], 'EMA': [False], 'FDA': []}",False,False
+biosimilar,DPD priority,EMA_PREHEVBRI|HEPATITIS B SURFACE ANTIGEN,"{'DPD': [False], 'EMA': [False], 'FDA': []}",False,False
+biosimilar,DPD priority,EMA_RASILEZ|ALISKIREN,"{'DPD': [False], 'EMA': [False], 'FDA': []}",False,False
+biosimilar,DPD priority,EMA_RIXIMYO|RITUXIMAB,"{'DPD': [True], 'EMA': [True], 'FDA': []}",True,True
+biosimilar,DPD priority,EMA_SOGROYA|SOMAPACITAN,"{'DPD': [False], 'EMA': [False], 'FDA': []}",False,False
+biosimilar,DPD priority,EMA_XENPOZYME|OLIPUDASE ALFA,"{'DPD': [False], 'EMA': [False], 'FDA': []}",False,False
+biosimilar,DPD priority,FDA_EPIVIR|LAMIVUDINE,"{'DPD': [], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,DPD priority,FDA_FINTEPLA|FENFLURAMINE HYDROCHLORIDE,"{'DPD': [], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,DPD priority,FDA_IONSYS|FENTANYL HYDROCHLORIDE,"{'DPD': [], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,DPD priority,FDA_MIPLYFFA|ARIMOCLOMOL CITRATE,"{'DPD': [], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,DPD priority,FDA_MYCAPSSA|OCTREOTIDE ACETATE,"{'DPD': [], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,DPD priority,FDA_VIJOICE|ALPELISIB,"{'DPD': [], 'EMA': [False], 'FDA': [None]}",False,False
+biosimilar,DPD priority,FDA_ZONEGRAN|ZONISAMIDE,"{'DPD': [], 'EMA': [False], 'FDA': [None]}",False,False

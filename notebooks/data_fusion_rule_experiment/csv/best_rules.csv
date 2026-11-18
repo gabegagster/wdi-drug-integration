@@ -1,0 +1,21 @@
+attribute,rule,adaptive_accuracy,strict_accuracy,tied
+brandName,Shortest,1.0,1.0,True
+brandName,FDA priority,1.0,1.0,True
+activeSubstances,DPD priority,0.8709677419354839,0.8709677419354839,False
+licenceHolder,FDA priority,0.9354838709677419,0.45161290322580644,False
+productClass,Voting,1.0,1.0,True
+productClass,FDA priority,1.0,1.0,True
+productClass,EMA priority,1.0,1.0,True
+productClass,DPD priority,1.0,1.0,True
+atcCode,Voting,0.9032258064516129,0.9032258064516129,True
+atcCode,DPD priority,0.9032258064516129,0.9032258064516129,True
+dosageForm,FDA priority,0.8709677419354839,0.6774193548387096,True
+dosageForm,EMA priority,0.8709677419354839,0.6774193548387096,True
+route,Voting,0.9354838709677419,0.9354838709677419,True
+route,DPD priority,0.9354838709677419,0.9354838709677419,True
+strengths,FDA priority,0.7096774193548387,0.6129032258064516,True
+strengths,EMA priority,0.7096774193548387,0.6129032258064516,True
+biosimilar,Voting,1.0,1.0,True
+biosimilar,FDA priority,1.0,1.0,True
+biosimilar,EMA priority,1.0,1.0,True
+biosimilar,DPD priority,1.0,1.0,True

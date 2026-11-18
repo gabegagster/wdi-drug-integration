@@ -1,0 +1,11 @@
+attribute,selected_rule,selection,strict_accuracy,adaptive_accuracy,density,equally_best_rules
+brandName,FDA priority,Manual tie-breaker,1.0,1.0,1.0,"Shortest, FDA priority"
+activeSubstances,DPD priority,Score-based,0.8709677419354839,0.8709677419354839,1.0,DPD priority
+activeSubstanceCount,Count fused activeSubstances,Derived,1.0,1.0,1.0,
+licenceHolder,FDA priority,Score-based,0.45161290322580644,0.9354838709677419,1.0,FDA priority
+productClass,Voting,Score-based,1.0,1.0,1.0,"Voting, FDA priority, EMA priority, DPD priority"
+atcCode,Voting,Manual tie-breaker,0.9032258064516129,0.9032258064516129,1.0,"Voting, DPD priority"
+dosageForm,FDA priority,Manual tie-breaker,0.6774193548387096,0.8709677419354839,0.967741935483871,"FDA priority, EMA priority"
+route,Voting,Manual tie-breaker,0.9354838709677419,0.9354838709677419,1.0,"Voting, DPD priority"
+strengths,FDA priority,Manual tie-breaker,0.6129032258064516,0.7096774193548387,1.0,"FDA priority, EMA priority"
+biosimilar,Voting,Score-based,1.0,1.0,1.0,"Voting, FDA priority, EMA priority, DPD priority"
