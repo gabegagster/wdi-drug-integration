@@ -339,11 +339,27 @@ def verify_phase3() -> dict[str, Any]:
     verified_rows = int(eval_df["verified_by"].str.strip().ne("").sum())
     gold_filled_rows = int(eval_df["gold_brandName"].str.strip().ne("").sum())
 
+    final_xml_path = REPO_ROOT / "data" / "9_fusion_xml_final" / "fused_medicines.xml"
+    fused_xml_count = None
+    if final_xml_path.exists():
+        fused_root = etree.parse(str(final_xml_path)).getroot()
+        fused_ids = [
+            med.findtext("id").strip()
+            for med in fused_root.findall("medicine")
+            if med.findtext("id")
+        ]
+        if len(fused_ids) != len(set(fused_ids)) or len(fused_ids) != audit["total_groups"]:
+            raise RuntimeError(
+                f"Unexpected final fused XML count/uniqueness: {len(fused_ids)} vs {audit['total_groups']}"
+            )
+        fused_xml_count = len(fused_ids)
+
     return {
         "correspondences_attrs": correspondences.attrs,
         "eval_worksheet_rows": len(eval_df),
         "eval_verified_rows": verified_rows,
         "eval_gold_brand_filled": gold_filled_rows,
+        "fused_xml_count": fused_xml_count,
         "audit": audit,
         "eval_df": eval_df,
         "clusters_df": clusters,
@@ -458,6 +474,7 @@ def _write_manifest(
     p3: dict[str, Any],
     subset_results: dict[str, dict[str, Any]],
     include_model: bool,
+    fused_subset_count: int = 0,
 ) -> None:
     audit = p3["audit"]
     d16 = audit["mean_density_16_attrs"]
@@ -511,6 +528,7 @@ def _write_manifest(
         "- `data_subset/5_golden_standard_pair/golden_standard_pair_complete/`: unified benchmark splits and report",
         "- `data_subset/6_evaluation/`: matcher and clustering evaluation reports/metrics",
         "- `data_subset/7_blocking_candidates/manifest.json` and `data_subset/8_fusion_eval/fusion_eval_worksheet.csv`",
+        f"- `data_subset/9_fusion_xml_final/fused_medicines.xml`: curated subset of final fused XML ({fused_subset_count} entities from {p3['fused_xml_count'] or 0:,} total)",
         "",
     ]
     manifest_path.write_text("\n".join(lines), encoding="utf-8")
@@ -593,7 +611,28 @@ def build_submission_package(
     fusion_eval_out.mkdir(parents=True, exist_ok=True)
     shutil.copy2(REPO_ROOT / "data" / "8_fusion_eval" / "fusion_eval_worksheet.csv", fusion_eval_out / "fusion_eval_worksheet.csv")
 
-    _write_manifest(output_dir / "SUBMISSION_MANIFEST.md", p1, p2, p3, subset_results, include_model)
+    final_xml_src = REPO_ROOT / "data" / "9_fusion_xml_final" / "fused_medicines.xml"
+    fused_subset_count = 0
+    if final_xml_src.exists():
+        all_wanted = {mid for ids in selected_ids.values() for mid in ids}
+        src_fused_root = etree.parse(str(final_xml_src)).getroot()
+        subset_fused_root = etree.Element("medicines")
+        for elem in src_fused_root.findall("medicine"):
+            med_id = (elem.findtext("id") or "").strip()
+            if med_id in all_wanted:
+                subset_fused_root.append(etree.fromstring(etree.tostring(elem)))
+                fused_subset_count += 1
+        final_xml_out = data_dir / "9_fusion_xml_final" / "fused_medicines.xml"
+        final_xml_out.parent.mkdir(parents=True, exist_ok=True)
+        etree.indent(subset_fused_root, space="\t")
+        etree.ElementTree(subset_fused_root).write(
+            str(final_xml_out),
+            encoding="UTF-8",
+            xml_declaration=True,
+            pretty_print=True,
+        )
+
+    _write_manifest(output_dir / "SUBMISSION_MANIFEST.md", p1, p2, p3, subset_results, include_model, fused_subset_count)
 
     zip_path = output_dir.parent / "wdi_drug_integration_submission.zip"
     if zip_path.exists():
@@ -623,6 +662,7 @@ def print_audit_summary(p1: dict[str, Any], p2: dict[str, Any], p3: dict[str, An
     print(
         f"Phase III: {audit['total_groups']:,} total groups ({audit['total_singletons']:,} singletons) | "
         f"Eval worksheet: {p3['eval_worksheet_rows']} rows ({p3['eval_verified_rows']} signed off, {p3['eval_gold_brand_filled']} gold filled)"
+        + (f" | Final XML: {p3['fused_xml_count']:,} entities" if p3.get("fused_xml_count") else "")
     )
     print("\n=== FULL-DATASET AUDIT (CONCLUSION Q1 & Q2) ===")
     print(
