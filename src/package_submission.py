@@ -519,7 +519,7 @@ def _write_manifest(
         f"All groups {d10['Fused_All_Groups']:.4f} ({d10['Gain_vs_DPD']:+.4f})",
         "",
         "## Curated Archive Contents",
-        "- `report/`: `final_project_report_draft.pdf`, `final_project_report_draft.tex`, `references.bib`",
+        "- `report/`: `project_report.pdf`, `project_report.tex`, `references.bib`, `contribution_table.pdf`, `contribution_table.tex`",
         f"- `code/`: `src/`, `notebooks/` (`best_model.zip` included: {include_model}), `requirements.txt`, `.python-version`, `README.md`",
         "- `data_subset/4_translated_mapforce/`: XSD-validated XML subsets "
         f"(DPD {subset_results['DPD']['records']}, EMA {subset_results['EMA']['records']}, FDA {subset_results['FDA']['records']}; "
@@ -527,7 +527,7 @@ def _write_manifest(
         "- `data_subset/3_fused/`: Phase II matches, 1:1 correspondences, clusters (plus any final fused outputs if present)",
         "- `data_subset/5_golden_standard_pair/golden_standard_pair_complete/`: unified benchmark splits and report",
         "- `data_subset/6_evaluation/`: matcher and clustering evaluation reports/metrics",
-        "- `data_subset/7_blocking_candidates/manifest.json` and `data_subset/8_fusion_eval/fusion_eval_worksheet.csv`",
+        "- `data_subset/7_blocking_candidates/manifest.json` and `data_subset/8_fusion_eval/` (`fusion_eval_worksheet.csv`, `fusion_eval_excluded.csv`)",
         f"- `data_subset/9_fusion_xml_final/fused_medicines.xml`: curated subset of final fused XML ({fused_subset_count} entities from {p3['fused_xml_count'] or 0:,} total)",
         "",
     ]
@@ -550,9 +550,11 @@ def build_submission_package(
     report_dir = output_dir / "report"
     report_dir.mkdir(parents=True, exist_ok=True)
     for filename in (
-        "final_project_report_draft.pdf",
-        "final_project_report_draft.tex",
+        "project_report.pdf",
+        "project_report.tex",
         "references.bib",
+        "contribution_table.pdf",
+        "contribution_table.tex",
     ):
         src_file = REPO_ROOT / "docs" / "final_report" / filename
         if src_file.exists():
@@ -609,7 +611,10 @@ def build_submission_package(
 
     fusion_eval_out = data_dir / "8_fusion_eval"
     fusion_eval_out.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(REPO_ROOT / "data" / "8_fusion_eval" / "fusion_eval_worksheet.csv", fusion_eval_out / "fusion_eval_worksheet.csv")
+    for eval_name in ("fusion_eval_worksheet.csv", "fusion_eval_excluded.csv"):
+        eval_file = REPO_ROOT / "data" / "8_fusion_eval" / eval_name
+        if eval_file.exists():
+            shutil.copy2(eval_file, fusion_eval_out / eval_name)
 
     final_xml_src = REPO_ROOT / "data" / "9_fusion_xml_final" / "fused_medicines.xml"
     fused_subset_count = 0

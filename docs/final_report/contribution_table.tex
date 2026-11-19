@@ -1,0 +1,55 @@
+\documentclass[a4paper,oneside]{scrartcl}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper,margin=2.0cm]{geometry}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{microtype}
+
+\addtokomafont{disposition}{\rmfamily}
+\addtokomafont{subject}{\rmfamily\mdseries}
+\addtokomafont{title}{\rmfamily}
+\addtokomafont{subtitle}{\rmfamily}
+\addtokomafont{date}{\rmfamily}
+\addtokomafont{caption}{\small}
+\addtokomafont{captionlabel}{\bfseries}
+
+\newcolumntype{P}{>{\raggedright\arraybackslash}X}
+\pagestyle{empty}
+\renewcommand*{\titlepagestyle}{empty}
+
+\subject{Project Contributions \textbar{} Web Data Integration (IE683, HWS 2026)}
+\title{Pharmaceutical Drug Integration:\\Linking US, EU and Canadian Approval Data}
+\author{}
+\date{November 29, 2026}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+
+\section*{Project Roles and Contributions}
+
+The following table summarizes the programming and technical contributions of each team member.
+
+\begin{table}[!htbp]
+    \centering
+    \renewcommand{\arraystretch}{1.45}
+    \begin{tabularx}{\textwidth}{@{} >{\bfseries}l l P @{}}
+        \toprule
+        Team Member & \textbf{Student ID} & \textbf{Core Contributions} \\
+        \midrule
+        Gabriel Himmelein & 1649181 & Target XML/JSON schemas, schema validator, MapForce UDFs, zero-shot LLM matcher, production matching and clustering pipeline, and submission packager. \\
+        \"Ozlem \"Ol\c{c}er & 2265825 & Initial EMA MapForce mapping, EMA/FDA gold-standard labeling, and RBF-SVM and Logistic Regression matchers. \\
+        Anatole Lobenko & 2187322 & FDA/EMA extraction and profiling, Drugs@FDA consolidation and MapForce mapping, hybrid blocking pipeline, and Phase~III XML loader and correspondence prep. \\
+        Hai Nguyen & 2267317 & Data collection scripts, DPD/EMA MapForce completion and XML validation, gold-standard workflow and DPD/FDA labeling, rule-based and DistilBERT matchers, fusion rule experiments, and production fusion pipeline. \\
+        Thu Huyen Trang Trinh & 2111810 & Health Canada DPD consolidation and MapForce mapping, DPD/EMA gold-standard labeling, Random Forest and Gradient Boosting matchers, and fusion evaluation set. \\
+        \bottomrule
+    \end{tabularx}
+    \caption{Summary of team programming and technical contributions.}
+    \label{tab:team_contributions}
+\end{table}
+
+\end{document}
