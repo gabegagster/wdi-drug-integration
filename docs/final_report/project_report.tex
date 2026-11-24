@@ -369,11 +369,19 @@ Inspecting the 25 test discrepancies ($17$ FP, $8$ FN) of the Zero-Shot LLM reve
 % ------------------------------------------------------------
 
 Applying NetworkX connected components consolidates exact normalized matches into 1,372 multi-source clusters ($100\%$ duplicate-free) alongside $49{,}432$ unmatched singletons where no slot filling is possible (Table~\ref{tab:clustering_profile}). 
-Our production matcher combines our hand-crafted rule-based comparators with the normalization heuristics and optional borderline LLM adjudication pipeline from our zero-shot LLM experiments to score all $206{,}830$ hybrid-blocker candidates without full-corpus API cost. Specifically, it assigns confidence scores of $1.0$ to exact normalized matches ($1{,}938$ pairs), $0.95$ to identical-brand salt variations ($754$ pairs), and $0.5 + 0.5 \cdot \text{sim} \in [0.90, 1.0)$ to matching-base-substance pairs with brand similarity $\ge 0.80$ ($2{,}016$ pairs), while pruning $156{,}958$ disjoint-ingredient non-matches and leaving $23{,}446$ lower-similarity same-substance candidates unlinked. Sorting the $4{,}708$ positive candidates by descending score with lexicographic $(\texttt{id1}, \texttt{id2})$ tie-breaking and applying greedy $1{:}1$ filtering per source pair eliminates $1{,}372$ intra-source conflicts to produce 3,336 correspondences. Connected-components clustering over these correspondences increases cross-dataset yield by $+70.8\%$ to 2,343 multi-source clusters (including 502 three-way clusters, $+77.4\%$), with $99.79\%$ containing at most one record per jurisdiction ($k \le 3$). Auditing all five clusters with $k > 3$ (\texttt{CLUSTER\_00001}--\texttt{00005}: \textit{Irbesartan/HCTZ}, \textit{Temozolomide}, \textit{Sitagliptin/Metformin}, \textit{Emtricitabine/Tenofovir}, and \textit{Koselugo}) confirms legitimate upstream intra-source generic duplicates or salt-vs.-base records rather than false-positive matching errors.
+Our production matcher combines our hand-crafted rule-based comparators with the normalization heuristics and optional borderline LLM adjudication pipeline from our zero-shot LLM experiments to score all $206{,}830$ hybrid-blocker candidates without full-corpus API cost. Specifically, it assigns confidence scores as follows:
+\begin{itemize}
+\item \textbf{Exact normalized matches} ($1{,}938$ pairs): score $1.0$, where brand and ingredient set match after normalization.
+\item \textbf{Identical-brand salt variations} ($754$ pairs): score $0.95$, where the same brand is present and base moiety sets match but salt modifiers differ.
+\item \textbf{Fuzzy brand + matching base substances} ($2{,}016$ pairs): score $0.5 + 0.5 \cdot \text{sim} \in [0.90, 1.0)$, where base substance sets match and brand similarity $\ge 0.80$.
+\item \textbf{Pruned non-matches} ($156{,}958$ pairs): disjoint ingredient sets, discarded without scoring.
+\item \textbf{Unlinked candidates} ($23{,}446$ pairs): same-substance pairs below the brand similarity threshold, left unresolved.
+\end{itemize}
+Sorting the $4{,}708$ positive candidates by descending score with lexicographic $(\texttt{id1}, \texttt{id2})$ tie-breaking and applying greedy $1{:}1$ filtering per source pair eliminates $1{,}372$ intra-source conflicts to produce 3,336 correspondences. Connected-components clustering over these correspondences increases cross-dataset yield by $+70.8\%$ to 2,343 multi-source clusters (including 502 three-way clusters, $+77.4\%$), with $99.79\%$ containing at most one record per jurisdiction ($k \le 3$). Auditing all five clusters with $k > 3$ (\texttt{CLUSTER\_00001}--\texttt{00005}: \textit{Irbesartan/HCTZ}, \textit{Temozolomide}, \textit{Sitagliptin/Metformin}, \textit{Emtricitabine/Tenofovir}, and \textit{Koselugo}) confirms legitimate upstream intra-source generic duplicates or salt-vs.-base records rather than false-positive matching errors.
 
 \begin{table}[htbp]
 \centering
-\caption{Connected-components clustering profile: full group size distribution (including singletons $k=1$) and jurisdictional overlap (Share = percentage of multi-source clusters $k \ge 2$)}
+\caption{Connected-components clustering profile: full group size distribution (including singletons $k=1$) and jurisdictional overlap (Share = percentage of multi-source clusters $k \ge 2$)} 
 \label{tab:clustering_profile}
 \scriptsize
 \setlength{\tabcolsep}{3pt}
@@ -541,6 +549,7 @@ Ich versichere, dass ich die beiliegende Projektarbeit ohne Hilfe Dritter und oh
     GPT 6.1 Sol & Create function from plan & Phase~II Golden Pair Dataset generation for human annotation & + \\
     GPT 6.1 Sol & Scan for error during fusion experimentation, help implement Adaptive Accuracy, notebook debugging & Phase~III & ++ \\
     GPT 6.1 Sol & Robust Progress Documentation & Throughout & ++ \\
+    Claude Code (claude-sonnet-4-6, Anthropic) & Fusion rule experiment design, custom pharma rule implementation, notebook debugging & Phase~III & ++ \\
     \bottomrule
   \end{tabular}}
 \end{center}
