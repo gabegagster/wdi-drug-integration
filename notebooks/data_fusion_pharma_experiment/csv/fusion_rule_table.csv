@@ -1,0 +1,11 @@
+attribute,rule,baseline_accuracy,final_accuracy
+brandName,shortest_string,0.9354838709677419,1.0
+activeSubstances,voting,0.7096774193548387,0.8709677419354839
+activeSubstanceCount,voting,1.0,1.0
+licenceHolder,holder_consensus,0.06451612903225806,0.12903225806451613
+productClass,voting,1.0,1.0
+atcCode,voting,0.8064516129032258,0.9032258064516129
+dosageForm,dosage_form_match,0.4838709677419355,0.5161290322580645
+route,voting,0.8064516129032258,0.9354838709677419
+strengths,normalized_strength_union,0.45161290322580644,0.5161290322580645
+biosimilar,voting,1.0,1.0

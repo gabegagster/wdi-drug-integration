@@ -1,0 +1,11 @@
+attribute,consistency,groups_with_values
+brandName,0.9354838709677419,31
+activeSubstances,0.8387096774193549,31
+activeSubstanceCount,1.0,31
+licenceHolder,0.0,31
+productClass,1.0,31
+atcCode,0.9032258064516129,31
+dosageForm,0.6666666666666666,30
+route,0.8064516129032258,31
+strengths,0.5806451612903226,31
+biosimilar,1.0,31

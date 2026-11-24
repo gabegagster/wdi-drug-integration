@@ -1,0 +1,11 @@
+,baseline,final,delta
+brandName,0.9355,1.0,0.0645
+activeSubstances,0.7097,0.871,0.1613
+activeSubstanceCount,1.0,1.0,0.0
+licenceHolder,0.0645,0.129,0.0645
+productClass,1.0,1.0,0.0
+atcCode,0.8065,0.9032,0.0967
+dosageForm,0.4839,0.5161,0.0322
+route,0.8065,0.9355,0.129
+strengths,0.4516,0.5161,0.0645
+biosimilar,1.0,1.0,0.0
