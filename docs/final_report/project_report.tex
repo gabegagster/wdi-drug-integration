@@ -535,23 +535,32 @@ Ich versichere, dass ich die beiliegende Projektarbeit ohne Hilfe Dritter und oh
 % purpose not included in the list yet, add it to the list.
 \begin{center}
   \textbf{Declaration of Used AI Tools} \\[.3em]
-  {\small
-  \begin{tabular}{@{}L{3.4cm}L{3.8cm}L{2.6cm}c@{}}
+  {\footnotesize\setlength{\tabcolsep}{7pt}%
+  \begin{tabularx}{\textwidth}{@{}L{3.5cm}>{\raggedright\arraybackslash}X L{1.85cm}c@{}}
     \toprule
     Tool & Purpose & Where? & Useful? \\
     \midrule
     Gemini 3.8 Flash, 4 Argon, 4 Neon (Google Antigravity) & Code generation, refactoring, and verification scripts & Codebase & ++ \\
+    \addlinespace[2pt]
     Gemini 3.8 Flash, 4 Argon, 4 Neon (Google Antigravity) & Report drafting, LaTeX revision, and slide creation & Throughout & ++ \\
-    Gemini 3.8 Flash & Zero-shot entity matching and borderline resolution & Phase~II & ++ \\
-    Qwen3-Embedding-0.6B & Semantic candidate blocking embeddings & Phase~II & + \\
-    DistilBERT & Fine-tuned transformer matcher benchmark & Experiments & + \\
-    GPT 6.1 Sol & Understanding MapForce, get attributes integration suggestions & Phase~I & ++ \\
-    GPT 6.1 Sol & Create function from plan & Phase~II Golden Pair Dataset generation for human annotation & + \\
-    GPT 6.1 Sol & Scan for error during fusion experimentation, help implement Adaptive Accuracy, notebook debugging & Phase~III & ++ \\
-    GPT 6.1 Sol & Robust Progress Documentation & Throughout & ++ \\
-    Claude Code (claude-sonnet-4-6, Anthropic) & Fusion rule experiment design, custom pharma rule implementation, notebook debugging & Phase~III & ++ \\
+    \addlinespace[4pt]
+    GPT 6.1 Sol (OpenAI) & Understanding MapForce and attribute integration suggestions & Phase~I & ++ \\
+    \addlinespace[2pt]
+    GPT 6.1 Sol (OpenAI) & Implementing gold-standard pair generation functions from plans for human annotation & Phase~II & + \\
+    \addlinespace[2pt]
+    GPT 6.1 Sol (OpenAI) & Error detection in fusion experiments, adaptive accuracy implementation, and notebook debugging & Phase~III & ++ \\
+    \addlinespace[2pt]
+    GPT 6.1 Sol (OpenAI) & Project progress documentation & Throughout & ++ \\
+    \addlinespace[4pt]
+    Claude Code (claude-sonnet-4-6, Anthropic) & Fusion rule experiment design, custom pharmaceutical rule implementation, and notebook debugging & Phase~III & ++ \\
+    \midrule
+    Qwen3-Embedding-0.6B (Hugging Face) & Dense semantic embeddings for candidate blocking & Phase~II & + \\
+    \addlinespace[2pt]
+    DistilBERT (distilbert-base-uncased) & Fine-tuned transformer matcher benchmark & Phase~II & + \\
+    \addlinespace[2pt]
+    Gemini 3.8 Flash (Google GenAI SDK) & Zero-shot entity matching and borderline resolution & Phase~II & ++ \\
     \bottomrule
-  \end{tabular}}
+  \end{tabularx}}
 \end{center}
 
 \vspace{1.5cm}
