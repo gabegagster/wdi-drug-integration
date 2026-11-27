@@ -90,7 +90,7 @@ In 14 pairs where the brand name and active substance are identical (or minor re
 - **Row 254 (`Ivemend` vs. `EMEND`):** Intravenous prodrug `fosaprepitant` vs. oral `aprepitant` (MSD) — GS `1`, LLM `0` (LLM strictly enforced chemical substance identity between prodrug and active moiety).
 
 ### 4. Gold-Standard Label Noise Corrected by the LLM (`4` False Negatives)
-In 4 pairs labeled `1` in the manual Gold Standard, clinical inspection confirms that the records are genuinely **non-matches** (`0`) and the LLM's prediction is pharmacologically and regulatorily sound:
+In 4 pairs labeled `1` in the manual Gold Standard, manual verification against regulatory labels confirms that the records are genuinely non-matches (`0`) and the LLM's prediction is pharmacologically and regulatorily sound (the frozen 525-pair test split was not re-scored so all matchers remain directly comparable):
 - **Row 162 (`AURO-LAMIVUDINE/ZIDOVUDINE` vs. `LAMIVUDINE; ZIDOVUDINE [EFAVIRENZ; LAMIVUDINE; ZIDOVUDINE]`):** Dual-ingredient therapy vs. triple-ingredient therapy containing `efavirenz`.
 - **Row 187 (`Repaglinide Accord` vs. `REPAGLINIDE` [Aurobindo]):** Competing generic manufacturers (Accord Healthcare vs. Aurobindo).
 - **Row 302 (`Pemetrexed Krka` vs. `PEMETREXED` [Shilpa]):** Competing generic manufacturers (KRKA vs. Shilpa).
