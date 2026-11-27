@@ -294,7 +294,7 @@ def run_llm_zero_shot(
                 model=model,
                 input=prompt,
                 system_instruction=ZERO_SHOT_SYSTEM_INSTRUCTION,
-                generation_config={"temperature": 0.0, "thinking_level": "low"},
+                generation_config={"thinking_level": "low"},
                 response_format={
                     "type": "text",
                     "mime_type": "application/json",
@@ -449,7 +449,7 @@ def evaluate_candidates_hierarchical(
                     model=model,
                     input=prompt,
                     system_instruction=ZERO_SHOT_SYSTEM_INSTRUCTION,
-                    generation_config={"temperature": 0.0, "thinking_level": "low"},
+                    generation_config={"thinking_level": "low"},
                     response_format={
                         "type": "text",
                         "mime_type": "application/json",
@@ -510,7 +510,7 @@ def format_report_markdown(metrics: dict[str, Any], model_name: str = "gemini-3.
     md = f"""# Zero-Shot LLM Matcher Evaluation Benchmark Report
 
 ## Experiment Configuration
-- **Model:** `{model_name}` (temperature=0, structured JSON output)
+- **Model:** `{model_name}` (default sampling, structured JSON output)
 - **SDK:** `google-genai` (v3.0.0)
 - **Dataset:** Stratified held-out test split (`gs_pair_test.csv`)
 - **Total Evaluated Pairs:** {total:,}

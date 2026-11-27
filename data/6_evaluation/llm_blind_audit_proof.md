@@ -8,7 +8,7 @@ Direct API calls from [llm_zero_shot_matcher.py](../../src/identity_resolution/l
 
 Two methodological limitations of this audit trail are stated openly:
 - **Unsigned local logs:** The files under [subagent_transcripts/](audit/subagent_transcripts/) are raw Antigravity JSONL logs exported from the local execution environment; they are inspectable audit artifacts, not third-party cryptographically signed API receipts.
-- **Batched subagent execution vs. direct SDK:** Pairs were evaluated in isolated batches of 1 to 75 pairs under the Antigravity subagent harness rather than 525 standalone single-pair `google-genai` calls, so SDK-level parameters (`temperature=0.0`, Pydantic schema enforcement) were not enforced by the API layer during inference. The standalone `google-genai` pipeline remains available in [llm_zero_shot_matcher.py](../../src/identity_resolution/llm_zero_shot_matcher.py) for independent API re-execution.
+- **Batched subagent execution vs. direct SDK:** Pairs were evaluated in isolated batches of 1 to 75 pairs under the Antigravity subagent harness rather than 525 standalone single-pair `google-genai` calls, so API-layer Pydantic JSON schema enforcement was not active during inference (Gemini 3.6+ models ignore custom `temperature` overrides and run at default sampling regardless). The standalone `google-genai` pipeline remains available in [llm_zero_shot_matcher.py](../../src/identity_resolution/llm_zero_shot_matcher.py) for independent API re-execution.
 
 ## What Can Be Independently Verified From the Raw Logs
 

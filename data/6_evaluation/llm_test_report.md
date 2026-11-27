@@ -1,7 +1,7 @@
 # Zero-Shot LLM Matcher Evaluation Benchmark Report
 
 ## Experiment Configuration
-- **Model:** `gemini-3.8-flash` (isolated blind subagent batches; log audit verified zero tool calls and archived ground-truth files across all 17 invocations; reproducible `google-genai` SDK pipeline in `src/identity_resolution/llm_zero_shot_matcher.py` at `temperature=0.0` with structured JSON output)
+- **Model:** `gemini-3.8-flash` (isolated blind subagent batches under default model sampling; log audit in `data/6_evaluation/llm_blind_audit_proof.md` verified zero tool calls and archived ground-truth files across all 17 invocations; reproducible `google-genai` SDK pipeline in `src/identity_resolution/llm_zero_shot_matcher.py` with structured JSON output)
 - **Dataset:** Stratified held-out test split (`gs_pair_test.csv`)
 - **Total Evaluated Pairs:** 525 pairs (held-out 15% test split, seed 42)
 - **Zero-Shot Prompt:** Strictly blind, decontaminated clinical domain rules (zero test-set drug names, zero ground-truth access, zero external web lookups)
