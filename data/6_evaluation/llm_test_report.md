@@ -1,8 +1,7 @@
 # Zero-Shot LLM Matcher Evaluation Benchmark Report
 
 ## Experiment Configuration
-- **Model:** `gemini-3.8-flash` (`temperature=0.0`, structured JSON output)
-- **SDK:** `google-genai` (v3.0.0)
+- **Model:** `gemini-3.8-flash` (isolated blind subagent batches; log audit verified zero tool calls and archived ground-truth files across all 17 invocations; reproducible `google-genai` SDK pipeline in `src/identity_resolution/llm_zero_shot_matcher.py` at `temperature=0.0` with structured JSON output)
 - **Dataset:** Stratified held-out test split (`gs_pair_test.csv`)
 - **Total Evaluated Pairs:** 525 pairs (held-out 15% test split, seed 42)
 - **Zero-Shot Prompt:** Strictly blind, decontaminated clinical domain rules (zero test-set drug names, zero ground-truth access, zero external web lookups)
@@ -103,4 +102,5 @@ In 4 pairs labeled `1` in the manual Gold Standard, clinical inspection confirms
 - **Predictions & Rationale CSV:** `data/6_evaluation/llm_test_predictions.csv` (contains all 525 pairs with `pred_llm` and `reason_llm`).
 - **Executed Jupyter Notebook:** `notebooks/01_llm_zero_shot_matcher.ipynb` (fully executed with confusion matrix heatmaps and comparison tables).
 - **Inference Pipeline Script:** `src/identity_resolution/llm_zero_shot_matcher.py` (official `google-genai` SDK implementation with structured output and persistent caching).
+- **Blind Execution Audit Trail:** [llm_blind_audit_proof.md](llm_blind_audit_proof.md) and `src/identity_resolution/verify_blind_llm_proof.py` (raw blind subagent transcripts under `data/6_evaluation/audit/subagent_transcripts/` and offline integrity verifier).
 - **Tri-Dataset Clustering Script:** `src/identity_resolution/clustering.py` (NetworkX connected components verifying 1,372 cross-dataset matches).

@@ -325,7 +325,7 @@ We evaluated four entity-matching paradigms on the identical 525 held-out test p
   \item \textbf{Deterministic \& Rule-Based Matchers:} The naive exact-key baseline matches normalized brands and substance sets, achieving moderate precision but missing over half of all true matches due to salt modifiers and brand suffixes. Three stricter conjunctive rules requiring licence-holder token overlap ($\ge 0.80$ after company-suffix removal, bypassed if missing): Exact, Salt (base moiety sets), and Fuzzy (brand similarity $\ge 0.80$). All three reach near-perfect precision ($0.98$--$1.00$) at low recall because legitimate cross-border licence holders often differ.
   \item \textbf{Supervised ML Classifiers:} Logistic Regression (LR), RBF-SVM, Gradient Boosting (GB), and Random Forest (RF) were tuned via 5-fold stratified cross-validation over six lexical/salt similarity features. Tree ensembles outperform linear and kernel boundaries by 3--4 Macro F1 points, with RF reaching 0.9054 Macro F1 at cutoff 0.50 and 0.9075 Macro F1 at its CV-tuned threshold of 0.48 while fitting in under a second and scoring in milliseconds without API cost. Residual false positives mostly stem from competing generics sharing active substances and similar brand prefixes.
   \item \textbf{Fine-Tuned DistilBERT:} Fine-tuning \texttt{distilbert-base-uncased} over serialized \texttt{brandName}, \texttt{activeSubstances}, and \texttt{licenceHolder} pairs ($2{,}378$ train / $595$ val; $7.54\text{ h}$ CPU training, best checkpoint at epoch 16) yields $0.9193$ Macro F1 at default cutoff $0.50$ and 0.9215 Macro F1 at the validation-tuned threshold $0.17$, outperforming all tabular ML models.
-  \item \textbf{Zero-Shot LLM:} Prompting \texttt{gemini-3.8-flash} ($\texttt{temperature}=0.0$) with three strictly blind domain rules over four attributes (no test examples) achieves the highest overall score of 0.9485 Macro F1 ($95.24\%$ accuracy), cutting false negatives by $91.7\%$ compared to the exact baseline.
+  \item \textbf{Zero-Shot LLM:} Evaluating \texttt{gemini-3.8-flash} via isolated zero-shot subagent batches (verified across all audited invocations: zero tool calls, web lookups, or workspace ground-truth access; reproducible \texttt{google-genai} script at $\texttt{temperature}=0.0$) under three blind domain rules over four attributes achieves 0.9485 Macro F1 ($95.24\%$ accuracy), cutting false negatives by $91.7\%$ over the exact baseline.
 \end{itemize}
 
 \begin{table}[htbp]
@@ -541,29 +541,29 @@ Ich versichere, dass ich die beiliegende Projektarbeit ohne Hilfe Dritter und oh
     Tool & Purpose & Where? & Useful? \\
     \midrule
     Gemini 3.8 Flash, 4 Argon, 4 Neon (Google Antigravity) & Code generation, refactoring, and verification scripts & Codebase & ++ \\
-    \addlinespace[2pt]
+    \addlinespace[1pt]
     Gemini 3.8 Flash, 4 Argon, 4 Neon (Google Antigravity) & Report drafting, LaTeX revision, and slide creation & Throughout & ++ \\
-    \addlinespace[4pt]
+    \addlinespace[3pt]
     GPT 6.1 Sol (OpenAI) & Understanding MapForce and attribute integration suggestions & Phase~I & ++ \\
-    \addlinespace[2pt]
+    \addlinespace[1pt]
     GPT 6.1 Sol (OpenAI) & Implementing gold-standard pair generation functions from plans for human annotation & Phase~II & + \\
-    \addlinespace[2pt]
+    \addlinespace[1pt]
     GPT 6.1 Sol (OpenAI) & Error detection in fusion experiments, adaptive accuracy implementation, and notebook debugging & Phase~III & ++ \\
-    \addlinespace[2pt]
+    \addlinespace[1pt]
     GPT 6.1 Sol (OpenAI) & Project progress documentation & Throughout & ++ \\
-    \addlinespace[4pt]
+    \addlinespace[3pt]
     Claude Code (claude-sonnet-4-6, Anthropic) & Fusion rule experiment design, custom pharmaceutical rule implementation, and notebook debugging & Phase~III & ++ \\
     \midrule
     Qwen3-Embedding-0.6B (Hugging Face) & Dense semantic embeddings for candidate blocking & Phase~II & + \\
-    \addlinespace[2pt]
+    \addlinespace[1pt]
     DistilBERT (distilbert-base-uncased) & Fine-tuned transformer matcher benchmark & Phase~II & + \\
-    \addlinespace[2pt]
-    Gemini 3.8 Flash (Google GenAI SDK) & Zero-shot entity matching and borderline resolution & Phase~II & ++ \\
+    \addlinespace[1pt]
+    Gemini 3.8 Flash (Google Antigravity) & Zero-shot entity matching benchmark (isolated agent runs) & Phase~II & ++ \\
     \bottomrule
   \end{tabularx}}
 \end{center}
 
-\vspace{1.5cm}
+\vspace{0.8cm}
 \noindent Unterschrift\\
 \noindent Mannheim, den 29.~November 2026 \hfill
 
