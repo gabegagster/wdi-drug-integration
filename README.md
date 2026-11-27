@@ -19,6 +19,7 @@ medicine, identified through its `brandName` and full `activeSubstances` set.
 | Final report & contributions | [Project report](docs/final_report/project_report.pdf) / [Contribution table](docs/final_report/contribution_table.pdf) | [Report LaTeX source](docs/final_report/project_report.tex) |
 | Integrated XML validation | [Schema and duplicate results](data/4_translated_mapforce/integrated%20xml%20validation.md) | [MapForce README](src/mapforce/README.md) |
 | Gold-standard pairs | [Pair validation and split results](data/5_golden_standard_pair/golden%20standard%20pair%20dataset%20report.md) | [Gold-standard README](src/golden_standard/README.md) |
+| Zero-shot LLM benchmark & audit | [LLM test report](data/6_evaluation/llm_test_report.md) / [Blind audit proof](data/6_evaluation/llm_blind_audit_proof.md) | [API script](src/identity_resolution/llm_zero_shot_matcher.py) / [Audit verifier](src/identity_resolution/verify_blind_llm_proof.py) |
 | Data fusion experiments & pipeline | [Fusion experiment report](notebooks/data_fusion_rule_experiment/report.md) | [Fusion pipeline README](src/data_fusion/README.md) |
 | MapForce helpers | | [Helper reference](src/mapforce/helpers/README.md) |
 
@@ -126,7 +127,7 @@ under `data/5_golden_standard_pair/` are versioned.
 #### Blocking, matching, and clustering
 
 * **Blocking:** Hybrid semantic + lexical blocking (`notebooks/blocking_experiment.ipynb`, outputs in `data/7_blocking_candidates/`).
-* **Matchers:** Rule-based (`notebooks/manual_matcher_experiment/`), supervised ML (`src/identity_resolution/ml_features.py`, `notebooks/ml_classifier_experiment/`, `notebooks/ml_tree_classifier_experiment/`), fine-tuned DistilBERT (`notebooks/PLM_DistilBERT/`), and zero-shot LLM (`src/identity_resolution/llm_zero_shot_matcher.py`).
+* **Matchers:** Rule-based (`notebooks/manual_matcher_experiment/`), supervised ML (`src/identity_resolution/ml_features.py`, `notebooks/ml_classifier_experiment/`, `notebooks/ml_tree_classifier_experiment/`), fine-tuned DistilBERT (`notebooks/PLM_DistilBERT/`), and zero-shot LLM (reported 525-pair benchmark executed via isolated blind Antigravity subagent batches, audited in [llm_blind_audit_proof.md](data/6_evaluation/llm_blind_audit_proof.md) and verified by `src/identity_resolution/verify_blind_llm_proof.py`; reproducible `google-genai` API script provided in `src/identity_resolution/llm_zero_shot_matcher.py`).
 * **Clustering:** Connected-components clustering (`src/identity_resolution/clustering.py`, reports in `data/6_evaluation/`).
 
 ### Phase III: Data fusion
